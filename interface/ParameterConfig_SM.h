@@ -21,10 +21,10 @@ const struct Parameter{
   struct variable{
     
     struct m_vis{
-      int nbins = 30;
-      double nmin = 50;
-      double nmax = 80;
-      int doVarBins = 1;
+      int nbins = 25;
+      double nmin = 0;
+      double nmax = 250;
+      int doVarBins = 0;
       vector<double> varBins = {50,55,60,65,80};
     } m_vis;
     struct jpt{

@@ -87,6 +87,7 @@ class CreateHistos{
   TH1D* getBinnedHisto(TString name,vector<double> input);
 
   double getMT();
+  int passMTCut();
 
 
   TFile *outfile;

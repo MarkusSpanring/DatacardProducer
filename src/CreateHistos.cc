@@ -61,8 +61,8 @@ void CreateHistos::run(){
     Int_t nentries = Int_t(NtupleView->fChain->GetEntries());
     cout<<"The input chain contains: "<<nentries<<" events."<<endl;
     float perc;
-    //for (Int_t jentry=0; jentry<nentries;jentry++){
-    for (Int_t jentry=0; jentry<100000;jentry++){       
+    for (Int_t jentry=0; jentry<nentries;jentry++){
+    //for (Int_t jentry=0; jentry<100000;jentry++){       
 
       if(jentry % 200000 == 0){
         if(nentries > 0){
@@ -415,6 +415,7 @@ int CreateHistos::Common(TString sign, TString cat){
 
     if(sign == "OS"
        && NtupleView->q_1 * NtupleView->q_2 < 0
+       && this->passMTCut()
        && NtupleView->iso_1 < 0.15
        && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
        && this->Vetos()
@@ -423,6 +424,7 @@ int CreateHistos::Common(TString sign, TString cat){
 
     if(sign == "SS"
        && NtupleView->q_1 * NtupleView->q_2 > 0
+       && this->passMTCut()
        && !(cat == "VBF_low"
            || cat == "VBF_high"
            || cat == "1Jet_high"
@@ -435,6 +437,7 @@ int CreateHistos::Common(TString sign, TString cat){
 
     if(sign == "SS"
        && NtupleView->q_1 * NtupleView->q_2 > 0
+       && this->passMTCut()
        && (cat == "VBF_low"
            || cat == "VBF_high"
            || cat == "1Jet_high"
@@ -872,4 +875,11 @@ void CreateHistos::writeHistos( TString channel, vector<TString> cats, vector<TS
 double CreateHistos::getMT(){
   if(useMVAMET) return NtupleView->mt_1;
   else return NtupleView->pfmt_1;
+}
+
+int CreateHistos::passMTCut(){
+  if( !applyMTCut ) return 1;
+  if( useMVAMET && applyMTCut && NtupleView->mt_1<Parameter.analysisCut.mTLow ) return 1;
+  if( !useMVAMET && applyMTCut && NtupleView->pfmt_1<Parameter.analysisCut.mTLow ) return 1;
+  return 0;
 }
