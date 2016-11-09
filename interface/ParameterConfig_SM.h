@@ -27,6 +27,65 @@ const struct Parameter{
       int doVarBins = 1;
       vector<double> varBins = {50,55,60,65,80};
     } m_vis;
+    struct jpt{
+      int nbins = 70;
+      double nmin = 0;
+      double nmax = 350;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } jpt;
+    struct jeta{
+      int nbins = 40;
+      double nmin = -5;
+      double nmax = 5;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } jeta;
+    struct jdeta{
+      int nbins = 40;
+      double nmin = 0;
+      double nmax = 10;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } jdeta;
+    struct mt_1{
+      int nbins = 40;
+      double nmin = 0;
+      double nmax = 40;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } mt_1;
+    struct CR_mt_1{
+      int nbins = 40;
+      double nmin = 80;
+      double nmax = 1000;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } CR_mt_1;
+    struct iso_1{
+      int nbins = 25;
+      double nmin = 0;
+      double nmax = 0.5;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } iso_1;
+    struct mjj{
+      int nbins = 70;
+      double nmin = 0;
+      double nmax = 1400;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } mjj;
+    struct jeta1eta2{
+      int nbins = 40;
+      double nmin = -10;
+      double nmax = 10;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } jeta1eta2;
+    
+    
+    
 
   } variable;
   struct analysisCut{

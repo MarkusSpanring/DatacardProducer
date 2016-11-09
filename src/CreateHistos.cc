@@ -727,8 +727,8 @@ TH1D* CreateHistos::JITHistoCreator(TString name, TString strVar){
     }
     else{
       nbins = Parameter.variable.m_vis.nbins;
-      nmin = Parameter.variable.m_vis.nmin;;
-      nmax = Parameter.variable.m_vis.nmax;
+      nmin  = Parameter.variable.m_vis.nmin;;
+      nmax  = Parameter.variable.m_vis.nmax;
     }
   }
 
@@ -740,44 +740,92 @@ TH1D* CreateHistos::JITHistoCreator(TString name, TString strVar){
      || strVar == "jpt_2_2"
      || strVar == "jpt_2_2p5"
      || strVar == "jpt_2_3"){
-    nbins = 70;
-    nmin = 0;
-    nmax = 350;
+    if(Parameter.variable.jpt.doVarBins){
+      usingVarBins = 1;
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.jpt.varBins) );
+    }
+    else{
+      nbins = Parameter.variable.jpt.nbins;
+      nmin  = Parameter.variable.jpt.nmin;
+      nmax  = Parameter.variable.jpt.nmax;
+    }
   }
   else if(strVar == "jeta_1" || strVar == "jeta_2"){
-    nbins = 40;
-    nmin = -5;
-    nmax = 5;
+    if(Parameter.variable.jeta.doVarBins){
+      usingVarBins = 1;
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.jeta.varBins) );
+    }
+    else{
+      nbins = Parameter.variable.jeta.nbins;
+      nmin  = Parameter.variable.jeta.nmin;
+      nmax  = Parameter.variable.jeta.nmax;
+    }
   }
   else if(strVar == "jdeta"){
-    nbins = 40;
-    nmin = 0;
-    nmax = 10;
+    if(Parameter.variable.jdeta.doVarBins){
+      usingVarBins = 1;
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.jdeta.varBins) ); 
+    }
+    else{
+      nbins = Parameter.variable.jdeta.nbins;
+      nmin  = Parameter.variable.jdeta.nmin;
+      nmax  = Parameter.variable.jdeta.nmax;
+    }
   }
   else if(strVar == "mt_1"){
-    nbins = 40;
-    nmin = 0;
-    nmax = 40;
+    if(Parameter.variable.mt_1.doVarBins){
+      usingVarBins = 1;
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.mt_1.varBins) );
+    }
+    else{
+      nbins = Parameter.variable.mt_1.nbins;
+      nmin  = Parameter.variable.mt_1.nmin;
+      nmax  = Parameter.variable.mt_1.nmax;
+    }
   }
   else if(strVar == "CR_mt_1"){
-    nbins = 40;
-    nmin = 70;
-    nmax = 1000;
+    if(Parameter.variable.CR_mt_1.doVarBins){
+      usingVarBins = 1;
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.CR_mt_1.varBins) );
+    }
+    else{
+      nbins = Parameter.variable.CR_mt_1.nbins;
+      nmin  = Parameter.variable.CR_mt_1.nmin;
+      nmax  = Parameter.variable.CR_mt_1.nmax;
+    }
   }
   else if(strVar == "iso_1"){
-    nbins = 25;
-    nmin = 0;
-    nmax = 0.5;
+    if(Parameter.variable.iso_1.doVarBins){
+      usingVarBins = 1;
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.iso_1.varBins) );
+    }
+    else{
+      nbins = Parameter.variable.iso_1.nbins;
+      nmin  = Parameter.variable.iso_1.nmin;
+      nmax  = Parameter.variable.iso_1.nmax;
+    }
   }
   else if(strVar == "mjj"){
-    nbins = 70;
-    nmin = 0;
-    nmax = 1400;
+    if(Parameter.variable.mjj.doVarBins){
+      usingVarBins = 1;
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.mjj.varBins) );
+    }
+    else{
+      nbins = Parameter.variable.mjj.nbins;
+      nmin  = Parameter.variable.mjj.nmin;
+      nmax  = Parameter.variable.mjj.nmax;
+    }
   }
   else if(strVar == "jeta1eta2"){
-    nbins = 40;
-    nmin = -10;
-    nmax = 10;
+    if(Parameter.variable.jeta1eta2.doVarBins){
+      usingVarBins = 1;
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.jeta1eta2.varBins) );
+    }
+    else{
+      nbins = Parameter.variable.jeta1eta2.nbins;
+      nmin  = Parameter.variable.jeta1eta2.nmin;
+      nmax  = Parameter.variable.jeta1eta2.nmax;
+    }
   }
   //else throw std::invalid_argument( "Cannot create histo: " + name + ". Binning not found"  );
 
