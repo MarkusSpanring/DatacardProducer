@@ -3,7 +3,10 @@ INCDIR=.
 ROOTINC=$(shell root-config --incdir)
 ROOTLIB=$(shell root-config --libs)
 
-all: CreateHistos.o ntuple.o runFile 
+all: CreateHistos.o ntuple.o runFile
+
+%.o: src/%.cc
+	$(CXX) -I$(INCDIR) -I$(ROOTINC) $(ROOTLIB) -fpic -c $<
 
 CreateHistos.o: src/CreateHistos.cc
 	$(CXX) -I$(INCDIR) -I$(ROOTINC) $(ROOTLIB) -c src/CreateHistos.cc

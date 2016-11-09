@@ -7,7 +7,26 @@
 using namespace std;
 
 CreateHistos::CreateHistos(){
+  
+  files.push_back({Parameter.dataset.Z,"Z"});
+  files.push_back({Parameter.dataset.W,"W"});
+  files.push_back({Parameter.dataset.TT,"TT"});
+  files.push_back({Parameter.dataset.VV,"VV"});
+  files.push_back({Parameter.dataset.data,"data"});
+  files.push_back({Parameter.dataset.ggH,"ggH"});
+  files.push_back({Parameter.dataset.qqH,"qqH"});
+  if(ptShift){
+    files.push_back({Parameter.dataset.ZtauUp,"ZtauUp"});
+    files.push_back({Parameter.dataset.ZtauDown,"ZtauDown"});
+    files.push_back({Parameter.dataset.TTtauUp,"TTtauUp"});
+    files.push_back({Parameter.dataset.TTtauDown,"TTtauDown"});
+    files.push_back({Parameter.dataset.VVtauUp,"VVtauUp"});
+    files.push_back({Parameter.dataset.VVtauDown,"VVtauDown"});
+  }
 
+  for(int i=0; i<variables.size(); i++) vars.push_back(variables.at(i));
+  for(int i=0; i<categories.size(); i++) cats.push_back(categories.at(i));
+  
 }
 
 CreateHistos::~CreateHistos(){
@@ -35,7 +54,6 @@ void CreateHistos::run(){
   float var =0;
   float W_ratio = 1;
   float SS_OS_ratio = 1;
-  TString channel = "mt";
 
 
   for(int i =0;i < files.size();i++){
@@ -43,7 +61,8 @@ void CreateHistos::run(){
     Int_t nentries = Int_t(NtupleView->fChain->GetEntries());
     cout<<"The input chain contains: "<<nentries<<" events."<<endl;
     float perc;
-    for (Int_t jentry=0; jentry<nentries;jentry++){       
+    //for (Int_t jentry=0; jentry<nentries;jentry++){
+    for (Int_t jentry=0; jentry<100000;jentry++){       
 
       if(jentry % 200000 == 0){
         if(nentries > 0){
@@ -56,7 +75,7 @@ void CreateHistos::run(){
 
       NtupleView->GetEntry(jentry);    
 
-      weight = NtupleView->stitchedWeight*NtupleView->puweight*NtupleView->effweight * 12.9;
+      weight = NtupleView->stitchedWeight*NtupleView->puweight*NtupleView->effweight*usedLuminosity;
 
 
       for(auto cat : cats){
@@ -66,7 +85,7 @@ void CreateHistos::run(){
           var = -999;
 
           if(strVar == "m_vis")                              var = NtupleView->m_vis;
-          else if(strVar == "mt_1")                          var = NtupleView->mt_1;
+          else if(strVar == "mt_1")                          var = this->getMT();
           else if(strVar == "jpt_1")                         var = NtupleView->jpt_1;
           else if(strVar == "jpt_2")                         var = NtupleView->jpt_2;
 
@@ -219,7 +238,7 @@ void CreateHistos::DYSelections(float var, float weight, TString cat, TString st
 
       if(cat == "inclusive"){
 
-        if( this->CR_W() )                        this->GetHistbyName("CR_W_Z","CR_mt_1")->Fill(NtupleView->mt_1, weight);
+        if( this->CR_W() )                        this->GetHistbyName("CR_W_Z","CR_mt_1")->Fill(this->getMT(), weight);
         if( this->CR_QCD() )                      this->GetHistbyName("CR_QCD_Z","iso_1")->Fill(NtupleView->iso_1, weight);
         if( this->SR_QCD() )                      this->GetHistbyName("SR_QCD_Z","iso_1")->Fill(NtupleView->iso_1, weight);
       }
@@ -250,7 +269,7 @@ void CreateHistos::TSelections(float var, float weight, TString cat, TString str
       else if( this->Common("SS",cat) )     this->GetHistbyName("TT"+sub+"_SS",strVar)->Fill(var, weight);
 
       if(cat == "inclusive"){
-        if( this->CR_W() )                 this->GetHistbyName("CR_W_TT","CR_mt_1")->Fill(NtupleView->mt_1, weight);
+        if( this->CR_W() )                 this->GetHistbyName("CR_W_TT","CR_mt_1")->Fill(this->getMT(), weight);
         if( this->CR_QCD() )               this->GetHistbyName("CR_QCD_TT","iso_1")->Fill(NtupleView->iso_1, weight);
         if( this->SR_QCD() )               this->GetHistbyName("SR_QCD_TT","iso_1")->Fill(NtupleView->iso_1, weight);
       }
@@ -275,7 +294,7 @@ void CreateHistos::WSelections(float var, float weight, TString cat, TString str
       else if( this->Common("SS",cat) )    this->GetHistbyName("W"+sub+"_SS",strVar)->Fill(var, weight);
 
       if(cat == "inclusive"){
-        if( this->CR_W() )                 this->GetHistbyName("CR_W_W","CR_mt_1")->Fill(NtupleView->mt_1, weight);
+        if( this->CR_W() )                 this->GetHistbyName("CR_W_W","CR_mt_1")->Fill(this->getMT(), weight);
         if( this->CR_QCD() )               this->GetHistbyName("CR_QCD_W","iso_1")->Fill(NtupleView->iso_1, weight);
         if( this->SR_QCD() )               this->GetHistbyName("SR_QCD_W","iso_1")->Fill(NtupleView->iso_1, weight);
       }
@@ -295,7 +314,7 @@ void CreateHistos::VVSelections(float var, float weight, TString cat, TString st
       else if( this->Common("SS",cat) )         this->GetHistbyName("VV"+sub+"_SS",strVar)->Fill(var, weight);
 
       if(cat == "inclusive"){
-        if( this->CR_W() )                   this->GetHistbyName("CR_W_VV","CR_mt_1")->Fill(NtupleView->mt_1, weight);
+        if( this->CR_W() )                   this->GetHistbyName("CR_W_VV","CR_mt_1")->Fill(this->getMT(), weight);
         if( this->CR_QCD() )                 this->GetHistbyName("CR_QCD_VV","iso_1")->Fill(NtupleView->iso_1, weight);
         if( this->SR_QCD() )                 this->GetHistbyName("SR_QCD_VV","iso_1")->Fill(NtupleView->iso_1, weight);
       }
@@ -346,7 +365,7 @@ void CreateHistos::dataSelections(float var, float weight, TString cat, TString 
     else if( this->Common("SS",cat) )    this->GetHistbyName("data_obs"+sub+"_SS",strVar)->Fill(var, weight);
     if(cat == "inclusive"){
 
-      if( this->CR_W() )                 this->GetHistbyName("CR_W_data","CR_mt_1")->Fill(NtupleView->mt_1, weight);
+      if( this->CR_W() )                 this->GetHistbyName("CR_W_data","CR_mt_1")->Fill(this->getMT(), weight);
       if( this->CR_QCD() )               this->GetHistbyName("CR_QCD_data","iso_1")->Fill(NtupleView->iso_1, weight);
       if( this->SR_QCD() )               this->GetHistbyName("SR_QCD_data","iso_1")->Fill(NtupleView->iso_1, weight);
     }
@@ -433,7 +452,7 @@ int CreateHistos::CR_W(){
 
   if(NtupleView->q_1 * NtupleView->q_2 < 0
      && NtupleView->iso_1 < 0.15
-     && NtupleView->mt_1 >80
+     && this->getMT() > Parameter.analysisCut.mTHigh
      && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
      && this->Vetos()) return 1;
   return 0;
@@ -442,7 +461,7 @@ int CreateHistos::CR_QCD(){
   if(NtupleView->q_1 * NtupleView->q_2 > 0
      && (NtupleView->iso_1 > 0.15
          && NtupleView->iso_1 < 0.4)
-     && NtupleView->mt_1 < 40
+     && this->getMT() < Parameter.analysisCut.mTLow
      && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
      && this->Vetos()) return 1;
   return 0;
@@ -451,7 +470,7 @@ int CreateHistos::SR_QCD(){
   if(NtupleView->q_1 * NtupleView->q_2 < 0
      && (NtupleView->iso_1 > 0.15
          && NtupleView->iso_1 < 0.4)
-     && NtupleView->mt_1 < 40
+     && this->getMT() < Parameter.analysisCut.mTLow
      && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
      && this->Vetos()) return 1;
   return 0;
@@ -475,7 +494,7 @@ int CreateHistos::CategorySelection(TString cat){
      || cat == "highv"){
 
     if( NtupleView->njets > 1
-        && NtupleView->mt_1 < 40
+        && this->getMT() < Parameter.analysisCut.mTLow
         && NtupleView->m_vis > 50
         && NtupleView->m_vis < 80
       ){
@@ -541,7 +560,7 @@ int CreateHistos::jet2_mvis(){
   if( NtupleView->njets > 1
       && NtupleView->jpt_1 > 30
       && NtupleView->jpt_2 > 30
-      && NtupleView->mt_1 < 40
+      && this->getMT() < Parameter.analysisCut.mTLow
       && NtupleView->m_vis > 50
       && NtupleView->m_vis < 80)  return 1;
   return 0;
@@ -552,7 +571,7 @@ int CreateHistos::jet2_mvis(){
 int CreateHistos::VBF_low(){
 
 
-  if(NtupleView->mt_1 < 50
+  if(this->getMT() < Parameter.analysisCut.mTLow
      && NtupleView->njets == 2
      && NtupleView->pt_2 > 20
      && NtupleView->mjj > 500
@@ -566,7 +585,7 @@ int CreateHistos::VBF_low(){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int CreateHistos::VBF_high(){
 
-  if(NtupleView->mt_1 < 50
+  if(this->getMT() < Parameter.analysisCut.mTLow
      && NtupleView->njets == 2
      && NtupleView->pt_2 > 20
      && NtupleView->mjj > 800
@@ -578,7 +597,7 @@ int CreateHistos::VBF_high(){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int CreateHistos::Jet1_low(){
 
-  if(NtupleView->mt_1 < 50
+  if(this->getMT() < Parameter.analysisCut.mTLow
      && (NtupleView->njets == 1 
          || (NtupleView->njets == 2
              && NtupleView->mjj < 500
@@ -598,7 +617,7 @@ int CreateHistos::Jet1_low(){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int CreateHistos::Jet1_high(){
 
-  if(NtupleView->mt_1 < 50
+  if(this->getMT() < Parameter.analysisCut.mTLow
      && (NtupleView->njets == 1 
          || (NtupleView->njets == 2
              && NtupleView->mjj < 500
@@ -617,7 +636,7 @@ int CreateHistos::Jet0_low(){
   if(NtupleView->njets == 0
      && NtupleView->pt_2 > 20
      && NtupleView->pt_2 < 50
-     && NtupleView->mt_1 > 50
+     && this->getMT() < Parameter.analysisCut.mTLow
      )return 1;
   return 0;
 }
@@ -627,7 +646,7 @@ int CreateHistos::Jet0_high(){
 
   if(NtupleView->njets == 0
      && NtupleView->pt_2 > 50
-     && NtupleView->mt_1 > 50
+     && this->getMT() < Parameter.analysisCut.mTLow
      )return 1;
   return 0;
 }
@@ -680,16 +699,37 @@ TH1D* CreateHistos::GetHistbyName(TString name, TString strVar){
 
 }
 
+void CreateHistos::returnBinning(double* returnHisto, vector<double> input){
+  for(int i=0; i<input.size(); i++) returnHisto[i]=input.at(i);
+}
+int CreateHistos::returnBins(vector<double> input){
+  return input.size();
+}
+TH1D* CreateHistos::getBinnedHisto(TString name,vector<double> input){
+  double binning[this->returnBins(input)];
+  this->returnBinning(binning,input);
+  TH1D* tmp=new TH1D(name,"",this->returnBins(input)-1,&binning[0]);
+  return tmp;
+}
+
 TH1D* CreateHistos::JITHistoCreator(TString name, TString strVar){
 
   int nbins = 1;
   double nmin = 0;
   double nmax = 1;
 
+  int usingVarBins = 0;
+  
   if(strVar == "m_vis"){
-    nbins = 30;
-    nmin = 50;
-    nmax = 80;
+    if(Parameter.variable.m_vis.doVarBins) {
+      usingVarBins = 1;
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.m_vis.varBins) );
+    }
+    else{
+      nbins = Parameter.variable.m_vis.nbins;
+      nmin = Parameter.variable.m_vis.nmin;;
+      nmax = Parameter.variable.m_vis.nmax;
+    }
   }
 
   if(strVar == "jpt_1"
@@ -741,10 +781,9 @@ TH1D* CreateHistos::JITHistoCreator(TString name, TString strVar){
   }
   //else throw std::invalid_argument( "Cannot create histo: " + name + ". Binning not found"  );
 
-  histos.push_back( new TH1D(name,"", nbins, nmin, nmax  ) );
+  if(!usingVarBins) histos.push_back( new TH1D(name,"", nbins, nmin, nmax  ) );
   histos.back()->Sumw2();
   histo_names.push_back(name);
-  
 
   return histos.back();
 
@@ -782,3 +821,7 @@ void CreateHistos::writeHistos( TString channel, vector<TString> cats, vector<TS
     
 }
 
+double CreateHistos::getMT(){
+  if(useMVAMET) return NtupleView->mt_1;
+  else return NtupleView->pfmt_1;
+}

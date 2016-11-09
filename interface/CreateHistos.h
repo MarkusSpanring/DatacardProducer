@@ -5,6 +5,7 @@
 #include "TChain.h"
 #include "TFile.h"
 #include "TH1D.h"
+#include "ParameterConfig_SM.h"
 
 class CreateHistos{
  public:
@@ -31,30 +32,9 @@ class CreateHistos{
 // "2jet_mvis5080_mt40_PUId_loose",
 // "2jet_mvis5080_mt40_PUId_loose_fail"};
 
- vector<TString> cats ={
-"inclusive"
-};
-
- // vector<TString> vars = {"m_vis","mt_1","jpt_1","jpt_2","jeta_1","jeta_2","jdeta","mjj","jeta1eta2"};
- vector<TString> vars = {
-"jeta_1"
-};
-                        
-
-  vector< vector<TString> > files = {{"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_mt_v3.root","Z"},
-                                    //{"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_mt_v3_TauPtUp.root","ZtauUp"},
-                                    //{"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_mt_v3_TauPtDown.root","ZtauDown"},
-                                    {"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_TT_powheg_MCSpring16_160919_mt_v3.root","TT"},
-                                    //{"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_TT_powheg_MCSpring16_160919_mt_v3_TauPtUp.root","TTtauUp"},
-                                    //{"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_TT_powheg_MCSpring16_160919_mt_v3_TauPtDown.root","TTtauDown"},
-                                    {"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_WXJets_merged_MCSpring16_mt_v3.root","W"},
-                                    {"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_VV_MCSpring16_mt_v3.root","VV"},
-                                    //{"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_VV_MCSpring16_mt_v3_TauPtUp.root","VVtauUp"},
-                                    //{"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_VV_MCSpring16_mt_v3_TauPtDown.root","VVtauDown"},
-                                    {"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_SingleMuonRun2016BCD_mt_v3.root","data"},                                    
-                                    {"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_VBFHToTauTau_M125_powheg_MCSpring16_reHLT_160921_mt_v3.root","qqH"},
-                                    {"/data/higgs/data_2016/ntuples_v3/mt/ntuples_woSVFIT_merged/BASIS_ntuple_GluGluHToTauTau_M125_powheg_MCSpring16_reHLT_160921_mt_v3.root","ggH"}};
-
+  vector<TString> cats;
+  vector<TString> vars;
+  vector< vector<TString> > files; 
 
   CreateHistos();
   ~CreateHistos();
@@ -102,6 +82,11 @@ class CreateHistos{
   void writeHistos(TString channel, vector<TString> cats, vector<TString> vars);
   TH1D* GetHistbyName(TString name, TString strVar="");
   TH1D* JITHistoCreator(TString name, TString strVar);
+  void returnBinning(double*, vector<double> input);
+  int returnBins(vector<double> input);
+  TH1D* getBinnedHisto(TString name,vector<double> input);
+
+  double getMT();
 
 
   TFile *outfile;
