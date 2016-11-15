@@ -34,6 +34,13 @@ const struct Parameter{
       int doVarBins = 0;
       vector<double> varBins = {50,55,60,65,80};
     } jpt;
+    struct pt{
+      int nbins = 30;
+      double nmin = 20;
+      double nmax = 120;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } pt;
     struct jeta{
       int nbins = 40;
       double nmin = -5;
@@ -49,19 +56,26 @@ const struct Parameter{
       vector<double> varBins = {50,55,60,65,80};
     } jdeta;
     struct mt_1{
-      int nbins = 40;
+      int nbins = 24;
       double nmin = 0;
-      double nmax = 40;
+      double nmax = 1200;
       int doVarBins = 0;
       vector<double> varBins = {50,55,60,65,80};
     } mt_1;
-    struct CR_mt_1{
+    struct Low_mt_1{
+      int nbins = 25;
+      double nmin = 0;
+      double nmax = 50;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } Low_mt_1;
+    struct High_mt_1{
       int nbins = 40;
       double nmin = 80;
       double nmax = 1000;
       int doVarBins = 0;
       vector<double> varBins = {50,55,60,65,80};
-    } CR_mt_1;
+    } High_mt_1;
     struct iso_1{
       int nbins = 25;
       double nmin = 0;
@@ -83,15 +97,35 @@ const struct Parameter{
       int doVarBins = 0;
       vector<double> varBins = {50,55,60,65,80};
     } jeta1eta2;
-    
-    
-    
 
   } variable;
+
   struct analysisCut{
     double mTHigh = 80;
-    double mTLow  =50;
+    double mTLow  = 50;
+    double muIso_base = 0.15;
+    double muIso_relaxed = 0.3;
+    double elIso_base = 0.1;
+    double elIso_relaxed = 0.3;
   } analysisCut;
+
+struct QCD_OSSS
+{
+  struct mt
+  {
+    double ZeroJet = 1.02;
+    double Boosted = 1.22;
+    double VBF = 1.13;
+  }mt;
+  struct et
+  {
+    double ZeroJet = 0.74;
+    double Boosted = 1.0;
+    double VBF = 1.15;
+    
+  }et;
+} QCD_OSSS ;
 
 } Parameter;
 
+ 

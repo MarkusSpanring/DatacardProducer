@@ -47,20 +47,24 @@ class CreateHistos{
   void dataSelections(float var, float weight, TString cat, TString strVar, TString fname);
   void signalSelections(float var, float weight, TString cat, TString strVar, TString fname);
 
-  float GetWRatio();
-  float GetQCDRatio();
- 
-  void ExtractQCD(float SS_OS_ratio, TString cat, TString strVar);
-
   float CalcJdeta();
   float CalcHPt();
 
-  int Common(TString sign, TString cat);
+  int Baseline(TString sign, TString cat);
   int Vetos();
-  
-  int CR_W();
-  int SR_QCD();
-  int CR_QCD();
+
+
+  double QCD_OSSS(TString cat);
+  void CreateQCD_osw(TString strVar, TString cat);
+  void CreateW(TString strVar, TString cat);
+  void CreateQCD(TString strVar, TString cat);
+  void Estimate_W_QCD(TString strVar, TString cat);
+
+
+  int OS_W(TString cat);
+  int SS_W(TString cat);
+  int relaxed_W(TString cat, TString mt);
+  int SS_Low(TString cat);
 
   int CategorySelection(TString cat);
   int jet2_mvis();
@@ -88,6 +92,7 @@ class CreateHistos{
 
   double getMT();
   int passMTCut();
+  int passIso(TString type);
 
 
   TFile *outfile;

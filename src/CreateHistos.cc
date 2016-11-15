@@ -7,6 +7,10 @@
 using namespace std;
 
 CreateHistos::CreateHistos(){
+
+  histos.clear();
+  files.clear();
+  histo_names.clear();
   
   files.push_back({Parameter.dataset.Z,"Z"});
   files.push_back({Parameter.dataset.W,"W"});
@@ -51,18 +55,19 @@ void CreateHistos::run(){
 
   //clearHistos();
   float weight = 1;
-  float var =0;
-  float W_ratio = 1;
-  float SS_OS_ratio = 1;
+  float var = -999;
+
 
 
   for(int i =0;i < files.size();i++){
+
     this->loadFile(files[i][0]);
     Int_t nentries = Int_t(NtupleView->fChain->GetEntries());
+    //Int_t nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 1000000 ) );
     cout<<"The input chain contains: "<<nentries<<" events."<<endl;
     float perc;
-    for (Int_t jentry=0; jentry<nentries;jentry++){
-    //for (Int_t jentry=0; jentry<100000;jentry++){       
+    //for (Int_t jentry=0; jentry<10;jentry++){
+    for (Int_t jentry=0; jentry<nentries;jentry++){       
 
       if(jentry % 200000 == 0){
         if(nentries > 0){
@@ -89,6 +94,8 @@ void CreateHistos::run(){
           else if(strVar == "jpt_1")                         var = NtupleView->jpt_1;
           else if(strVar == "jpt_2")                         var = NtupleView->jpt_2;
 
+          else if(strVar == "pt_2")                          var = NtupleView->pt_2;
+          else if(strVar == "pfmt_1")                        var = NtupleView->pfmt_1;
 
 
           else if(strVar == "jpt_1_2"
@@ -112,10 +119,10 @@ void CreateHistos::run(){
 
 
           else if(strVar == "jeta_1"
-             && NtupleView->jpt_1 > 50)     var = NtupleView->jeta_1;
+             && NtupleView->jpt_1 > 30)     var = NtupleView->jeta_1;
 
           else if(strVar == "jeta_2"
-             && NtupleView->jpt_2 > 50)     var = NtupleView->jeta_2;
+             && NtupleView->jpt_2 > 30)     var = NtupleView->jeta_2;
 
           else if(strVar == "mjj"
              && NtupleView->jpt_1 > 30
@@ -161,22 +168,8 @@ void CreateHistos::run(){
     }
   }
   for(auto cat : cats){
-    if( cat == "inclusive" ){
-      W_ratio = this->GetWRatio();
-      cout << "---------------" <<endl;
-      cout << "W ratio: " << W_ratio << endl;
-
-      SS_OS_ratio = this->GetQCDRatio();
-      cout << "QCD ratio: " << SS_OS_ratio << endl;
-      cout << "---------------" <<endl;
-    }
-  }
-
-  for(auto cat : cats){
-    for(auto var : vars){
-      TString sub = "+" + var +"_" + cat + "+";
-      this->ExtractQCD(1.06, cat,  var);
-      this->GetHistbyName("W"+sub)->Scale(0.92);
+    for(auto strVar : vars){
+      this->Estimate_W_QCD(strVar, cat);
     }
   }
   cout << "Done running over events." << endl;
@@ -204,14 +197,17 @@ float CreateHistos::CalcHPt(){
   return (tau + mu + MVAmet).Pt();
 }
 
-
+double CreateHistos::getMT(){
+  if(useMVAMET) return NtupleView->mt_1;
+  return NtupleView->pfmt_1;
+}
 
 void CreateHistos::DYSelections(float var, float weight, TString cat, TString strVar, TString fname){
 
     TString sub = "+" + strVar +"_" + cat + "+";
 
     if(fname == "Z"){
-      if( this->Common("OS",cat) ){
+      if( this->Baseline("OS",cat) ){
         this->GetHistbyName("Z"+sub,strVar)->Fill(var, weight);
         ////////////////////////////////////////////////////////////////
         if(NtupleView->gen_match_2 < 5){
@@ -233,22 +229,18 @@ void CreateHistos::DYSelections(float var, float weight, TString cat, TString st
         else if(  NtupleView->NUP > 1)     this->GetHistbyName("Z_ge2Jets"+sub,strVar)->Fill(var, weight);
         ////////////////////////////////////////////////////////////////
       }  
-      else if( this->Common("SS",cat) )          this->GetHistbyName("Z"+sub+"_SS",strVar)->Fill(var, weight);
 
-
-      if(cat == "inclusive"){
-
-        if( this->CR_W() )                        this->GetHistbyName("CR_W_Z","CR_mt_1")->Fill(this->getMT(), weight);
-        if( this->CR_QCD() )                      this->GetHistbyName("CR_QCD_Z","iso_1")->Fill(NtupleView->iso_1, weight);
-        if( this->SR_QCD() )                      this->GetHistbyName("SR_QCD_Z","iso_1")->Fill(NtupleView->iso_1, weight);
-      }
+      if( this->OS_W(cat) )                        this->GetHistbyName("OS_W_Z"+sub,strVar)->Fill(var, weight);
+      if( this->SS_W(cat) )                        this->GetHistbyName("SS_W_Z"+sub,strVar)->Fill(var, weight);
+      if( this->SS_Low(cat) )                      this->GetHistbyName("SS_Low_Z"+sub,strVar)->Fill(var, weight);
+      
     }
     else if(fname == "ZtauUp"){
-      if( this->Common("OS",cat)
+      if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )       this->GetHistbyName("ZTT_CMS_scale_t_mt_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "ZtauDown"){
-      if( this->Common("OS",cat)
+      if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )       this->GetHistbyName("ZTT_CMS_scale_t_mt_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
 }
@@ -259,27 +251,26 @@ void CreateHistos::TSelections(float var, float weight, TString cat, TString str
     TString sub = "+" + strVar +"_" + cat + "+";
 
     if(fname == "TT"){
-      if( this->Common("OS",cat) ){
+      if( this->Baseline("OS",cat) ){
         this->GetHistbyName("TT"+sub,strVar)->Fill(var, weight);
         this->GetHistbyName("TT_CMS_htt_ttbarShape_13TeVUp"+sub,strVar)->Fill(var, NtupleView->topWeight * NtupleView->topWeight);
         this->GetHistbyName("TT_CMS_htt_ttbarShape_13TeVDown"+sub,strVar)->Fill(var, 1);
-        if(NtupleView->gen_match_2 == 5)       this->GetHistbyName("TTT"+sub,strVar)->Fill(var, weight);
-        else if(NtupleView->gen_match_2 != 5)  this->GetHistbyName("TTJ"+sub,strVar)->Fill(var, weight);
+        if(NtupleView->gen_match_2 < 5)       this->GetHistbyName("TTL"+sub,strVar)->Fill(var, weight);
+        else if(NtupleView->gen_match_2 == 5)  this->GetHistbyName("TTT"+sub,strVar)->Fill(var, weight);
+        else if(NtupleView->gen_match_2 == 6)  this->GetHistbyName("TTJ"+sub,strVar)->Fill(var, weight);
       }
-      else if( this->Common("SS",cat) )     this->GetHistbyName("TT"+sub+"_SS",strVar)->Fill(var, weight);
 
-      if(cat == "inclusive"){
-        if( this->CR_W() )                 this->GetHistbyName("CR_W_TT","CR_mt_1")->Fill(this->getMT(), weight);
-        if( this->CR_QCD() )               this->GetHistbyName("CR_QCD_TT","iso_1")->Fill(NtupleView->iso_1, weight);
-        if( this->SR_QCD() )               this->GetHistbyName("SR_QCD_TT","iso_1")->Fill(NtupleView->iso_1, weight);
-      }
+      if( this->OS_W(cat) )                 this->GetHistbyName("OS_W_TT"+sub,strVar)->Fill(var, weight);
+      if( this->SS_W(cat) )                 this->GetHistbyName("SS_W_TT"+sub,strVar)->Fill(var, weight);
+      if( this->SS_Low(cat) )               this->GetHistbyName("SS_Low_TT"+sub,strVar)->Fill(var, weight);
+      
     }
     else if(fname == "TTtauUp"){
-      if( this->Common("OS",cat)
+      if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("TTT_CMS_scale_t_mt_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "TTtauDown"){
-      if( this->Common("OS",cat)
+      if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("TTT_CMS_scale_t_mt_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
 }
@@ -290,14 +281,13 @@ void CreateHistos::WSelections(float var, float weight, TString cat, TString str
 
     TString sub = "+" + strVar +"_" + cat + "+";
     if(fname == "W"){
-      if( this->Common("OS",cat) )         this->GetHistbyName("W"+sub,strVar)->Fill(var, weight);
-      else if( this->Common("SS",cat) )    this->GetHistbyName("W"+sub+"_SS",strVar)->Fill(var, weight);
+      //if( this->Baseline("OS",cat) )         this->GetHistbyName("W"+sub,strVar)->Fill(var, weight);
 
-      if(cat == "inclusive"){
-        if( this->CR_W() )                 this->GetHistbyName("CR_W_W","CR_mt_1")->Fill(this->getMT(), weight);
-        if( this->CR_QCD() )               this->GetHistbyName("CR_QCD_W","iso_1")->Fill(NtupleView->iso_1, weight);
-        if( this->SR_QCD() )               this->GetHistbyName("SR_QCD_W","iso_1")->Fill(NtupleView->iso_1, weight);
-      }
+      if( this->OS_W(cat) )                 this->GetHistbyName("OS_W_W" + sub, strVar)->Fill(var, weight);
+      if( this->SS_W(cat) )                 this->GetHistbyName("SS_W_W" + sub, strVar)->Fill(var, weight);
+      if( this->relaxed_W(cat, "low") )     this->GetHistbyName("relaxed_W_low_W" + sub, strVar)->Fill(var, weight);
+      if( this->relaxed_W(cat, "high") )    this->GetHistbyName("relaxed_W_high_W" + sub, strVar)->Fill(var, weight);
+      if( this->SS_Low(cat) )               this->GetHistbyName("SS_Low_W" + sub, strVar)->Fill(var, weight);     
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,25 +296,24 @@ void CreateHistos::VVSelections(float var, float weight, TString cat, TString st
 
     TString sub = "+" + strVar +"_" + cat + "+";
     if(fname == "VV"){
-      if( this->Common("OS",cat) ){
+      if( this->Baseline("OS",cat) ){
         this->GetHistbyName("VV"+sub,strVar)->Fill(var, weight);
-        if( NtupleView->gen_match_2 == 5)       this->GetHistbyName("VVT"+sub,strVar)->Fill(var, weight);
-        else if( NtupleView->gen_match_2 != 5)  this->GetHistbyName("VVJ"+sub,strVar)->Fill(var, weight);
+        if( NtupleView->gen_match_2 < 5)       this->GetHistbyName("VVL"+sub,strVar)->Fill(var, weight);
+        else if( NtupleView->gen_match_2 == 5)  this->GetHistbyName("VVT"+sub,strVar)->Fill(var, weight);
+        else if( NtupleView->gen_match_2 == 6)  this->GetHistbyName("VVJ"+sub,strVar)->Fill(var, weight);
       }
-      else if( this->Common("SS",cat) )         this->GetHistbyName("VV"+sub+"_SS",strVar)->Fill(var, weight);
 
-      if(cat == "inclusive"){
-        if( this->CR_W() )                   this->GetHistbyName("CR_W_VV","CR_mt_1")->Fill(this->getMT(), weight);
-        if( this->CR_QCD() )                 this->GetHistbyName("CR_QCD_VV","iso_1")->Fill(NtupleView->iso_1, weight);
-        if( this->SR_QCD() )                 this->GetHistbyName("SR_QCD_VV","iso_1")->Fill(NtupleView->iso_1, weight);
-      }
+      if( this->OS_W(cat) )                   this->GetHistbyName("OS_W_VV"+sub,strVar)->Fill(var, weight);
+      if( this->SS_W(cat) )                   this->GetHistbyName("SS_W_VV"+sub,strVar)->Fill(var, weight);
+      if( this->SS_Low(cat) )                 this->GetHistbyName("SS_Low_VV"+sub,strVar)->Fill(var, weight);
+      
     }
     else if(fname == "VVtauUp"){
-      if( this->Common("OS",cat)
+      if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("VVT_CMS_scale_t_mt_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "VVtauDown"){
-      if( this->Common("OS",cat)
+      if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("VVT_CMS_scale_t_mt_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
 }
@@ -336,22 +325,22 @@ void CreateHistos::signalSelections(float var, float weight, TString cat, TStrin
     if(fname == "ggH"
        || fname == "qqH"){
 
-      if( this->Common("OS",cat) )                   this->GetHistbyName(fname+"125"+sub,strVar)->Fill(var, weight);
+      if( this->Baseline("OS",cat) )                   this->GetHistbyName(fname+"125"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "ggHtauUp"){
-      if( this->Common("OS",cat)
+      if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("ggH_CMS_scale_t_mt_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "ggHtauDown"){
-      if( this->Common("OS",cat)
+      if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("ggH_CMS_scale_t_mt_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "qqHtauUp"){
-      if( this->Common("OS",cat)
+      if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("qqH_CMS_scale_t_mt_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "qqHtauDown"){
-      if( this->Common("OS",cat)
+      if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("qqH_CMS_scale_t_mt_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
 }
@@ -361,89 +350,76 @@ void CreateHistos::dataSelections(float var, float weight, TString cat, TString 
  
     TString sub = "+" + strVar +"_" + cat + "+";
 
-    if( this->Common("OS",cat) )         this->GetHistbyName("data_obs"+sub,strVar)->Fill(var, weight);
-    else if( this->Common("SS",cat) )    this->GetHistbyName("data_obs"+sub+"_SS",strVar)->Fill(var, weight);
-    if(cat == "inclusive"){
+    if( this->Baseline("OS",cat) )        this->GetHistbyName("data_obs"+sub,strVar)->Fill(var, weight);
 
-      if( this->CR_W() )                 this->GetHistbyName("CR_W_data","CR_mt_1")->Fill(this->getMT(), weight);
-      if( this->CR_QCD() )               this->GetHistbyName("CR_QCD_data","iso_1")->Fill(NtupleView->iso_1, weight);
-      if( this->SR_QCD() )               this->GetHistbyName("SR_QCD_data","iso_1")->Fill(NtupleView->iso_1, weight);
-    }
+    if( this->OS_W(cat) )                 this->GetHistbyName("OS_W_data"+sub,strVar)->Fill(var, weight);
+    if( this->SS_W(cat) )                 this->GetHistbyName("SS_W_data"+sub,strVar)->Fill(var, weight);
+    if( this->SS_Low(cat) )               this->GetHistbyName("SS_Low_data"+sub,strVar)->Fill(var, weight);
+    
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-float CreateHistos::GetWRatio(){
-
-  this->GetHistbyName("CR_W_data")->Add(this->GetHistbyName("CR_W_TT"), -1);
-  this->GetHistbyName("CR_W_data")->Add(this->GetHistbyName("CR_W_Z"), -1);
-  this->GetHistbyName("CR_W_data")->Add(this->GetHistbyName("CR_W_VV"), -1);
-
-  return ( this->GetHistbyName("CR_W_data")->Integral() /  this->GetHistbyName("CR_W_W")->Integral() ) ;
-}
-
-float CreateHistos::GetQCDRatio(){
-  this->GetHistbyName("CR_QCD_data")->Add(this->GetHistbyName("CR_QCD_TT"), -1);
-  this->GetHistbyName("CR_QCD_data")->Add(this->GetHistbyName("CR_QCD_Z"), -1);
-  this->GetHistbyName("CR_QCD_data")->Add(this->GetHistbyName("CR_QCD_VV"), -1);
-  this->GetHistbyName("CR_QCD_data")->Add(this->GetHistbyName("CR_QCD_W"), -1);
-
-  this->GetHistbyName("SR_QCD_data")->Add(this->GetHistbyName("SR_QCD_TT"), -1);
-  this->GetHistbyName("SR_QCD_data")->Add(this->GetHistbyName("SR_QCD_Z"), -1);
-  this->GetHistbyName("SR_QCD_data")->Add(this->GetHistbyName("SR_QCD_VV"), -1);
-  this->GetHistbyName("SR_QCD_data")->Add(this->GetHistbyName("SR_QCD_W"), -1);
-
-
-  return ( this->GetHistbyName("SR_QCD_data")->Integral() /  this->GetHistbyName("CR_QCD_data")->Integral() );
-}
-
-void CreateHistos::ExtractQCD(float SS_OS_ratio, TString cat, TString strVar ){
-
+void CreateHistos::CreateQCD_osw(TString strVar, TString cat){
   TString sub = "+" + strVar +"_" + cat + "+";
 
-  this->GetHistbyName("QCD"+sub,strVar)->Add(this->GetHistbyName("data_obs"+sub+"_SS",strVar)  );
-  this->GetHistbyName("QCD"+sub,strVar)->Add(this->GetHistbyName("TT"+sub+"_SS",strVar) , -1);
-  this->GetHistbyName("QCD"+sub,strVar)->Add(this->GetHistbyName("W"+sub+"_SS",strVar) , -1);
-  this->GetHistbyName("QCD"+sub,strVar)->Add(this->GetHistbyName("Z"+sub+"_SS",strVar) , -1);
-  this->GetHistbyName("QCD"+sub,strVar)->Add(this->GetHistbyName("VV"+sub+"_SS",strVar) , -1);
-  this->GetHistbyName("QCD"+sub,strVar)->Scale(SS_OS_ratio);
+  this->GetHistbyName("QCD_OSW"+sub,strVar)->Add( this->GetHistbyName("SS_W_data"+sub,strVar)   );
+  this->GetHistbyName("QCD_OSW"+sub,strVar)->Add( this->GetHistbyName("SS_W_VV"+sub,strVar), -1 );
+  this->GetHistbyName("QCD_OSW"+sub,strVar)->Add( this->GetHistbyName("SS_W_Z"+sub,strVar),  -1 );
+  this->GetHistbyName("QCD_OSW"+sub,strVar)->Add( this->GetHistbyName("SS_W_TT"+sub,strVar), -1 );
+  this->GetHistbyName("QCD_OSW"+sub,strVar)->Add( this->GetHistbyName("SS_W_W"+sub,strVar),  -1 );
+  this->GetHistbyName("QCD_OSW"+sub,strVar)->Scale( this->QCD_OSSS(cat) );
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void CreateHistos::CreateW(TString strVar, TString cat){
+  TString sub = "+" + strVar +"_" + cat + "+";
+
+  this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_data"+sub,strVar)   );
+  this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_VV"+sub,strVar), -1 );
+  this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_Z"+sub,strVar),  -1 );
+  this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_TT"+sub,strVar), -1 );
+  this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("QCD_OSW"+sub,strVar), -1 );
+
+  double HL_factor = this->GetHistbyName("relaxed_W_low_W"+sub,strVar)->Integral() / this->GetHistbyName("relaxed_W_high_W"+sub,strVar)->Integral();
+
+  this->GetHistbyName("W"+sub,strVar)->Add( this->GetHistbyName("W_OSW"+sub,strVar) );
+  this->GetHistbyName("W"+sub,strVar)->Scale( HL_factor );
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void CreateHistos::CreateQCD(TString strVar, TString cat){
+  TString sub = "+" + strVar +"_" + cat + "+";
+  
+  double W_SF = this->GetHistbyName("W_OSW"+sub,strVar)->Integral() / this->GetHistbyName("OS_W_W"+sub,strVar)->Integral();
+  this->GetHistbyName("SS_Low_W"+sub,strVar)->Scale(W_SF);
+
+  this->GetHistbyName("QCD"+sub,strVar)->Add( this->GetHistbyName("SS_Low_data"+sub,strVar)   );
+  this->GetHistbyName("QCD"+sub,strVar)->Add( this->GetHistbyName("SS_Low_VV"+sub,strVar), -1 );
+  this->GetHistbyName("QCD"+sub,strVar)->Add( this->GetHistbyName("SS_Low_Z"+sub,strVar),  -1 );
+  this->GetHistbyName("QCD"+sub,strVar)->Add( this->GetHistbyName("SS_Low_TT"+sub,strVar), -1 );
+  this->GetHistbyName("QCD"+sub,strVar)->Add( this->GetHistbyName("SS_Low_W"+sub,strVar),  -1 );
+  this->GetHistbyName("QCD"+sub,strVar)->Scale( this->QCD_OSSS(cat) );
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void CreateHistos::Estimate_W_QCD(TString strVar, TString cat){
+  this->CreateQCD_osw(strVar, cat);
+  this->CreateW(strVar, cat);
+  this->CreateQCD(strVar, cat);
+}
 
-int CreateHistos::Common(TString sign, TString cat){
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int CreateHistos::Baseline(TString sign, TString cat){
 
     if(sign == "OS"
        && NtupleView->q_1 * NtupleView->q_2 < 0
        && this->passMTCut()
-       && NtupleView->iso_1 < 0.15
+       && this->passIso("base")
        && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
-       && this->Vetos()
-       && this->CategorySelection(cat)
-      ) return 1;
-
-    if(sign == "SS"
-       && NtupleView->q_1 * NtupleView->q_2 > 0
-       && this->passMTCut()
-       && !(cat == "VBF_low"
-           || cat == "VBF_high"
-           || cat == "1Jet_high"
-          )
-       && NtupleView->iso_1 < 0.15
-       && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
-       && this->Vetos()
-       && this->CategorySelection(cat)
-      ) return 1;
-
-    if(sign == "SS"
-       && NtupleView->q_1 * NtupleView->q_2 > 0
-       && this->passMTCut()
-       && (cat == "VBF_low"
-           || cat == "VBF_high"
-           || cat == "1Jet_high"
-          )
-       && NtupleView->iso_1 < 0.3
-       && NtupleView->byMediumIsolationMVArun2v1DBoldDMwLT_2
        && this->Vetos()
        && this->CategorySelection(cat)
       ) return 1;
@@ -451,38 +427,79 @@ int CreateHistos::Common(TString sign, TString cat){
   return 0;
 }
 
-int CreateHistos::CR_W(){
+
+int CreateHistos::OS_W(TString cat){
 
   if(NtupleView->q_1 * NtupleView->q_2 < 0
-     && NtupleView->iso_1 < 0.15
+     && this->passIso("base")
      && this->getMT() > Parameter.analysisCut.mTHigh
      && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
+     && this->CategorySelection(cat)
      && this->Vetos()) return 1;
   return 0;
 }
-int CreateHistos::CR_QCD(){
+
+int CreateHistos::SS_W(TString cat){
+
   if(NtupleView->q_1 * NtupleView->q_2 > 0
-     && (NtupleView->iso_1 > 0.15
-         && NtupleView->iso_1 < 0.4)
-     && this->getMT() < Parameter.analysisCut.mTLow
+     && this->passIso("base")
+     && this->getMT() > Parameter.analysisCut.mTHigh
      && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
+     && this->CategorySelection(cat)
      && this->Vetos()) return 1;
   return 0;
 }
-int CreateHistos::SR_QCD(){
+
+int CreateHistos::relaxed_W(TString cat, TString mt){
+
   if(NtupleView->q_1 * NtupleView->q_2 < 0
-     && (NtupleView->iso_1 > 0.15
-         && NtupleView->iso_1 < 0.4)
+     && this->passIso("relaxed")
+     && NtupleView->byMediumIsolationMVArun2v1DBoldDMwLT_2
+     && this->Vetos()
+     && this->CategorySelection(cat)){
+
+    if(mt == "low" && this->getMT() < Parameter.analysisCut.mTLow) return 1;
+    if(mt == "high" && this->getMT() > Parameter.analysisCut.mTHigh) return 1;
+  }
+  return 0;
+}
+
+int CreateHistos::SS_Low(TString cat){
+
+  if(NtupleView->q_1 * NtupleView->q_2 > 0
+     && this->passIso("relaxed")
      && this->getMT() < Parameter.analysisCut.mTLow
-     && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
+     && NtupleView->byMediumIsolationMVArun2v1DBoldDMwLT_2
+     && this->CategorySelection(cat)
      && this->Vetos()) return 1;
   return 0;
 }
+
 
 int CreateHistos::Vetos(){
   if(NtupleView->passesTauLepVetos
-     && NtupleView->passesThirdLepVeto
-     && NtupleView->passesDiMuonVeto) return 1;
+     && NtupleView->passesThirdLepVeto){
+    if(channel == "et" && NtupleView->passesDiElectronVeto) return 1;
+    if(channel == "mt" && NtupleView->passesDiMuonVeto) return 1;
+  }
+  return 0;
+}
+
+int CreateHistos::passMTCut(){
+  if( !applyMTCut ) return 1;
+  if( this->getMT() < Parameter.analysisCut.mTLow ) return 1;
+  return 0;
+}
+
+int CreateHistos::passIso(TString type){
+  if(type == "base"){
+    if(channel == "et" && NtupleView->iso_1 < Parameter.analysisCut.elIso_base) return 1;
+    if(channel == "mt" && NtupleView->iso_1 < Parameter.analysisCut.muIso_base) return 1;
+  }
+  else if(type == "relaxed"){
+    if(channel == "et" && NtupleView->iso_1 < Parameter.analysisCut.elIso_relaxed) return 1;
+    if(channel == "mt" && NtupleView->iso_1 < Parameter.analysisCut.muIso_relaxed) return 1;
+  }
   return 0;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -688,12 +705,42 @@ float CreateHistos::PUIdCutParamsLoose(float eta){
 
   return -1.;
 }
+
+double CreateHistos::QCD_OSSS(TString cat){
+  if(channel == "mt"){
+    if(cat == "0Jet"
+       || cat == "0Jet_low"
+       || cat == "0Jet_high")  return Parameter.QCD_OSSS.mt.ZeroJet;
+
+    if(cat == "boosted"
+       || cat == "1Jet_low"
+       || cat == "1Jet_high")  return Parameter.QCD_OSSS.mt.Boosted;
+
+    if(cat == "vbf"
+       || cat == "VBF_low"
+       || cat == "VBF_high")   return Parameter.QCD_OSSS.mt.VBF;
+  }
+  if(channel == "et"){
+    if(cat == "0Jet"
+       || cat == "0Jet_low"
+       || cat == "0Jet_high")  return Parameter.QCD_OSSS.et.ZeroJet;
+
+    if(cat == "boosted"
+       || cat == "1Jet_low"
+       || cat == "1Jet_high")  return Parameter.QCD_OSSS.et.Boosted;
+
+    if(cat == "vbf"
+       || cat == "VBF_low"
+       || cat == "VBF_high")   return Parameter.QCD_OSSS.et.VBF;
+  }
+  return 1.0;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 TH1D* CreateHistos::GetHistbyName(TString name, TString strVar){
 
-   
    for(int i = 0;i<histo_names.size();i++){
       if(histo_names.at(i) == name) return histos.at(i);
    }
@@ -753,6 +800,17 @@ TH1D* CreateHistos::JITHistoCreator(TString name, TString strVar){
       nmax  = Parameter.variable.jpt.nmax;
     }
   }
+  else if(strVar == "pt_1" || strVar == "pt_2"){
+    if(Parameter.variable.pt.doVarBins){
+      usingVarBins = 1;
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.pt.varBins) );
+    }
+    else{
+      nbins = Parameter.variable.pt.nbins;
+      nmin  = Parameter.variable.pt.nmin;
+      nmax  = Parameter.variable.pt.nmax;
+    }
+  }
   else if(strVar == "jeta_1" || strVar == "jeta_2"){
     if(Parameter.variable.jeta.doVarBins){
       usingVarBins = 1;
@@ -786,15 +844,26 @@ TH1D* CreateHistos::JITHistoCreator(TString name, TString strVar){
       nmax  = Parameter.variable.mt_1.nmax;
     }
   }
-  else if(strVar == "CR_mt_1"){
-    if(Parameter.variable.CR_mt_1.doVarBins){
+  else if(strVar == "High_mt_1"){
+    if(Parameter.variable.High_mt_1.doVarBins){
       usingVarBins = 1;
-      histos.push_back( this->getBinnedHisto(name,Parameter.variable.CR_mt_1.varBins) );
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.High_mt_1.varBins) );
     }
     else{
-      nbins = Parameter.variable.CR_mt_1.nbins;
-      nmin  = Parameter.variable.CR_mt_1.nmin;
-      nmax  = Parameter.variable.CR_mt_1.nmax;
+      nbins = Parameter.variable.High_mt_1.nbins;
+      nmin  = Parameter.variable.High_mt_1.nmin;
+      nmax  = Parameter.variable.High_mt_1.nmax;
+    }
+  }
+  else if(strVar == "Low_mt_1"){
+    if(Parameter.variable.Low_mt_1.doVarBins){
+      usingVarBins = 1;
+      histos.push_back( this->getBinnedHisto(name,Parameter.variable.Low_mt_1.varBins) );
+    }
+    else{
+      nbins = Parameter.variable.Low_mt_1.nbins;
+      nmin  = Parameter.variable.Low_mt_1.nmin;
+      nmax  = Parameter.variable.Low_mt_1.nmax;
     }
   }
   else if(strVar == "iso_1"){
@@ -872,14 +941,4 @@ void CreateHistos::writeHistos( TString channel, vector<TString> cats, vector<TS
     
 }
 
-double CreateHistos::getMT(){
-  if(useMVAMET) return NtupleView->mt_1;
-  else return NtupleView->pfmt_1;
-}
 
-int CreateHistos::passMTCut(){
-  if( !applyMTCut ) return 1;
-  if( useMVAMET && applyMTCut && NtupleView->mt_1<Parameter.analysisCut.mTLow ) return 1;
-  if( !useMVAMET && applyMTCut && NtupleView->pfmt_1<Parameter.analysisCut.mTLow ) return 1;
-  return 0;
-}
