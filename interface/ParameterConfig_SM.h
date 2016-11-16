@@ -21,7 +21,7 @@ const struct Parameter{
   struct variable{
     
     struct m_vis{
-      int nbins = 25;
+      int nbins = 50;
       double nmin = 0;
       double nmax = 250;
       int doVarBins = 0;
