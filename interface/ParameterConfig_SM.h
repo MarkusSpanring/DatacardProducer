@@ -110,7 +110,7 @@ const struct Parameter{
   } analysisCut;
 
   struct category{
-    vector<TString> D1categories = {"inclusive","0jet_low","0jet_high","1jet_low","1jet_high","VBF_low","VBF_high"};
+    vector<TString> D1categories = {"inclusive","0Jet_low","0Jet_high","1Jet_low","1Jet_high","VBF_low","VBF_high"};
     //FIXME: add D2 categories
     //FIXME: add PU jet categories
   } category;
