@@ -7,6 +7,13 @@
 #include "TH1D.h"
 #include "ParameterConfig_SM.h"
 
+#include "HTTutilities/Jet2TauFakes/interface/WrapperTGraph.h"
+#include "HTTutilities/Jet2TauFakes/interface/WrapperTH2F.h"
+#include "HTTutilities/Jet2TauFakes/interface/WrapperTH3D.h"
+#include "HTTutilities/Jet2TauFakes/interface/WrapperTFormula.h"
+#include "HTTutilities/Jet2TauFakes/interface/IFunctionWrapper.h"
+#include "HTTutilities/Jet2TauFakes/interface/FakeFactor.h"
+
 class CreateHistos{
  public:
 
@@ -40,16 +47,20 @@ class CreateHistos{
   ~CreateHistos();
 
 
+  void initFakeFactors();
+  int is1DCategories(TString category);
   void DYSelections(float var, float weight, TString cat, TString strVar, TString fname);
   void VVSelections(float var, float weight, TString cat, TString strVar, TString fname);
   void TSelections(float var, float weight, TString cat, TString strVar, TString fname);
   void WSelections(float var, float weight, TString cat, TString strVar, TString fname);
   void dataSelections(float var, float weight, TString cat, TString strVar, TString fname);
   void signalSelections(float var, float weight, TString cat, TString strVar, TString fname);
+  void applyFF(float var, float weight, TString cat, TString strVar, TString fname, int isData);
 
   float getAntiLep_tauscaling();
   float CalcJdeta();
   float CalcHPt();
+  void getFFInputs(vector<double>&inputs);
 
   int Baseline(TString sign, TString cat);
   int Vetos();
@@ -60,6 +71,7 @@ class CreateHistos{
   void CreateW(TString strVar, TString cat);
   void CreateQCD(TString strVar, TString cat);
   void Estimate_W_QCD(TString strVar, TString cat);
+  void EstimateFF(TString strVar, TString cat);
 
 
   int OS_W(TString cat);
@@ -100,6 +112,10 @@ class CreateHistos{
   TFile *outfile;
   vector<TH1D*> histos;
   vector<TString> histo_names = {};
+
+  vector<Double_t> FFinputs;
+  map< TString, TFile*> FFfile;
+  map< TString, FakeFactor*> FFObj;
 
   
   

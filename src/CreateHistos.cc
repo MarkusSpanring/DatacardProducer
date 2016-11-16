@@ -38,6 +38,21 @@ CreateHistos::~CreateHistos(){
   histos.clear();
 
   cout << "Deleting instance of CreateHistos" << endl;
+
+  FFinputs.clear();
+
+  map<TString, FakeFactor*>::iterator itr;
+  for (itr=FFObj.begin(); itr!=FFObj.end(); ++itr)
+    {
+      delete itr->second;
+      FFObj.erase(itr);
+    }
+  map<TString, TFile*>::iterator fitr;
+  for (fitr=FFfile.begin(); fitr!=FFfile.end(); ++fitr)
+    {
+      fitr->second->Close();
+      FFfile.erase(fitr);
+    }
 }
 
 void CreateHistos::loadFile(TString filename){
@@ -50,14 +65,31 @@ void CreateHistos::loadFile(TString filename){
  
 }
 
+int CreateHistos::is1DCategories(TString category){
+  for( auto cat : Parameter.category.D1categories ){
+    if(category == cat) return 1;
+  }
+  return 0;
+  
+}
+
+void CreateHistos::initFakeFactors(){
+  for(auto cat : cats){
+    if( !this->is1DCategories(cat) ) continue;
+    FFfile[cat] = TFile::Open("HTTutilities/Jet2TauFakes/data/"+channel+"/"+cat+"/fakeFactors_20161023.root");
+    FFObj[cat] = (FakeFactor*)FFfile[cat]->Get("ff_comb");
+  }
+}
+
 void CreateHistos::run(){
 
 
   //clearHistos();
   float weight = 1;
   float var = -999;
-
-
+  
+  initFakeFactors();
+  
 
   for(int i =0;i < files.size();i++){
 
@@ -66,7 +98,7 @@ void CreateHistos::run(){
     //Int_t nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 1000000 ) );
     cout<<"The input chain contains: "<<nentries<<" events."<<endl;
     float perc;
-    //for (Int_t jentry=0; jentry<10;jentry++){
+    //for (Int_t jentry=0; jentry<100000;jentry++){
     for (Int_t jentry=0; jentry<nentries;jentry++){       
 
       if(jentry % 200000 == 0){
@@ -174,6 +206,14 @@ void CreateHistos::run(){
       this->Estimate_W_QCD(strVar, cat);
     }
   }
+  if(calcFF){
+    for(auto cat : cats){
+      for(auto strVar : vars){
+        this->EstimateFF(strVar, cat);
+      }
+    } 
+  }
+  
   cout << "Done running over events." << endl;
   writeHistos( channel, cats, vars );
   
@@ -222,6 +262,44 @@ double CreateHistos::getMT(){
   return NtupleView->pfmt_1;
 }
 
+
+void CreateHistos::getFFInputs(vector<double>&inputs){
+  inputs.push_back( NtupleView->pt_2 );
+  inputs.push_back( NtupleView->decayMode_2 );
+  inputs.push_back( NtupleView->njets );
+  inputs.push_back( NtupleView->m_vis );
+  inputs.push_back( this->getMT() );
+  inputs.push_back( NtupleView->iso_1 );
+
+}
+
+void CreateHistos::applyFF(float var, float weight, TString cat, TString strVar, TString fname, int isData){
+
+  TString sub = "+" + strVar +"_" + cat + "+";
+  
+  if( this->Baseline("FF",cat) &&  is1DCategories(cat) ){
+    if( isData || NtupleView->gen_match_2 < 6 ){
+      FFinputs.clear();
+      this->getFFInputs(FFinputs);
+      this->GetHistbyName( fname+"_jetFakes"+sub,strVar)->Fill(var, weight*FFObj[cat]->value(FFinputs) );
+      if(channel=="mt"){
+        for( auto syst : Parameter.FFsystematics.mt.syst ){
+          this->GetHistbyName( fname+"_jetFakes_"+syst+sub,strVar)->Fill(var, weight*FFObj[cat]->value(FFinputs, syst) );
+        }
+      }else if(channel=="et"){
+        for( auto syst : Parameter.FFsystematics.et.syst ){
+          this->GetHistbyName( fname+"_jetFakes_"+syst+sub,strVar)->Fill(var, weight*FFObj[cat]->value(FFinputs, syst) );
+        }
+      }else if(channel=="tt"){
+        for( auto syst : Parameter.FFsystematics.tt.syst ){
+          this->GetHistbyName( fname+"_jetFakes_"+syst+sub,strVar)->Fill(var, weight*FFObj[cat]->value(FFinputs, syst) );
+        }
+      }
+    }
+  }
+
+}
+
 void CreateHistos::DYSelections(float var, float weight, TString cat, TString strVar, TString fname){
 
     TString sub = "+" + strVar +"_" + cat + "+";
@@ -248,8 +326,9 @@ void CreateHistos::DYSelections(float var, float weight, TString cat, TString st
         else if( NtupleView->NUP == 1)     this->GetHistbyName("Z_1Jets"+sub,strVar)->Fill(var, weight);  
         else if(  NtupleView->NUP > 1)     this->GetHistbyName("Z_ge2Jets"+sub,strVar)->Fill(var, weight);
         ////////////////////////////////////////////////////////////////
-      }  
-
+      }
+      if(calcFF) this->applyFF(var,weight,cat,strVar,fname,0);
+      
       if( this->OS_W(cat) )                        this->GetHistbyName("OS_W_Z"+sub,strVar)->Fill(var, weight);
       if( this->SS_W(cat) )                        this->GetHistbyName("SS_W_Z"+sub,strVar)->Fill(var, weight);
       if( this->SS_Low(cat) )                      this->GetHistbyName("SS_Low_Z"+sub,strVar)->Fill(var, weight);
@@ -284,7 +363,10 @@ void CreateHistos::TSelections(float var, float weight, TString cat, TString str
       if( this->OS_W(cat) )                 this->GetHistbyName("OS_W_TT"+sub,strVar)->Fill(var, weight);
       if( this->SS_W(cat) )                 this->GetHistbyName("SS_W_TT"+sub,strVar)->Fill(var, weight);
       if( this->SS_Low(cat) )               this->GetHistbyName("SS_Low_TT"+sub,strVar)->Fill(var, weight);
+
       if( this->SS_Low_relaxed(cat) )       this->GetHistbyName("SS_Low_relaxed_TT"+sub,strVar)->Fill(var, weight);
+
+      if(calcFF) this->applyFF(var,weight,cat,strVar,fname,0);
       
     }
     else if(fname == "TTtauUp"){
@@ -310,7 +392,11 @@ void CreateHistos::WSelections(float var, float weight, TString cat, TString str
       if( this->relaxed_W(cat, "low") )     this->GetHistbyName("relaxed_W_low_W" + sub, strVar)->Fill(var, weight);
       if( this->relaxed_W(cat, "high") )    this->GetHistbyName("relaxed_W_high_W" + sub, strVar)->Fill(var, weight);
       if( this->SS_Low(cat) )               this->GetHistbyName("SS_Low_W" + sub, strVar)->Fill(var, weight);
-      if( this->SS_Low_relaxed(cat) )       this->GetHistbyName("SS_Low_relaxed_W" + sub, strVar)->Fill(var, weight);     
+      
+      if( this->SS_Low_relaxed(cat) )       this->GetHistbyName("SS_Low_relaxed_W" + sub, strVar)->Fill(var, weight);
+      
+      if(calcFF) this->applyFF(var,weight,cat,strVar,fname,0);
+      
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -329,7 +415,10 @@ void CreateHistos::VVSelections(float var, float weight, TString cat, TString st
       if( this->OS_W(cat) )                   this->GetHistbyName("OS_W_VV"+sub,strVar)->Fill(var, weight);
       if( this->SS_W(cat) )                   this->GetHistbyName("SS_W_VV"+sub,strVar)->Fill(var, weight);
       if( this->SS_Low(cat) )                 this->GetHistbyName("SS_Low_VV"+sub,strVar)->Fill(var, weight);
+      
       if( this->SS_Low_relaxed(cat) )         this->GetHistbyName("SS_Low_relaxed_VV"+sub,strVar)->Fill(var, weight);
+
+      if(calcFF) this->applyFF(var,weight,cat,strVar,fname,0);
       
     }
     else if(fname == "VVtauUp"){
@@ -380,6 +469,7 @@ void CreateHistos::dataSelections(float var, float weight, TString cat, TString 
     if( this->SS_W(cat) )                 this->GetHistbyName("SS_W_data"+sub,strVar)->Fill(var, weight);
     if( this->SS_Low(cat) )               this->GetHistbyName("SS_Low_data"+sub,strVar)->Fill(var, weight);
 
+    if(calcFF) this->applyFF(var,weight,cat,strVar,fname,1);
     
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -448,17 +538,66 @@ void CreateHistos::Estimate_W_QCD(TString strVar, TString cat){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void CreateHistos::EstimateFF(TString strVar, TString cat){
+  TString sub = "+" + strVar +"_" + cat + "+";
+
+  this->GetHistbyName("jetFakes"+sub,strVar)->Add( this->GetHistbyName("data_jetFakes"+sub,strVar)   );
+  this->GetHistbyName("jetFakes"+sub,strVar)->Add( this->GetHistbyName("W_jetFakes"+sub,strVar), -1 );
+  this->GetHistbyName("jetFakes"+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes"+sub,strVar),  -1 );
+  this->GetHistbyName("jetFakes"+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes"+sub,strVar), -1 );
+  this->GetHistbyName("jetFakes"+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes"+sub,strVar), -1 );
+
+  if(channel=="mt"){
+    for( auto syst : Parameter.FFsystematics.mt.syst ){
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+syst+sub,strVar)   );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+syst+sub,strVar), -1 );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+syst+sub,strVar),  -1 );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+syst+sub,strVar), -1 );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+syst+sub,strVar), -1 );
+    }
+  }
+  if(channel=="et"){
+    for( auto syst : Parameter.FFsystematics.et.syst ){
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+syst+sub,strVar)   );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+syst+sub,strVar), -1 );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+syst+sub,strVar),  -1 );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+syst+sub,strVar), -1 );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+syst+sub,strVar), -1 );
+    }
+  }
+  if(channel=="tt"){
+    for( auto syst : Parameter.FFsystematics.tt.syst ){
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+syst+sub,strVar)   );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+syst+sub,strVar), -1 );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+syst+sub,strVar),  -1 );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+syst+sub,strVar), -1 );
+      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+syst+sub,strVar), -1 );
+    }
+  }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int CreateHistos::Baseline(TString sign, TString cat){
 
-    if(sign == "OS"
-       && NtupleView->q_1 * NtupleView->q_2 < 0
+    
+    if( NtupleView->q_1 * NtupleView->q_2 < 0
        && this->passMTCut()
        && this->passIso("base")
-       && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
        && this->Vetos()
        && this->CategorySelection(cat)
-      ) return 1;
+        ){
+      if( sign=="OS"
+          && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
+          ) return 1;
+      if( sign=="FF"
+          && !NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
+          && NtupleView->byVLooseIsolationMVArun2v1DBoldDMwLT_2
+          ) return 1;
+    } 
+    
    
   return 0;
 }
@@ -987,5 +1126,4 @@ void CreateHistos::writeHistos( TString channel, vector<TString> cats, vector<TS
   }
     
 }
-
 
