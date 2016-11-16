@@ -47,6 +47,7 @@ class CreateHistos{
   void dataSelections(float var, float weight, TString cat, TString strVar, TString fname);
   void signalSelections(float var, float weight, TString cat, TString strVar, TString fname);
 
+  float getAntiLep_tauscaling();
   float CalcJdeta();
   float CalcHPt();
 
@@ -65,6 +66,7 @@ class CreateHistos{
   int SS_W(TString cat);
   int relaxed_W(TString cat, TString mt);
   int SS_Low(TString cat);
+  int SS_Low_relaxed(TString cat);
 
   int CategorySelection(TString cat);
   int jet2_mvis();
