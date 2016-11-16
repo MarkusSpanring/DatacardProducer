@@ -98,8 +98,8 @@ void CreateHistos::run(){
     //Int_t nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 1000000 ) );
     cout<<"The input chain contains: "<<nentries<<" events."<<endl;
     float perc;
-    //for (Int_t jentry=0; jentry<100000;jentry++){
-    for (Int_t jentry=0; jentry<nentries;jentry++){       
+    for (Int_t jentry=0; jentry<100000;jentry++){
+    //for (Int_t jentry=0; jentry<nentries;jentry++){       
 
       if(jentry % 200000 == 0){
         if(nentries > 0){
@@ -128,6 +128,7 @@ void CreateHistos::run(){
           else if(strVar == "jpt_1")                         var = NtupleView->jpt_1;
           else if(strVar == "jpt_2")                         var = NtupleView->jpt_2;
 
+          else if(strVar == "pt_1")                          var = NtupleView->pt_1;
           else if(strVar == "pt_2")                          var = NtupleView->pt_2;
           else if(strVar == "pfmt_1")                        var = NtupleView->pfmt_1;
 
@@ -968,7 +969,7 @@ TH1D* CreateHistos::JITHistoCreator(TString name, TString strVar){
     }
   }
 
-  if(strVar == "jpt_1"
+  else if(strVar == "jpt_1"
      || strVar == "jpt_2"
      || strVar == "jpt_1_2"
      || strVar == "jpt_1_2p5"
