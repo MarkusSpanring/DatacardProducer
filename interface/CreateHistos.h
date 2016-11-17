@@ -95,7 +95,7 @@ class CreateHistos{
   float PUIdCutParamsLoose(float eta);
 
   void loadFile(TString filename);
-  void run();
+  void run(TString isTest);
   void clearHistos();
   void writeHistos(TString channel, vector<TString> cats, vector<TString> vars);
   TH1D* GetHistbyName(TString name, TString strVar="");

@@ -81,7 +81,7 @@ void CreateHistos::initFakeFactors(){
   }
 }
 
-void CreateHistos::run(){
+void CreateHistos::run(TString isTest){
 
 
   //clearHistos();
@@ -94,12 +94,16 @@ void CreateHistos::run(){
   for(int i =0;i < files.size();i++){
 
     this->loadFile(files[i][0]);
-    //Int_t nentries = Int_t(NtupleView->fChain->GetEntries());
-    Int_t nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 100000 ) );
+    Int_t nentries=0;
+    if(isTest=="test"){
+      nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 100000 ) );
+    }else{
+      nentries = Int_t(NtupleView->fChain->GetEntries());
+    }
     cout<<"The input chain contains: "<<nentries<<" events."<<endl;
     float perc;
-    for (Int_t jentry=0; jentry<100000;jentry++){
-    //for (Int_t jentry=0; jentry<nentries;jentry++){       
+    //for (Int_t jentry=0; jentry<100000;jentry++){
+    for (Int_t jentry=0; jentry<nentries;jentry++){       
 
       if(jentry % 200000 == 0){
         if(nentries > 0){

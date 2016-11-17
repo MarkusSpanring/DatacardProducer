@@ -4,4 +4,4 @@ if [ ! -d "histos" ]; then
     mkdir -p histos;
 fi
 
-./runFile
+./runFile test
