@@ -43,6 +43,7 @@ public :
    Float_t         stitchedWeight;
    Float_t         topWeight;
    Float_t         ZWeight;
+   Float_t         antilep_tauscaling;
    Float_t         gen_Mll;
    Float_t         genpX;
    Float_t         genpY;
@@ -291,6 +292,7 @@ public :
    TBranch        *b_lumiWeight;   //!
    TBranch        *b_puweight;   //!
    TBranch        *b_genweight;   //!
+   TBranch        *b_antilep_tauscaling;   //!
    TBranch        *b_trigweight_1;   //!
    TBranch        *b_trigweight_2;   //!
    TBranch        *b_idisoweight_1;   //!
@@ -658,6 +660,7 @@ void ntuple::Init(TTree *tree)
    fChain->SetBranchAddress("lumiWeight", &lumiWeight, &b_lumiWeight);
    fChain->SetBranchAddress("puweight", &puweight, &b_puweight);
    fChain->SetBranchAddress("genweight", &genweight, &b_genweight);
+   fChain->SetBranchAddress("antilep_tauscaling", &antilep_tauscaling, &b_antilep_tauscaling);
    fChain->SetBranchAddress("trigweight_1", &trigweight_1, &b_trigweight_1);
    fChain->SetBranchAddress("trigweight_2", &trigweight_2, &b_trigweight_2);
    fChain->SetBranchAddress("idisoweight_1", &idisoweight_1, &b_idisoweight_1);
