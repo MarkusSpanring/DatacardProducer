@@ -15,7 +15,7 @@ ntuple.o: ntuple.C
 	$(CXX) -I$(INCDIR) -I$(ROOTINC) $(ROOTLIB) -c ntuple.C
 
 runFile: runFile.cc
-	$(CXX) -I$(INCDIR) -I$(ROOTINC) $(ROOTLIB) -o $@ ntuple.o CreateHistos.o runFile.cc
+	$(CXX) -I$(INCDIR) -I$(ROOTINC) $(ROOTLIB) -o $@ ntuple.o CreateHistos.o ../tmp/slc6_amd64_gcc530/src/HTTutilities/Jet2TauFakes/src/HTTutilitiesJet2TauFakes/libHTTutilitiesJet2TauFakes.so runFile.cc
 
 
 clean:

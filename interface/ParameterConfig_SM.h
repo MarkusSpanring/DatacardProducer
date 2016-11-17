@@ -109,23 +109,42 @@ const struct Parameter{
     double elIso_relaxed = 0.3;
   } analysisCut;
 
-struct QCD_OSSS
-{
-  struct mt
-  {
-    double ZeroJet = 1.02;
-    double Boosted = 1.22;
-    double VBF = 1.13;
-  }mt;
-  struct et
-  {
-    double ZeroJet = 0.74;
-    double Boosted = 1.0;
-    double VBF = 1.15;
-    
-  }et;
-} QCD_OSSS ;
+  struct category{
+    vector<TString> D1categories = {"inclusive","0Jet_low","0Jet_high","1Jet_low","1Jet_high","VBF_low","VBF_high"};
+    //FIXME: add D2 categories
+    //FIXME: add PU jet categories
+  } category;
 
+  struct FFsystematics{
+    struct mt{
+      vector<string> syst = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_stat_up","ff_qcd_stat_down","ff_w_syst_up","ff_w_syst_down","ff_w_stat_up","ff_w_stat_down","ff_tt_syst_up","ff_tt_syst_down","ff_tt_stat_up","ff_tt_stat_down"};
+    } mt;
+    struct et{
+      vector<string> syst = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_stat_up","ff_qcd_stat_down","ff_w_syst_up","ff_w_syst_down","ff_w_stat_up","ff_w_stat_down","ff_tt_syst_up","ff_tt_syst_down","ff_tt_stat_up","ff_tt_stat_down"};
+    } et;
+    struct tt{
+      vector<string> syst = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_stat_up","ff_qcd_stat_down"};
+      //FIXME: add systematics for tautau if available
+    } tt;
+  } FFsystematics;
+  
+  struct QCD_OSSS
+  {
+    struct mt
+    {
+      double ZeroJet = 1.02;
+      double Boosted = 1.22;
+      double VBF = 1.13;
+    }mt;
+    struct et
+    {
+      double ZeroJet = 0.74;
+      double Boosted = 1.0;
+      double VBF = 1.15;
+      
+    }et;
+  } QCD_OSSS ;
+  
 } Parameter;
 
  
