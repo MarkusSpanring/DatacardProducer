@@ -62,8 +62,8 @@ void CreateHistos::run(){
   for(int i =0;i < files.size();i++){
 
     this->loadFile(files[i][0]);
-    Int_t nentries = Int_t(NtupleView->fChain->GetEntries());
-    //Int_t nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 1000000 ) );
+    //Int_t nentries = Int_t(NtupleView->fChain->GetEntries());
+    Int_t nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 100000 ) );
     cout<<"The input chain contains: "<<nentries<<" events."<<endl;
     float perc;
     //for (Int_t jentry=0; jentry<10;jentry++){
@@ -470,7 +470,7 @@ int CreateHistos::OS_W(TString cat){
      && this->passIso("base")
      && this->getMT() > Parameter.analysisCut.mTHigh
      && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
-     && this->CategorySelection(cat)
+     && this->CategorySelection(cat, "wo")
      && this->Vetos()) return 1;
   return 0;
 }
@@ -481,7 +481,7 @@ int CreateHistos::SS_W(TString cat){
      && this->passIso("base")
      && this->getMT() > Parameter.analysisCut.mTHigh
      && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
-     && this->CategorySelection(cat)
+     && this->CategorySelection(cat, "wo")
      && this->Vetos()) return 1;
   return 0;
 }
@@ -492,7 +492,7 @@ int CreateHistos::relaxed_W(TString cat, TString mt){
      && this->passIso("relaxed")
      && NtupleView->byMediumIsolationMVArun2v1DBoldDMwLT_2
      && this->Vetos()
-     && this->CategorySelection(cat)){
+     && this->CategorySelection(cat, "wo")){
 
     if(mt == "low" && this->getMT() < Parameter.analysisCut.mTLow) return 1;
     if(mt == "high" && this->getMT() > Parameter.analysisCut.mTHigh) return 1;
@@ -506,7 +506,7 @@ int CreateHistos::SS_Low(TString cat){
      && this->passIso("base")
      && this->getMT() < Parameter.analysisCut.mTLow
      && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
-     && this->CategorySelection(cat)
+     && this->CategorySelection(cat, "wo")
      && this->Vetos()) return 1;
   return 0;
 }
@@ -517,7 +517,7 @@ int CreateHistos::SS_Low_relaxed(TString cat){
      && this->passIso("relaxed")
      && this->getMT() < Parameter.analysisCut.mTLow
      && NtupleView->byMediumIsolationMVArun2v1DBoldDMwLT_2
-     && this->CategorySelection(cat)
+     && this->CategorySelection(cat, "wo")
      && this->Vetos()) return 1;
   return 0;
 }
@@ -551,7 +551,7 @@ int CreateHistos::passIso(TString type){
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CreateHistos::CategorySelection(TString cat){
+int CreateHistos::CategorySelection(TString cat, TString mtcut){
 
 
 //////////////////  Vertex dependendcy ////////////////////////////////////
@@ -592,30 +592,30 @@ int CreateHistos::CategorySelection(TString cat){
   if(cat == "2jet_mvis5080_mt40_PUId_loose_fail") return !this->PUJetIdSelection("loose") & this->jet2_mvis();
 
 /////////////////////////  VBF low category ///////////////////////////////
-  if(cat == "VBF_low") return this->VBF_low();
-  if(cat == "PUId_lo_VBF_low") return ( this->PUJetIdSelection("loose") & this->VBF_low() );
-  if(cat == "PUId_me_VBF_low") return ( this->PUJetIdSelection("medium") & this->VBF_low() );
-  if(cat == "PUId_ti_VBF_low") return ( this->PUJetIdSelection("tight") & this->VBF_low() );
+  if(cat == "VBF_low") return this->VBF_low(mtcut);
+  if(cat == "PUId_lo_VBF_low") return ( this->PUJetIdSelection("loose") & this->VBF_low(mtcut) );
+  if(cat == "PUId_me_VBF_low") return ( this->PUJetIdSelection("medium") & this->VBF_low(mtcut) );
+  if(cat == "PUId_ti_VBF_low") return ( this->PUJetIdSelection("tight") & this->VBF_low(mtcut) );
 
 /////////////////////////  VBF high category ///////////////////////////////
-  if(cat == "VBF_high") return this->VBF_high();
-  if(cat == "PUId_VBF_high") return ( this->PUJetIdSelection("tight") & this->VBF_high() );
+  if(cat == "VBF_high") return this->VBF_high(mtcut);
+  if(cat == "PUId_VBF_high") return ( this->PUJetIdSelection("tight") & this->VBF_high(mtcut) );
 
 /////////////////////////  1Jet low category ///////////////////////////////
-  if(cat == "1Jet_low") return this->Jet1_low();
-  if(cat == "PUId_1Jet_low") return ( this->PUJetIdSelection("tight") & this->Jet1_low() );
+  if(cat == "1Jet_low") return this->Jet1_low(mtcut);
+  if(cat == "PUId_1Jet_low") return ( this->PUJetIdSelection("tight") & this->Jet1_low(mtcut) );
 
 /////////////////////////  1Jet high category ///////////////////////////////
-  if(cat == "1Jet_high") return this->Jet1_high();
-  if(cat == "PUId_1Jet_high") return ( this->PUJetIdSelection("tight") & this->Jet1_high() );
+  if(cat == "1Jet_high") return this->Jet1_high(mtcut);
+  if(cat == "PUId_1Jet_high") return ( this->PUJetIdSelection("tight") & this->Jet1_high(mtcut) );
 
 /////////////////////////  2Jet low category ///////////////////////////////
-  if(cat == "0Jet_low") return this->Jet0_low();
-  if(cat == "PUId_0Jet_low") return ( this->PUJetIdSelection("tight") & this->Jet0_low() );
+  if(cat == "0Jet_low") return this->Jet0_low(mtcut);
+  if(cat == "PUId_0Jet_low") return ( this->PUJetIdSelection("tight") & this->Jet0_low(mtcut) );
 
 /////////////////////////  Jet high category ///////////////////////////////
-  if(cat == "0Jet_high") return this->Jet0_high();  
-  if(cat == "PUId_0Jet_high") return ( this->PUJetIdSelection("tight") & this->Jet0_high() );
+  if(cat == "0Jet_high") return this->Jet0_high(mtcut);  
+  if(cat == "PUId_0Jet_high") return ( this->PUJetIdSelection("tight") & this->Jet0_high(mtcut) );
 
   return 0;
 }
@@ -635,10 +635,12 @@ int CreateHistos::jet2_mvis(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CreateHistos::VBF_low(){
+int CreateHistos::VBF_low(TString mtcut){
 
 
-  if(this->getMT() < Parameter.analysisCut.mTLow
+  if( (this->getMT() < Parameter.analysisCut.mTLow
+       || mtcut == "wo"
+      )
      && NtupleView->njets == 2
      && NtupleView->pt_2 > 20
      && NtupleView->mjj > 500
@@ -650,9 +652,11 @@ int CreateHistos::VBF_low(){
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CreateHistos::VBF_high(){
+int CreateHistos::VBF_high(TString mtcut){
 
-  if(this->getMT() < Parameter.analysisCut.mTLow
+  if( (this->getMT() < Parameter.analysisCut.mTLow
+       || mtcut == "wo"
+      )
      && NtupleView->njets == 2
      && NtupleView->pt_2 > 20
      && NtupleView->mjj > 800
@@ -662,9 +666,11 @@ int CreateHistos::VBF_high(){
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CreateHistos::Jet1_low(){
+int CreateHistos::Jet1_low(TString mtcut){
 
-  if(this->getMT() < Parameter.analysisCut.mTLow
+  if( (this->getMT() < Parameter.analysisCut.mTLow
+       || mtcut == "wo"
+      )
      && (NtupleView->njets == 1 
          || (NtupleView->njets == 2
              && NtupleView->mjj < 500
@@ -682,9 +688,11 @@ int CreateHistos::Jet1_low(){
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CreateHistos::Jet1_high(){
+int CreateHistos::Jet1_high(TString mtcut){
 
-  if(this->getMT() < Parameter.analysisCut.mTLow
+  if( (this->getMT() < Parameter.analysisCut.mTLow
+       || mtcut == "wo"
+      )
      && (NtupleView->njets == 1 
          || (NtupleView->njets == 2
              && NtupleView->mjj < 500
@@ -698,22 +706,26 @@ int CreateHistos::Jet1_high(){
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CreateHistos::Jet0_low(){
+int CreateHistos::Jet0_low(TString mtcut){
 
-  if(NtupleView->njets == 0
+  if( (this->getMT() < Parameter.analysisCut.mTLow
+       || mtcut == "wo"
+      )
+     && NtupleView->njets == 0
      && NtupleView->pt_2 > 20
      && NtupleView->pt_2 < 50
-     && this->getMT() < Parameter.analysisCut.mTLow
      )return 1;
   return 0;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CreateHistos::Jet0_high(){
+int CreateHistos::Jet0_high(TString mtcut){
 
-  if(NtupleView->njets == 0
+  if( (this->getMT() < Parameter.analysisCut.mTLow
+       || mtcut == "wo"
+      )
+     && NtupleView->njets == 0
      && NtupleView->pt_2 > 50
-     && this->getMT() < Parameter.analysisCut.mTLow
      )return 1;
   return 0;
 }

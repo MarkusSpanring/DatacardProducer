@@ -68,14 +68,14 @@ class CreateHistos{
   int SS_Low(TString cat);
   int SS_Low_relaxed(TString cat);
 
-  int CategorySelection(TString cat);
+  int CategorySelection(TString cat, TString mtcut = "");
   int jet2_mvis();
-  int VBF_low();
-  int VBF_high();
-  int Jet1_low();
-  int Jet1_high();
-  int Jet0_low();
-  int Jet0_high();
+  int VBF_low(TString mtcut = "");
+  int VBF_high(TString mtcut = "");
+  int Jet1_low(TString mtcut = "");
+  int Jet1_high(TString mtcut = "");
+  int Jet0_low(TString mtcut = "");
+  int Jet0_high(TString mtcut = "");
 
   int PUJetIdSelection(TString wp);
   float PUIdCutParamsTight(float eta);
