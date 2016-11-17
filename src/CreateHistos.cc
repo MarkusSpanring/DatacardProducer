@@ -390,7 +390,7 @@ void CreateHistos::WSelections(float var, float weight, TString cat, TString str
 
     TString sub = "+" + strVar +"_" + cat + "+";
     if(fname == "W"){
-      //if( this->Baseline("OS",cat) )         this->GetHistbyName("W"+sub,strVar)->Fill(var, weight);
+      if( this->Baseline("OS",cat) )        this->GetHistbyName("W_MC"+sub,strVar)->Fill(var, weight);
 
       if( this->OS_W(cat) )                 this->GetHistbyName("OS_W_W" + sub, strVar)->Fill(var, weight);
       if( this->SS_W(cat) )                 this->GetHistbyName("SS_W_W" + sub, strVar)->Fill(var, weight);
