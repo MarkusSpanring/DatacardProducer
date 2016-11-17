@@ -3,12 +3,12 @@
 #include <iostream>
 #include <string>
 
-void runFile() {
+void runFile(TString isTest) {
 
 	
     CreateHistos *Analyzer = new CreateHistos();
 
-    Analyzer->run();
+    Analyzer->run(isTest);
 
     delete Analyzer;
   
@@ -16,7 +16,7 @@ void runFile() {
 }
 #ifndef __CINT__
 int main(int argc, char* argv[]) {
-
-  runFile();    
+  TString isTest = argc > 1 ? "test" : ""; 
+  runFile(isTest);    
 }
 #endif

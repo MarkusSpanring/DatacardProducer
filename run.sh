@@ -3,5 +3,5 @@ make -B
 if [ ! -d "histos" ]; then
     mkdir -p histos;
 fi
-
-./runFile
+echo $1
+./runFile $1
