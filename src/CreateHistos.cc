@@ -76,7 +76,7 @@ int CreateHistos::is1DCategories(TString category){
 void CreateHistos::initFakeFactors(){
   for(auto cat : cats){
     if( !this->is1DCategories(cat) ) continue;
-    FFfile[cat] = TFile::Open("HTTutilities/Jet2TauFakes/data/"+channel+"/"+cat+"/fakeFactors_20161023.root");
+    FFfile[cat] = TFile::Open("HTTutilities/Jet2TauFakes/data/"+channel+"/"+cat+"/"+FFversion);
     FFObj[cat] = (FakeFactor*)FFfile[cat]->Get("ff_comb");
   }
 }
@@ -315,8 +315,8 @@ void CreateHistos::DYSelections(float var, float weight, TString cat, TString st
         }
         else if(NtupleView->gen_match_2 == 5){
           this->GetHistbyName("ZTT"+sub,strVar)->Fill(var, weight);
-          this->GetHistbyName("ZTT_CMS_htt_dyShape_13TeVUp"+sub,strVar)->Fill(var, NtupleView->ZWeight * NtupleView->ZWeight);
-          this->GetHistbyName("ZTT_CMS_htt_dyShape_13TeVDown"+sub,strVar)->Fill(var, 1);
+          this->GetHistbyName("ZTT_CMS_htt_dyShape_13TeVUp"+sub,strVar)->Fill(var, weight * NtupleView->ZWeight * NtupleView->ZWeight);
+          this->GetHistbyName("ZTT_CMS_htt_dyShape_13TeVDown"+sub,strVar)->Fill(var, weight);
         }
         else if(NtupleView->gen_match_2 == 6){
           this->GetHistbyName("ZLL"+sub,strVar)->Fill(var, weight);
@@ -354,8 +354,8 @@ void CreateHistos::TSelections(float var, float weight, TString cat, TString str
     if(fname == "TT"){
       if( this->Baseline("OS",cat) ){
         this->GetHistbyName("TT"+sub,strVar)->Fill(var, weight);
-        this->GetHistbyName("TT_CMS_htt_ttbarShape_13TeVUp"+sub,strVar)->Fill(var, NtupleView->topWeight * NtupleView->topWeight);
-        this->GetHistbyName("TT_CMS_htt_ttbarShape_13TeVDown"+sub,strVar)->Fill(var, 1);
+        this->GetHistbyName("TT_CMS_htt_ttbarShape_13TeVUp"+sub,strVar)->Fill(var, weight * NtupleView->topWeight * NtupleView->topWeight);
+        this->GetHistbyName("TT_CMS_htt_ttbarShape_13TeVDown"+sub,strVar)->Fill(var, weight);
         if(NtupleView->gen_match_2 < 5)       this->GetHistbyName("TTL"+sub,strVar)->Fill(var, weight);
         else if(NtupleView->gen_match_2 == 5)  this->GetHistbyName("TTT"+sub,strVar)->Fill(var, weight);
         else if(NtupleView->gen_match_2 == 6)  this->GetHistbyName("TTJ"+sub,strVar)->Fill(var, weight);
