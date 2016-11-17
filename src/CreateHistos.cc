@@ -485,9 +485,11 @@ void CreateHistos::CreateQCD_osw(TString strVar, TString cat){
   this->GetHistbyName("QCD_OSW"+sub,strVar)->Add( this->GetHistbyName("SS_W_W"+sub,strVar),  -1 );
   this->GetHistbyName("QCD_OSW"+sub,strVar)->Scale( this->QCD_OSSS(cat) );
 
-  int entries = this->GetHistbyName("QCD_OSW"+sub,strVar)->GetNbinsX();
-  for(int i = 1; i < entries; i++){
-    if( this->GetHistbyName("QCD_OSW"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("QCD_OSW"+sub,strVar)->SetBinContent(i,0.);
+  if(resetZero){
+    int entries = this->GetHistbyName("QCD_OSW"+sub,strVar)->GetNbinsX();
+    for(int i = 1; i < entries; i++){
+      if( this->GetHistbyName("QCD_OSW"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("QCD_OSW"+sub,strVar)->SetBinContent(i,0.);
+    }
   }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -507,9 +509,11 @@ void CreateHistos::CreateW(TString strVar, TString cat){
   this->GetHistbyName("W"+sub,strVar)->Add( this->GetHistbyName("W_OSW"+sub,strVar) );
   this->GetHistbyName("W"+sub,strVar)->Multiply( this->GetHistbyName("HL"+sub, strVar) );
 
-  int entries = this->GetHistbyName("W"+sub,strVar)->GetNbinsX();
-  for(int i = 1; i < entries; i++){
-    if( this->GetHistbyName("W"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("W"+sub,strVar)->SetBinContent(i,0.);
+  if(resetZero){
+    int entries = this->GetHistbyName("W"+sub,strVar)->GetNbinsX();
+    for(int i = 1; i < entries; i++){
+      if( this->GetHistbyName("W"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("W"+sub,strVar)->SetBinContent(i,0.);
+    }
   }
 
 }
@@ -538,9 +542,11 @@ void CreateHistos::CreateQCD(TString strVar, TString cat){
   this->GetHistbyName("QCD"+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_W"+sub,strVar),  -1 );
   this->GetHistbyName("QCD"+sub,strVar)->Scale( this->QCD_OSSS(cat) );
 
-  int entries = this->GetHistbyName("QCD"+sub,strVar)->GetNbinsX();
-  for(int i = 1; i < entries; i++){
-    if( this->GetHistbyName("QCD"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("QCD"+sub,strVar)->SetBinContent(i,0.);
+  if(resetZero){
+    int entries = this->GetHistbyName("QCD"+sub,strVar)->GetNbinsX();
+    for(int i = 1; i < entries; i++){
+      if( this->GetHistbyName("QCD"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("QCD"+sub,strVar)->SetBinContent(i,0.);
+    }
   }
 
 }
