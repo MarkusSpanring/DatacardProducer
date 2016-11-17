@@ -1,5 +1,5 @@
-const TString channel="mt";
-const TString version="v3";
+const TString channel="et";
+const TString version="v4";
 const double usedLuminosity=12.9;
 const int ptShift=1;
 const TString svfit="woSVFIT";

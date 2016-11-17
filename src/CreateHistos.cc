@@ -26,6 +26,10 @@ CreateHistos::CreateHistos(){
     files.push_back({Parameter.dataset.TTtauDown,"TTtauDown"});
     files.push_back({Parameter.dataset.VVtauUp,"VVtauUp"});
     files.push_back({Parameter.dataset.VVtauDown,"VVtauDown"});
+    files.push_back({Parameter.dataset.ggHtauUp,"ggHtauUp"});
+    files.push_back({Parameter.dataset.ggHtauDown,"ggHtauDown"});
+    files.push_back({Parameter.dataset.qqHtauUp,"qqHtauUp"});
+    files.push_back({Parameter.dataset.qqHtauDown,"qqHtauDown"});
   }
 
   for(int i=0; i<variables.size(); i++) vars.push_back(variables.at(i));
@@ -102,7 +106,6 @@ void CreateHistos::run(TString isTest){
     }
     cout<<"The input chain contains: "<<nentries<<" events."<<endl;
     float perc;
-    //for (Int_t jentry=0; jentry<100000;jentry++){
     for (Int_t jentry=0; jentry<nentries;jentry++){       
 
       if(jentry % 200000 == 0){
@@ -118,8 +121,8 @@ void CreateHistos::run(TString isTest){
 
       weight = NtupleView->stitchedWeight*NtupleView->puweight*NtupleView->effweight*usedLuminosity;
 
-      if(NtupleView->idisoweight_2 != 1) weight = weight * (0.9/0.83);
-      weight = weight * this->getAntiLep_tauscaling();
+      //if(NtupleView->idisoweight_2 != 1) weight = weight * (0.9/0.83);
+      //weight = weight * this->getAntiLep_tauscaling();
 
       for(auto cat : cats){
 
