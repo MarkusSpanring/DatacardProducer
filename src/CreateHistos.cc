@@ -688,15 +688,23 @@ int CreateHistos::SS_Low_relaxed(TString cat){
   return 0;
 }
 
-
+//FIXME: temporary fix, has to be undone as soon as tauLepVeto is correct for etau channel
 int CreateHistos::Vetos(){
+  if(NtupleView->passesThirdLepVeto){
+    if(channel == "et" && NtupleView->againstMuonLoose3_2 && NtupleView->againstElectronTightMVA6_2 && NtupleView->passesDiElectronVeto) return 1;
+    if(channel == "mt" && NtupleView->passesTauLepVetos && NtupleView->passesDiMuonVeto) return 1;
+  }
+  return 0;
+}
+
+/*int CreateHistos::Vetos(){
   if(NtupleView->passesTauLepVetos
      && NtupleView->passesThirdLepVeto){
     if(channel == "et" && NtupleView->passesDiElectronVeto) return 1;
     if(channel == "mt" && NtupleView->passesDiMuonVeto) return 1;
   }
   return 0;
-}
+  }*/
 
 int CreateHistos::passMTCut(){
   if( !applyMTCut ) return 1;
