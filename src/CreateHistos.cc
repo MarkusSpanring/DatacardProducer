@@ -101,7 +101,7 @@ void CreateHistos::run(TString isTest){
     this->loadFile(files[i][0]);
     Int_t nentries=0;
     if(isTest=="test"){
-      nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 100000 ) );
+      nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 1000000 ) );
     }else{
       nentries = Int_t(NtupleView->fChain->GetEntries());
     }
@@ -473,19 +473,19 @@ void CreateHistos::signalSelections(float var, float weight, TString cat, TStrin
     }
     else if(fname == "ggHtauUp"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("ggH_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("ggH125_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "ggHtauDown"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("ggH_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("ggH125_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "qqHtauUp"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("qqH_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("qqH125_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "qqHtauDown"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("qqH_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("qqH125_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
