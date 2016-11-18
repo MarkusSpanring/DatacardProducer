@@ -1,10 +1,11 @@
-const TString channel="mt";
-const TString version="v3";
+const TString channel="et";
+const TString version="v4";
 const double usedLuminosity=12.9;
 const int ptShift=1;
 const TString svfit="woSVFIT";
 const int useMVAMET=0;
 const int calcFF=1;
+const TString FFversion="fakeFactors_20161117.root";
 const int applyMTCut=1; //MTcut in inclusive selection, default==1
 const int resetZero = 1;
 const vector<TString> variables={"m_vis","pt_1","pt_2"}; //{"m_vis","mt_1","jpt_1","jpt_2","jeta_1","jeta_2","jdeta","mjj","jeta1eta2"};
