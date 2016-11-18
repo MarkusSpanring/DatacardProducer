@@ -16,7 +16,8 @@ CreateHistos::CreateHistos(){
   files.push_back({Parameter.dataset.W,"W"});
   files.push_back({Parameter.dataset.TT,"TT"});
   files.push_back({Parameter.dataset.VV,"VV"});
-  files.push_back({Parameter.dataset.data,"data"});
+  if(channel=="mt")files.push_back({Parameter.dataset.data_mt,"data"});
+  if(channel=="et")files.push_back({Parameter.dataset.data_et,"data"});
   files.push_back({Parameter.dataset.ggH,"ggH"});
   files.push_back({Parameter.dataset.qqH,"qqH"});
   if(ptShift){
@@ -119,10 +120,10 @@ void CreateHistos::run(TString isTest){
 
       NtupleView->GetEntry(jentry);    
 
-      weight = NtupleView->stitchedWeight*NtupleView->puweight*NtupleView->effweight*usedLuminosity;
+      weight = NtupleView->stitchedWeight*NtupleView->puweight*NtupleView->effweight*NtupleView->antilep_tauscaling*usedLuminosity;
 
       //if(NtupleView->idisoweight_2 != 1) weight = weight * (0.9/0.83);
-      //weight = weight * this->getAntiLep_tauscaling();
+      weight = weight * this->getAntiLep_tauscaling();
 
       for(auto cat : cats){
 
@@ -240,6 +241,16 @@ float CreateHistos::getAntiLep_tauscaling(){
         if(fabs(NtupleView->eta_2) < 1.2) return 1.28;       // +-0.06
         else if (fabs(NtupleView->eta_2) < 1.7) return 2.6;   // +-2.6
         else if (fabs(NtupleView->eta_2) < 2.3) return 2.1;  // +-0.9
+      }
+    }
+    if(channel == "et"){
+      if(NtupleView->againstElectronTightMVA6_2 > 0.5
+         && ( NtupleView->gen_match_2 == 1 
+             || NtupleView->gen_match_2 == 3)
+         ){
+
+        if(fabs(NtupleView->eta_2) < 1.46) return 1.42;       // +-0.06
+        else if (fabs(NtupleView->eta_2) > 1.558) return 1.994;   // +-2.6
       }
     }
     return 1.0;
@@ -579,20 +590,22 @@ void CreateHistos::EstimateFF(TString strVar, TString cat){
 
   if(channel=="mt"){
     for( auto syst : Parameter.FFsystematics.mt.syst ){
-      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+syst+sub,strVar)   );
-      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+syst+sub,strVar), -1 );
-      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+syst+sub,strVar),  -1 );
-      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+syst+sub,strVar), -1 );
-      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+syst+sub,strVar), -1 );
+      TString tmp=syst; tmp.ReplaceAll("_down","Down"); tmp.ReplaceAll("_up","Up"); 
+      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+syst+sub,strVar)   );
+      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+syst+sub,strVar), -1 );
+      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+syst+sub,strVar),  -1 );
+      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+syst+sub,strVar), -1 );
+      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+syst+sub,strVar), -1 );
     }
   }
   if(channel=="et"){
     for( auto syst : Parameter.FFsystematics.et.syst ){
-      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+syst+sub,strVar)   );
-      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+syst+sub,strVar), -1 );
-      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+syst+sub,strVar),  -1 );
-      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+syst+sub,strVar), -1 );
-      this->GetHistbyName("jetFakes_"+syst+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+syst+sub,strVar), -1 );
+      TString tmp=syst; tmp.ReplaceAll("_down","Down"); tmp.ReplaceAll("_up","Up"); 
+      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+syst+sub,strVar)   );
+      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+syst+sub,strVar), -1 );
+      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+syst+sub,strVar),  -1 );
+      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+syst+sub,strVar), -1 );
+      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+syst+sub,strVar), -1 );
     }
   }
   if(channel=="tt"){

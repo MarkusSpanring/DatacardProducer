@@ -3,7 +3,8 @@
 const struct Parameter{
 
   struct dataset{
-    TString data="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_SingleMuonRun2016BCD_"+channel+"_"+version+".root";
+    TString data_mt="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_SingleMuonRun2016BCD_"+channel+"_"+version+".root";
+    TString data_et="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_SingleElectronRun2016BCD_"+channel+"_"+version+".root";
     TString Z="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+".root";
     TString ZtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+"_TauPtUp.root";
     TString ZtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+"_TauPtDown.root";
