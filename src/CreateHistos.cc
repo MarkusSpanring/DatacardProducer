@@ -397,10 +397,12 @@ void CreateHistos::TSelections(float var, float weight, TString cat, TString str
       
     }
     else if(fname == "TTtauUp"){
+      if( this->Baseline("OS",cat) )                 this->GetHistbyName("TT_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
       if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("TTT_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "TTtauDown"){
+      if( this->Baseline("OS",cat) )                 this->GetHistbyName("TT_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
       if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("TTT_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
@@ -449,10 +451,12 @@ void CreateHistos::VVSelections(float var, float weight, TString cat, TString st
       
     }
     else if(fname == "VVtauUp"){
+      if( this->Baseline("OS",cat) )                 this->GetHistbyName("VV_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
       if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("VVT_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "VVtauDown"){
+      if( this->Baseline("OS",cat) )                 this->GetHistbyName("VV_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
       if( this->Baseline("OS",cat)
           && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("VVT_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
