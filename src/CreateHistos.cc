@@ -356,11 +356,11 @@ void CreateHistos::DYSelections(float var, float weight, TString cat, TString st
     }
     else if(fname == "ZtauUp"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )       this->GetHistbyName("ZTT_CMS_scale_t_mt_13TeVUp"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )       this->GetHistbyName("ZTT_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "ZtauDown"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )       this->GetHistbyName("ZTT_CMS_scale_t_mt_13TeVDown"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )       this->GetHistbyName("ZTT_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
 }
 
@@ -375,8 +375,16 @@ void CreateHistos::TSelections(float var, float weight, TString cat, TString str
         this->GetHistbyName("TT_CMS_htt_ttbarShape_13TeVUp"+sub,strVar)->Fill(var, weight * NtupleView->topWeight * NtupleView->topWeight);
         this->GetHistbyName("TT_CMS_htt_ttbarShape_13TeVDown"+sub,strVar)->Fill(var, weight);
         if(NtupleView->gen_match_2 < 5)       this->GetHistbyName("TTL"+sub,strVar)->Fill(var, weight);
-        else if(NtupleView->gen_match_2 == 5)  this->GetHistbyName("TTT"+sub,strVar)->Fill(var, weight);
-        else if(NtupleView->gen_match_2 == 6)  this->GetHistbyName("TTJ"+sub,strVar)->Fill(var, weight);
+        else if(NtupleView->gen_match_2 == 5){
+          this->GetHistbyName("TTT"+sub,strVar)->Fill(var, weight); 
+          this->GetHistbyName("TTT_CMS_htt_ttbarShape_13TeVUp"+sub,strVar)->Fill(var, NtupleView->topWeight * NtupleView->topWeight*weight);
+          this->GetHistbyName("TTT_CMS_htt_ttbarShape_13TeVDown"+sub,strVar)->Fill(var, weight);
+        }
+        else if(NtupleView->gen_match_2 == 6){
+          this->GetHistbyName("TTJ"+sub,strVar)->Fill(var, weight);
+          this->GetHistbyName("TTJ_CMS_htt_ttbarShape_13TeVUp"+sub,strVar)->Fill(var, NtupleView->topWeight * NtupleView->topWeight*weight);
+          this->GetHistbyName("TTJ_CMS_htt_ttbarShape_13TeVDown"+sub,strVar)->Fill(var, weight);
+        }
       }
 
       if( this->OS_W(cat) )                 this->GetHistbyName("OS_W_TT"+sub,strVar)->Fill(var, weight);
@@ -390,11 +398,11 @@ void CreateHistos::TSelections(float var, float weight, TString cat, TString str
     }
     else if(fname == "TTtauUp"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("TTT_CMS_scale_t_mt_13TeVUp"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("TTT_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "TTtauDown"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("TTT_CMS_scale_t_mt_13TeVDown"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("TTT_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
 }
 
@@ -442,11 +450,11 @@ void CreateHistos::VVSelections(float var, float weight, TString cat, TString st
     }
     else if(fname == "VVtauUp"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("VVT_CMS_scale_t_mt_13TeVUp"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("VVT_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "VVtauDown"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("VVT_CMS_scale_t_mt_13TeVDown"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("VVT_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -461,19 +469,19 @@ void CreateHistos::signalSelections(float var, float weight, TString cat, TStrin
     }
     else if(fname == "ggHtauUp"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("ggH_CMS_scale_t_mt_13TeVUp"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("ggH_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "ggHtauDown"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("ggH_CMS_scale_t_mt_13TeVDown"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("ggH_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "qqHtauUp"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("qqH_CMS_scale_t_mt_13TeVUp"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("qqH_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(var, weight);
     }
     else if(fname == "qqHtauDown"){
       if( this->Baseline("OS",cat)
-          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("qqH_CMS_scale_t_mt_13TeVDown"+sub,strVar)->Fill(var, weight);
+          && NtupleView->gen_match_2 == 5 )          this->GetHistbyName("qqH_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(var, weight);
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1166,7 +1174,7 @@ void CreateHistos::writeHistos( TString channel, vector<TString> cats, vector<TS
 
   
   for(auto var : vars){
-    outfile_name << "histos/"  << "htt_mt.inputs-sm-13TeV-"<<var<<".root";
+    outfile_name << "histos/"  << "htt_" << channel << ".inputs-sm-13TeV-"<<var<<".root";
     outfile = new TFile(outfile_name.str().c_str(), "RECREATE") ;
 
     for(auto cat : cats){
