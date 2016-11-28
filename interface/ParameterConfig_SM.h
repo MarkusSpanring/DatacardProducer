@@ -26,7 +26,7 @@ const struct Parameter{
   struct variable{
     
     struct m_vis{
-      int nbins = 50;
+      int nbins = 25;
       double nmin = 0;
       double nmax = 250;
       int doVarBins = 0;
@@ -46,6 +46,13 @@ const struct Parameter{
       int doVarBins = 0;
       vector<double> varBins = {50,55,60,65,80};
     } pt;
+    struct eta{
+      int nbins = 25;
+      double nmin = -2.5;
+      double nmax = 2.5;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } eta;
     struct jeta{
       int nbins = 40;
       double nmin = -5;
@@ -61,12 +68,26 @@ const struct Parameter{
       vector<double> varBins = {50,55,60,65,80};
     } jdeta;
     struct mt_1{
-      int nbins = 24;
+      int nbins = 25;
       double nmin = 0;
-      double nmax = 1200;
+      double nmax = 250;
       int doVarBins = 0;
       vector<double> varBins = {50,55,60,65,80};
     } mt_1;
+    struct met{
+      int nbins = 25;
+      double nmin = 0;
+      double nmax = 250;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } met;
+    struct mttot{
+      int nbins = 25;
+      double nmin = 0;
+      double nmax = 250;
+      int doVarBins = 0;
+      vector<double> varBins = {50,55,60,65,80};
+    } mttot;
     struct Low_mt_1{
       int nbins = 25;
       double nmin = 0;
@@ -122,10 +143,10 @@ const struct Parameter{
 
   struct FFsystematics{
     struct mt{
-      vector<string> syst = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_stat_up","ff_qcd_stat_down","ff_w_syst_up","ff_w_syst_down","ff_w_stat_up","ff_w_stat_down","ff_tt_syst_up","ff_tt_syst_down","ff_tt_stat_up","ff_tt_stat_down"};
+      vector<string> syst = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_stat_up","ff_qcd_stat_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_w_stat_up","ff_w_stat_down","ff_w_dm0_njet0_stat_up","ff_w_dm0_njet0_stat_down","ff_w_dm0_njet1_stat_up","ff_w_dm0_njet1_stat_down","ff_w_dm1_njet0_stat_up","ff_w_dm1_njet0_stat_down","ff_w_dm1_njet1_stat_up","ff_w_dm1_njet1_stat_down","ff_tt_syst_up","ff_tt_syst_down","ff_tt_stat_up","ff_tt_stat_down","ff_tt_dm0_njet0_stat_up","ff_tt_dm0_njet0_stat_down","ff_tt_dm0_njet1_stat_up","ff_tt_dm0_njet1_stat_down","ff_tt_dm1_njet0_stat_up","ff_tt_dm1_njet0_stat_down","ff_tt_dm1_njet1_stat_up","ff_tt_dm1_njet1_stat_down"};
     } mt;
     struct et{
-      vector<string> syst = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_stat_up","ff_qcd_stat_down","ff_w_syst_up","ff_w_syst_down","ff_w_stat_up","ff_w_stat_down","ff_tt_syst_up","ff_tt_syst_down","ff_tt_stat_up","ff_tt_stat_down"};
+      vector<string> syst = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_stat_up","ff_qcd_stat_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_w_stat_up","ff_w_stat_down","ff_w_dm0_njet0_stat_up","ff_w_dm0_njet0_stat_down","ff_w_dm0_njet1_stat_up","ff_w_dm0_njet1_stat_down","ff_w_dm1_njet0_stat_up","ff_w_dm1_njet0_stat_down","ff_w_dm1_njet1_stat_up","ff_w_dm1_njet1_stat_down","ff_tt_syst_up","ff_tt_syst_down","ff_tt_stat_up","ff_tt_stat_down","ff_tt_dm0_njet0_stat_up","ff_tt_dm0_njet0_stat_down","ff_tt_dm0_njet1_stat_up","ff_tt_dm0_njet1_stat_down","ff_tt_dm1_njet0_stat_up","ff_tt_dm1_njet0_stat_down","ff_tt_dm1_njet1_stat_up","ff_tt_dm1_njet1_stat_down"};
     } et;
     struct tt{
       vector<string> syst = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_stat_up","ff_qcd_stat_down"};
