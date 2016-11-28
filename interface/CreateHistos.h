@@ -105,6 +105,8 @@ class CreateHistos{
   TH1D* getBinnedHisto(TString name,vector<double> input);
 
   double getMT();
+  double getMT2();
+  double getMTTOT();
   int passMTCut();
   int passIso(TString type);
 
