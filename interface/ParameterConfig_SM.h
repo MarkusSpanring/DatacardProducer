@@ -3,24 +3,24 @@
 const struct Parameter{
 
   struct dataset{
-    TString data_mt="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_SingleMuonRun2016BCD_"+channel+"_"+version+".root";
-    TString data_et="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_SingleElectronRun2016BCD_"+channel+"_"+version+".root";
-    TString Z="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+".root";
-    TString ZtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+"_TauPtUp.root";
-    TString ZtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+"_TauPtDown.root";
-    TString TT="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_TT_powheg_MCSpring16_"+channel+"_"+version+".root";
-    TString TTtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_TT_powheg_MCSpring16_"+channel+"_"+version+"_TauPtUp.root";
-    TString TTtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_TT_powheg_MCSpring16_"+channel+"_"+version+"_TauPtDown.root";
-    TString W="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_WXJets_merged_MCSpring16_"+channel+"_"+version+".root";
-    TString VV="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_VV_MCSpring16_"+channel+"_"+version+".root";
-    TString VVtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_VV_MCSpring16_"+channel+"_"+version+"_TauPtUp.root";
-    TString VVtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_VV_MCSpring16_"+channel+"_"+version+"_TauPtDown.root";
-    TString qqH="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_VBFHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+".root";
-    TString qqHtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_VBFHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+"_TauPtUp.root";
-    TString qqHtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_VBFHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+"_TauPtDown.root";
-    TString ggH="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_GluGluHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+".root";
-    TString ggHtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_GluGluHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+"_TauPtUp.root";
-    TString ggHtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+svfit+"_merged/BASIS_ntuple_GluGluHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+"_TauPtDown.root";
+    TString data_mt="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_SingleMuonRun2016BCD_"+channel+"_"+version+reduced+".root";
+    TString data_et="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_SingleElectronRun2016BCD_"+channel+"_"+version+reduced+".root";
+    TString Z="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+reduced+".root";
+    TString ZtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+"_TauPtUp"+reduced+".root";
+    TString ZtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+"_TauPtDown"+reduced+".root";
+    TString TT="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_TT_powheg_MCSpring16_"+channel+"_"+version+reduced+".root";
+    TString TTtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_TT_powheg_MCSpring16_"+channel+"_"+version+"_TauPtUp"+reduced+".root";
+    TString TTtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_TT_powheg_MCSpring16_"+channel+"_"+version+"_TauPtDown"+reduced+".root";
+    TString W="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_WXJets_merged_MCSpring16_"+channel+"_"+version+reduced+".root";
+    TString VV="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_VV_MCSpring16_"+channel+"_"+version+reduced+".root";
+    TString VVtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_VV_MCSpring16_"+channel+"_"+version+"_TauPtUp"+reduced+".root";
+    TString VVtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_VV_MCSpring16_"+channel+"_"+version+"_TauPtDown"+reduced+".root";
+    TString qqH="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_VBFHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+reduced+".root";
+    TString qqHtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_VBFHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+"_TauPtUp"+reduced+".root";
+    TString qqHtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_VBFHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+"_TauPtDown"+reduced+".root";
+    TString ggH="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_GluGluHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+reduced+".root";
+    TString ggHtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_GluGluHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+"_TauPtUp"+reduced+".root";
+    TString ggHtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_GluGluHToTauTau_M125_powheg_MCSpring16_reHLT_"+channel+"_"+version+"_TauPtDown"+reduced+".root";
     
   } dataset;
   struct variable{
@@ -32,6 +32,20 @@ const struct Parameter{
       int doVarBins = 0;
       vector<double> varBins = {50,55,60,65,80};
     } m_vis;
+    struct m_sv{
+      int nbins = 25;
+      double nmin = 0;
+      double nmax = 250;
+      int doVarBins = 0;
+      vector<double> varBins = {0,20,25,30};
+    } m_sv;
+    struct pt_sv{
+      int nbins = 20;
+      double nmin = 0;
+      double nmax = 200;
+      int doVarBins = 0;
+      vector<double> varBins = {0,20,25,30};
+    } pt_sv;
     struct jpt{
       int nbins = 70;
       double nmin = 0;
@@ -88,6 +102,13 @@ const struct Parameter{
       int doVarBins = 0;
       vector<double> varBins = {50,55,60,65,80};
     } mttot;
+    struct Hpt{
+      int nbins = 20;
+      double nmin = 0;
+      double nmax = 200;
+      int doVarBins = 0;
+      vector<double> varBins = {0,200};
+    } Hpt;
     struct Low_mt_1{
       int nbins = 25;
       double nmin = 0;
@@ -126,6 +147,28 @@ const struct Parameter{
 
   } variable;
 
+  struct variable2D{
+    struct D2_0Jet{
+      TString name = "0Jet";
+      vector<double> binsX = {30,35,40,45,50,55,300}; //pt_2
+      vector<double> binsY = {0,60,65,70,75,80,85,90,95,100,105,110,400}; //m_vis
+    } D2_0Jet;
+    struct D2_boosted{
+      TString name = "boosted";
+      vector<double> binsX = {0,100,150,200,250,300,5000}; //Higgs_pt
+      vector<double> binsY_svfit = {0,80,90,100,110,120,130,140,150,160,300}; //svfit_mass
+      vector<double> binsY_mvis = {0,60,70,80,90,100,110,120,130,140,300}; //m_vis instead of svfit_mass
+      //binsY_mvis must have same number of bins
+    } D2_boosted;
+    struct D2_vbf{
+      TString name = "vbf";
+      vector<double> binsX = {300,700,1100,1500,10000}; //m_jj
+      vector<double> binsY_svfit = {0,95,115,135,155,400}; //svfit_mass
+      vector<double> binsY_mvis = {0,75,95,115,135,400}; //m_vis instead of svfit_mass
+      //binsY_mvis must have same number of bins
+    } D2_vbf;
+  } variable2D;
+
   struct analysisCut{
     double mTHigh = 80;
     double mTLow  = 50;
@@ -137,7 +180,7 @@ const struct Parameter{
 
   struct category{
     vector<TString> D1categories = {"inclusive","0Jet_low","0Jet_high","1Jet_low","1Jet_high","VBF_low","VBF_high"};
-    //FIXME: add D2 categories
+    vector<TString> D2categories = {"0Jet","boosted","vbf"};
     //FIXME: add PU jet categories
   } category;
 
@@ -158,15 +201,15 @@ const struct Parameter{
   {
     struct mt
     {
-      double ZeroJet = 1.02;
-      double Boosted = 1.22;
-      double VBF = 1.13;
+      double ZeroJet = 1.00;
+      double Boosted = 1.15;
+      double VBF = 1.20;
     }mt;
     struct et
     {
-      double ZeroJet = 0.74;
-      double Boosted = 1.0;
-      double VBF = 1.15;
+      double ZeroJet = 1.00;
+      double Boosted = 1.15;
+      double VBF = 1.20;
       
     }et;
   } QCD_OSSS ;
