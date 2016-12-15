@@ -49,13 +49,14 @@ class CreateHistos{
 
   void initFakeFactors();
   int is1DCategories(TString category);
-  void DYSelections(float var, float weight, TString cat, TString strVar, TString fname);
-  void VVSelections(float var, float weight, TString cat, TString strVar, TString fname);
-  void TSelections(float var, float weight, TString cat, TString strVar, TString fname);
-  void WSelections(float var, float weight, TString cat, TString strVar, TString fname);
-  void dataSelections(float var, float weight, TString cat, TString strVar, TString fname);
-  void signalSelections(float var, float weight, TString cat, TString strVar, TString fname);
-  void applyFF(float var, float weight, TString cat, TString strVar, TString fname, int isData);
+  int is2DCategories(TString category);
+  void DYSelections(float var, float weight, TString cat, TString strVar, TString fname, TString extend="");
+  void VVSelections(float var, float weight, TString cat, TString strVar, TString fname, TString extend="");
+  void TSelections(float var, float weight, TString cat, TString strVar, TString fname, TString extend="");
+  void WSelections(float var, float weight, TString cat, TString strVar, TString fname, TString extend="");
+  void dataSelections(float var, float weight, TString cat, TString strVar, TString fname, TString extend="");
+  void signalSelections(float var, float weight, TString cat, TString strVar, TString fname, TString extend="");
+  void applyFF(float var, float weight, TString cat, TString strVar, TString fname, int isData, TString extend="");
 
   float getAntiLep_tauscaling();
   float CalcJdeta();
@@ -67,11 +68,11 @@ class CreateHistos{
 
 
   double QCD_OSSS(TString cat);
-  void CreateQCD_osw(TString strVar, TString cat);
-  void CreateW(TString strVar, TString cat);
-  void CreateQCD(TString strVar, TString cat);
-  void Estimate_W_QCD(TString strVar, TString cat);
-  void EstimateFF(TString strVar, TString cat);
+  void CreateQCD_osw(TString strVar, TString cat, TString extend="");
+  void CreateW(TString strVar, TString cat, TString extend="");
+  void CreateQCD(TString strVar, TString cat, TString extend="");
+  void Estimate_W_QCD(TString strVar, TString cat, TString extend="");
+  void EstimateFF(TString strVar, TString cat, TString extend="");
 
 
   int OS_W(TString cat);
@@ -89,6 +90,10 @@ class CreateHistos{
   int Jet0_low(TString mtcut = "");
   int Jet0_high(TString mtcut = "");
 
+  int Jet0(TString mtcut = "");
+  int Boosted(TString mtcut = "");
+  int VBF(TString mtcut = "");
+
   int PUJetIdSelection(TString wp);
   float PUIdCutParamsTight(float eta);
   float PUIdCutParamsMedium(float eta);
@@ -104,6 +109,8 @@ class CreateHistos{
   int returnBins(vector<double> input);
   TH1D* getBinnedHisto(TString name,vector<double> input);
 
+  double get2DVar(TString sub);
+  int returnBin(vector<double> bins, double value);
   double getMT();
   double getMT2();
   double getMTTOT();
