@@ -94,6 +94,9 @@ void CreateHistos::initFakeFactors(){
     FFfile[cat] = TFile::Open("HTTutilities/Jet2TauFakes/data/"+channel+"/"+cat+"/"+FFversion);
     FFObj[cat] = (FakeFactor*)FFfile[cat]->Get("ff_comb");
   }
+  FFsyst["mt"] = Parameter.FFsystematics.mt.syst;
+  FFsyst["et"] = Parameter.FFsystematics.et.syst;
+  FFsyst["tt"] = Parameter.FFsystematics.tt.syst;
 }
 
 void CreateHistos::run(TString isTest){
@@ -125,7 +128,7 @@ void CreateHistos::run(TString isTest){
     this->loadFile(files[i][0]);
     Int_t nentries=0;
     if(isTest=="test"){
-      nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 100000 ) );
+      nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 10000 ) );
     }else{
       nentries = Int_t(NtupleView->fChain->GetEntries());
     }
@@ -379,18 +382,18 @@ void CreateHistos::applyFF(float var, float weight, TString cat, TString strVar,
       FFinputs.clear();
       this->getFFInputs(FFinputs);
       this->GetHistbyName( fname+"_jetFakes"+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs) );
-      if(channel=="mt"){
-        for( auto syst : Parameter.FFsystematics.mt.syst ){
-          this->GetHistbyName( fname+"_jetFakes_"+syst+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs, syst) );
-        }
-      }else if(channel=="et"){
-        for( auto syst : Parameter.FFsystematics.et.syst ){
-          this->GetHistbyName( fname+"_jetFakes_"+syst+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs, syst) );
-        }
-      }else if(channel=="tt"){
-        for( auto syst : Parameter.FFsystematics.tt.syst ){
-          this->GetHistbyName( fname+"_jetFakes_"+syst+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs, syst) );
-        }
+      if(fname=="Z"){
+        this->GetHistbyName( fname+"_jetFakes_Up"+sub,strVar)->Fill(usedVar, 1.08*weight*FFObj[cat]->value(FFinputs) );
+        this->GetHistbyName( fname+"_jetFakes_Down"+sub,strVar)->Fill(usedVar, 0.92*weight*FFObj[cat]->value(FFinputs) );
+      }
+      if(fname=="TT"){
+        this->GetHistbyName( fname+"_jetFakes_Up"+sub,strVar)->Fill(usedVar, 1.12*weight*FFObj[cat]->value(FFinputs) );
+        this->GetHistbyName( fname+"_jetFakes_Down"+sub,strVar)->Fill(usedVar, 0.88*weight*FFObj[cat]->value(FFinputs) );
+      }
+
+      for( auto syst : FFsyst[channel] ){
+        TString tmp=syst; tmp.ReplaceAll("_down","Down"); tmp.ReplaceAll("_up","Up");
+        this->GetHistbyName( fname+"_jetFakes_"+tmp+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs, syst) );
       }
     }
   }
@@ -741,8 +744,30 @@ void CreateHistos::Estimate_W_QCD(TString strVar, TString cat, TString extend){
 void CreateHistos::EstimateFF(TString strVar, TString cat, TString extend){
   TString sub = extend + "+" + strVar +"_" + cat + "+";
 
-  double normUp=0;
-  double normDown=0;
+  double normUp_jetFakes=0;
+  double normUp_jetFakes_syst=0;
+  double normUp_data=0;
+  double normUp_data_syst=0;
+  double normUp_W=0;
+  double normUp_W_syst=0;
+  double normUp_Z=0;
+  double normUp_Z_syst=0;
+  double normUp_TT=0;
+  double normUp_TT_syst=0;
+  double normUp_VV=0;
+  double normUp_VV_syst=0;
+  double normDown_jetFakes=0;
+  double normDown_jetFakes_syst=0;
+  double normDown_data=0;
+  double normDown_data_syst=0;
+  double normDown_W=0;
+  double normDown_W_syst=0;
+  double normDown_Z=0;
+  double normDown_Z_syst=0;
+  double normDown_TT=0;
+  double normDown_TT_syst=0;
+  double normDown_VV=0;
+  double normDown_VV_syst=0;
   
   this->GetHistbyName("jetFakes"+sub,strVar)->Add( this->GetHistbyName("data_jetFakes"+sub,strVar)   );
   this->GetHistbyName("jetFakes"+sub,strVar)->Add( this->GetHistbyName("W_jetFakes"+sub,strVar), -1 );
@@ -750,79 +775,154 @@ void CreateHistos::EstimateFF(TString strVar, TString cat, TString extend){
   this->GetHistbyName("jetFakes"+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes"+sub,strVar), -1 );
   this->GetHistbyName("jetFakes"+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes"+sub,strVar), -1 );
 
+  this->GetHistbyName("jetFakes_Zvar_systUp"+sub,strVar)->Add( this->GetHistbyName("data_jetFakes"+sub,strVar)   );
+  this->GetHistbyName("jetFakes_Zvar_systUp"+sub,strVar)->Add( this->GetHistbyName("W_jetFakes"+sub,strVar), -1 );
+  this->GetHistbyName("jetFakes_Zvar_systUp"+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes"+sub,strVar),  -1 );
+  this->GetHistbyName("jetFakes_Zvar_systUp"+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_Up"+sub,strVar), -1 );
+  this->GetHistbyName("jetFakes_Zvar_systUp"+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes"+sub,strVar), -1 );
+
+  this->GetHistbyName("jetFakes_Zvar_systDown"+sub,strVar)->Add( this->GetHistbyName("data_jetFakes"+sub,strVar)   );
+  this->GetHistbyName("jetFakes_Zvar_systDown"+sub,strVar)->Add( this->GetHistbyName("W_jetFakes"+sub,strVar), -1 );
+  this->GetHistbyName("jetFakes_Zvar_systDown"+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes"+sub,strVar),  -1 );
+  this->GetHistbyName("jetFakes_Zvar_systDown"+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_Down"+sub,strVar), -1 );
+  this->GetHistbyName("jetFakes_Zvar_systDown"+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes"+sub,strVar), -1 );
+
+  this->GetHistbyName("jetFakes_TTvar_systUp"+sub,strVar)->Add( this->GetHistbyName("data_jetFakes"+sub,strVar)   );
+  this->GetHistbyName("jetFakes_TTvar_systUp"+sub,strVar)->Add( this->GetHistbyName("W_jetFakes"+sub,strVar), -1 );
+  this->GetHistbyName("jetFakes_TTvar_systUp"+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_Up"+sub,strVar),  -1 );
+  this->GetHistbyName("jetFakes_TTvar_systUp"+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes"+sub,strVar), -1 );
+  this->GetHistbyName("jetFakes_TTvar_systUp"+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes"+sub,strVar), -1 );
+
+  this->GetHistbyName("jetFakes_TTvar_systDown"+sub,strVar)->Add( this->GetHistbyName("data_jetFakes"+sub,strVar)   );
+  this->GetHistbyName("jetFakes_TTvar_systDown"+sub,strVar)->Add( this->GetHistbyName("W_jetFakes"+sub,strVar), -1 );
+  this->GetHistbyName("jetFakes_TTvar_systDown"+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_Down"+sub,strVar),  -1 );
+  this->GetHistbyName("jetFakes_TTvar_systDown"+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes"+sub,strVar), -1 );
+  this->GetHistbyName("jetFakes_TTvar_systDown"+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes"+sub,strVar), -1 );
+
+  
+
   if(resetZero){
     for(int i = 1; i < this->GetHistbyName("jetFakes"+sub,strVar)->GetNbinsX(); i++){
       if( this->GetHistbyName("jetFakes"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("jetFakes"+sub,strVar)->SetBinContent(i,0.);
+      if( this->GetHistbyName("jetFakes_Zvar_systUp"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("jetFakes_Zvar_systUp"+sub,strVar)->SetBinContent(i,0.);
+      if( this->GetHistbyName("jetFakes_Zvar_systDown"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("jetFakes_Zvar_systDown"+sub,strVar)->SetBinContent(i,0.);
+      if( this->GetHistbyName("jetFakes_TTvar_systUp"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("jetFakes_TTvar_systUp"+sub,strVar)->SetBinContent(i,0.);
+      if( this->GetHistbyName("jetFakes_TTvar_systDown"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("jetFakes_TTvar_systDown"+sub,strVar)->SetBinContent(i,0.);
     }
   }
-
-  if(channel=="mt"){
-    for( auto syst : Parameter.FFsystematics.mt.syst ){
-      TString tmp=syst; tmp.ReplaceAll("_down","Down"); tmp.ReplaceAll("_up","Up"); 
-      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+syst+sub,strVar)   );
-      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+syst+sub,strVar), -1 );
-      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+syst+sub,strVar),  -1 );
-      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+syst+sub,strVar), -1 );
-      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+syst+sub,strVar), -1 );
-      if(resetZero){
-        for(int i = 1; i < this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->GetNbinsX(); i++){
-          if( this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->SetBinContent(i,0.);
-        }
-      }
-      //FIXME: if combination of uncertainties and normalization to std histo is required this is a first attempt 
-      /*if(tmp.Contains("Up")){
-        cout << tmp << sub << strVar << endl;
-        this->GetHistbyName("jetFakesN_"+tmp+sub,strVar)->Add( this->GetHistbyName("jetFakes_"+tmp+sub,strVar)  );
-        double intSyst = this->GetHistbyName("jetFakesN_"+tmp+sub,strVar)->Integral( 0, this->GetHistbyName("jetFakesN_"+tmp+sub,strVar)->GetNbinsX()+1  );
-        double intNorm = this->GetHistbyName("jetFakes"+sub,strVar)->Integral( 0, this->GetHistbyName("jetFakes_"+sub,strVar)->GetNbinsX()+1  );
-        cout << intSyst << " " << intNorm << endl;
-        this->GetHistbyName("jetFakesN_"+tmp+sub,strVar)->Scale( intNorm/intSyst );
-        normUp= TMath::Sqrt( TMath::Power(normUp,2) + TMath::Power( 1-(intNorm/intSyst),2 ) );
-        cout << normUp << endl;
-      }
-      if(tmp.Contains("Down")){
-        this->GetHistbyName("jetFakesN_"+tmp+sub,strVar)->Add( this->GetHistbyName("jetFakes_"+tmp+sub,strVar)  );
-        double intSyst = this->GetHistbyName("jetFakesN_"+tmp+sub,strVar)->Integral( 0, this->GetHistbyName("jetFakesN_"+tmp+sub,strVar)->GetNbinsX()+1  );
-        double intNorm = this->GetHistbyName("jetFakes"+sub,strVar)->Integral( 0, this->GetHistbyName("jetFakes_"+sub,strVar)->GetNbinsX()+1  );
-        this->GetHistbyName("jetFakesN_"+tmp+sub,strVar)->Scale( intNorm/intSyst );
-        normDown= TMath::Sqrt( TMath::Power(normDown,2) + TMath::Power( 1-(intNorm/intSyst),2 ) );
-        cout << normDown << endl;
-        }*/
-    }
-    //cout << "NormUp: " << normUp << endl;
-    //cout << "NormDown: " << normDown << endl;
-    //cout << "//////////////////////////////////////" << endl;
-  }
-  if(channel=="et"){
-    for( auto syst : Parameter.FFsystematics.et.syst ){
-      TString tmp=syst; tmp.ReplaceAll("_down","Down"); tmp.ReplaceAll("_up","Up"); 
-      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+syst+sub,strVar)   );
-      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+syst+sub,strVar), -1 );
-      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+syst+sub,strVar),  -1 );
-      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+syst+sub,strVar), -1 );
-      this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+syst+sub,strVar), -1 );
-      if(resetZero){
-        for(int i = 1; i < this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->GetNbinsX(); i++){
-          if( this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->SetBinContent(i,0.);
-        }
+  
+  for( auto syst : FFsyst[channel] ){
+    TString tmp=syst; tmp.ReplaceAll("_down","Down"); tmp.ReplaceAll("_up","Up"); 
+    this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+tmp+sub,strVar)   );
+    this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+tmp+sub,strVar), -1 );
+    this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+tmp+sub,strVar),  -1 );
+    this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+tmp+sub,strVar), -1 );
+    this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+tmp+sub,strVar), -1 );
+    if(resetZero){
+      for(int i = 1; i < this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->GetNbinsX(); i++){
+        if( this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->SetBinContent(i,0.);
       }
     }
-  }
-  if(channel=="tt"){
-    for( auto syst : Parameter.FFsystematics.tt.syst ){
-      TString tmp=syst; tmp.ReplaceAll("_down","Down"); tmp.ReplaceAll("_up","Up"); 
-      this->GetHistbyName("jetFakes_"+tmp+syst+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+syst+sub,strVar)   );
-      this->GetHistbyName("jetFakes_"+tmp+syst+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+syst+sub,strVar), -1 );
-      this->GetHistbyName("jetFakes_"+tmp+syst+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+syst+sub,strVar),  -1 );
-      this->GetHistbyName("jetFakes_"+tmp+syst+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+syst+sub,strVar), -1 );
-      this->GetHistbyName("jetFakes_"+tmp+syst+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+syst+sub,strVar), -1 );
-      if(resetZero){
-        for(int i = 1; i < this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->GetNbinsX(); i++){
-          if( this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("jetFakes_"+tmp+sub,strVar)->SetBinContent(i,0.);
-        }
-      }
+    //FIXME: if combination of uncertainties and normalization to std histo is required this is a first attempt 
+    this->GetHistbyName("jetFakes_norm_"+tmp+sub,strVar)->Add( this->GetHistbyName("jetFakes_"+tmp+sub,strVar)  );
+    double ratio = ( this->GetHistbyName("jetFakes"+sub,strVar)->Integral( 0, this->GetHistbyName("jetFakes"+sub,strVar)->GetNbinsX()+1  ) )/( this->GetHistbyName("jetFakes_norm_"+tmp+sub,strVar)->Integral( 0, this->GetHistbyName("jetFakes_norm_"+tmp+sub,strVar)->GetNbinsX()+1  ) );
+    this->GetHistbyName("jetFakes_norm_"+tmp+sub,strVar)->Scale( ratio );
+    if(tmp.Contains("syst")){
+      if( ratio > 1) normUp_jetFakes_syst = TMath::Sqrt( TMath::Power(normUp_jetFakes_syst,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_jetFakes_syst = TMath::Sqrt( TMath::Power(normDown_jetFakes_syst,2) + TMath::Power( 1-ratio,2 ) );
+    } else{
+      if( ratio > 1) normUp_jetFakes = TMath::Sqrt( TMath::Power(normUp_jetFakes,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_jetFakes = TMath::Sqrt( TMath::Power(normDown_jetFakes,2) + TMath::Power( 1-ratio,2 ) );
+    }
+    
+    this->GetHistbyName("data_jetFakes_norm_"+tmp+sub,strVar)->Add( this->GetHistbyName("data_jetFakes_"+tmp+sub,strVar)  );
+    ratio = ( this->GetHistbyName("data_jetFakes"+sub,strVar)->Integral( 0, this->GetHistbyName("data_jetFakes"+sub,strVar)->GetNbinsX()+1  ) )/( this->GetHistbyName("data_jetFakes_norm_"+tmp+sub,strVar)->Integral( 0, this->GetHistbyName("data_jetFakes_norm_"+tmp+sub,strVar)->GetNbinsX()+1  ) );
+    this->GetHistbyName("data_jetFakes_norm_"+tmp+sub,strVar)->Scale( ratio );
+    if(tmp.Contains("syst")){
+      if( ratio > 1) normUp_data_syst = TMath::Sqrt( TMath::Power(normUp_data_syst,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_data_syst = TMath::Sqrt( TMath::Power(normDown_data_syst,2) + TMath::Power( 1-ratio,2 ) );
+    } else{
+      if( ratio > 1) normUp_data = TMath::Sqrt( TMath::Power(normUp_data,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_data = TMath::Sqrt( TMath::Power(normDown_data,2) + TMath::Power( 1-ratio,2 ) );
+    }
+    
+    this->GetHistbyName("W_jetFakes_norm_"+tmp+sub,strVar)->Add( this->GetHistbyName("W_jetFakes_"+tmp+sub,strVar)  );
+    ratio = ( this->GetHistbyName("W_jetFakes"+sub,strVar)->Integral( 0, this->GetHistbyName("W_jetFakes"+sub,strVar)->GetNbinsX()+1  ) )/( this->GetHistbyName("W_jetFakes_norm_"+tmp+sub,strVar)->Integral( 0, this->GetHistbyName("W_jetFakes_norm_"+tmp+sub,strVar)->GetNbinsX()+1  ) );
+    this->GetHistbyName("W_jetFakes_norm_"+tmp+sub,strVar)->Scale( ratio );
+    if(tmp.Contains("syst")){
+      if( ratio > 1) normUp_W_syst = TMath::Sqrt( TMath::Power(normUp_W_syst,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_W_syst = TMath::Sqrt( TMath::Power(normDown_W_syst,2) + TMath::Power( 1-ratio,2 ) );
+    } else{
+      if( ratio > 1) normUp_W = TMath::Sqrt( TMath::Power(normUp_W,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_W = TMath::Sqrt( TMath::Power(normDown_W,2) + TMath::Power( 1-ratio,2 ) );
+    }
+    
+    this->GetHistbyName("TT_jetFakes_norm_"+tmp+sub,strVar)->Add( this->GetHistbyName("TT_jetFakes_"+tmp+sub,strVar)  );
+    ratio = ( this->GetHistbyName("TT_jetFakes"+sub,strVar)->Integral( 0, this->GetHistbyName("TT_jetFakes"+sub,strVar)->GetNbinsX()+1  ) )/( this->GetHistbyName("TT_jetFakes_norm_"+tmp+sub,strVar)->Integral( 0, this->GetHistbyName("TT_jetFakes_norm_"+tmp+sub,strVar)->GetNbinsX()+1  ) );
+    this->GetHistbyName("TT_jetFakes_norm_"+tmp+sub,strVar)->Scale( ratio );
+    if(tmp.Contains("syst")){
+      if( ratio > 1) normUp_TT_syst = TMath::Sqrt( TMath::Power(normUp_TT_syst,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_TT_syst = TMath::Sqrt( TMath::Power(normDown_TT_syst,2) + TMath::Power( 1-ratio,2 ) );
+    } else{
+      if( ratio > 1) normUp_TT = TMath::Sqrt( TMath::Power(normUp_TT,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_TT = TMath::Sqrt( TMath::Power(normDown_TT,2) + TMath::Power( 1-ratio,2 ) );
+    }
+    
+    this->GetHistbyName("Z_jetFakes_norm_"+tmp+sub,strVar)->Add( this->GetHistbyName("Z_jetFakes_"+tmp+sub,strVar)  );
+    ratio = ( this->GetHistbyName("Z_jetFakes"+sub,strVar)->Integral( 0, this->GetHistbyName("Z_jetFakes"+sub,strVar)->GetNbinsX()+1  ) )/( this->GetHistbyName("Z_jetFakes_norm_"+tmp+sub,strVar)->Integral( 0, this->GetHistbyName("Z_jetFakes_norm_"+tmp+sub,strVar)->GetNbinsX()+1  ) );
+    this->GetHistbyName("Z_jetFakes_norm_"+tmp+sub,strVar)->Scale( ratio );
+    if(tmp.Contains("syst")){
+      if( ratio > 1) normUp_Z_syst = TMath::Sqrt( TMath::Power(normUp_Z_syst,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_Z_syst = TMath::Sqrt( TMath::Power(normDown_Z_syst,2) + TMath::Power( 1-ratio,2 ) );
+    } else{
+      if( ratio > 1) normUp_Z = TMath::Sqrt( TMath::Power(normUp_Z,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_Z = TMath::Sqrt( TMath::Power(normDown_Z,2) + TMath::Power( 1-ratio,2 ) );
+    }
+    
+    this->GetHistbyName("VV_jetFakes_norm_"+tmp+sub,strVar)->Add( this->GetHistbyName("VV_jetFakes_"+tmp+sub,strVar)  );
+    ratio = ( this->GetHistbyName("VV_jetFakes"+sub,strVar)->Integral( 0, this->GetHistbyName("VV_jetFakes"+sub,strVar)->GetNbinsX()+1  ) )/( this->GetHistbyName("VV_jetFakes_norm_"+tmp+sub,strVar)->Integral( 0, this->GetHistbyName("VV_jetFakes_norm_"+tmp+sub,strVar)->GetNbinsX()+1  ) );
+    this->GetHistbyName("VV_jetFakes_norm_"+tmp+sub,strVar)->Scale( ratio );
+    if(tmp.Contains("syst")){
+      if( ratio > 1) normUp_VV_syst = TMath::Sqrt( TMath::Power(normUp_VV_syst,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_VV_syst = TMath::Sqrt( TMath::Power(normDown_VV_syst,2) + TMath::Power( 1-ratio,2 ) );
+    } else{
+      if( ratio > 1) normUp_VV = TMath::Sqrt( TMath::Power(normUp_VV,2) + TMath::Power( 1-ratio,2 ) );
+      else normDown_VV = TMath::Sqrt( TMath::Power(normDown_VV,2) + TMath::Power( 1-ratio,2 ) );
     }
   }
+  this->GetHistbyName("jetFakes_norm"+sub,"norm");
+  this->GetHistbyName("data_jetFakes_norm"+sub,"norm");
+  this->GetHistbyName("W_jetFakes_norm"+sub,"norm");
+  this->GetHistbyName("TT_jetFakes_norm"+sub,"norm");
+  this->GetHistbyName("Z_jetFakes_norm"+sub,"norm");
+  this->GetHistbyName("VV_jetFakes_norm"+sub,"norm");
+  this->GetHistbyName("jetFakes_norm"+sub)->SetBinContent(1,normUp_jetFakes);
+  this->GetHistbyName("data_jetFakes_norm"+sub)->SetBinContent(1,normUp_data);
+  this->GetHistbyName("W_jetFakes_norm"+sub)->SetBinContent(1,normUp_W);
+  this->GetHistbyName("TT_jetFakes_norm"+sub)->SetBinContent(1,normUp_TT);
+  this->GetHistbyName("Z_jetFakes_norm"+sub)->SetBinContent(1,normUp_Z);
+  this->GetHistbyName("VV_jetFakes_norm"+sub)->SetBinContent(1,normUp_VV);
+  this->GetHistbyName("jetFakes_norm"+sub)->SetBinContent(2,normDown_jetFakes);
+  this->GetHistbyName("data_jetFakes_norm"+sub)->SetBinContent(2,normDown_data);
+  this->GetHistbyName("W_jetFakes_norm"+sub)->SetBinContent(2,normDown_W);
+  this->GetHistbyName("TT_jetFakes_norm"+sub)->SetBinContent(2,normDown_TT);
+  this->GetHistbyName("Z_jetFakes_norm"+sub)->SetBinContent(2,normDown_Z);
+  this->GetHistbyName("VV_jetFakes_norm"+sub)->SetBinContent(2,normDown_VV);
+  this->GetHistbyName("jetFakes_norm"+sub)->SetBinContent(3,normUp_jetFakes_syst);
+  this->GetHistbyName("data_jetFakes_norm"+sub)->SetBinContent(3,normUp_data_syst);
+  this->GetHistbyName("W_jetFakes_norm"+sub)->SetBinContent(3,normUp_W_syst);
+  this->GetHistbyName("TT_jetFakes_norm"+sub)->SetBinContent(3,normUp_TT_syst);
+  this->GetHistbyName("Z_jetFakes_norm"+sub)->SetBinContent(3,normUp_Z_syst);
+  this->GetHistbyName("VV_jetFakes_norm"+sub)->SetBinContent(3,normUp_VV_syst);
+  this->GetHistbyName("jetFakes_norm"+sub)->SetBinContent(4,normDown_jetFakes_syst);
+  this->GetHistbyName("data_jetFakes_norm"+sub)->SetBinContent(4,normDown_data_syst);
+  this->GetHistbyName("W_jetFakes_norm"+sub)->SetBinContent(4,normDown_W_syst);
+  this->GetHistbyName("TT_jetFakes_norm"+sub)->SetBinContent(4,normDown_TT_syst);
+  this->GetHistbyName("Z_jetFakes_norm"+sub)->SetBinContent(4,normDown_Z_syst);
+  this->GetHistbyName("VV_jetFakes_norm"+sub)->SetBinContent(4,normDown_VV_syst);
+  //cout << "NormUp: " << normUp << endl;
+  //cout << "NormDown: " << normDown << endl;
+  //cout << "//////////////////////////////////////" << endl;
 
 }
 
@@ -1295,7 +1395,13 @@ TH1D* CreateHistos::JITHistoCreator(TString name, TString strVar){
     histo_names.push_back(name);
 
     return histos.back();
-  }  
+  }
+
+  if(strVar == "norm"){
+    nbins = 4;
+    nmin  = 0;
+    nmax  = 4;
+  }
   
   if(strVar == "m_vis"){
     if(Parameter.variable.m_vis.doVarBins) {

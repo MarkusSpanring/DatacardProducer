@@ -125,6 +125,7 @@ class CreateHistos{
   vector<Double_t> FFinputs;
   map< TString, TFile*> FFfile;
   map< TString, FakeFactor*> FFObj;
+  map< TString, vector<string> > FFsyst;
 
   
   
