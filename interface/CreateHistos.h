@@ -6,13 +6,7 @@
 #include "TFile.h"
 #include "TH1D.h"
 #include "ParameterConfig_SM.h"
-
-#include "HTTutilities/Jet2TauFakes/interface/WrapperTGraph.h"
-#include "HTTutilities/Jet2TauFakes/interface/WrapperTH2F.h"
-#include "HTTutilities/Jet2TauFakes/interface/WrapperTH3D.h"
-#include "HTTutilities/Jet2TauFakes/interface/WrapperTFormula.h"
-#include "HTTutilities/Jet2TauFakes/interface/IFunctionWrapper.h"
-#include "HTTutilities/Jet2TauFakes/interface/FakeFactor.h"
+#include "interface/FFCalculator.h"
 
 class CreateHistos{
  public:
@@ -62,6 +56,8 @@ class CreateHistos{
   float CalcJdeta();
   float CalcHPt();
   void getFFInputs(vector<double>&inputs);
+  void getFF1Inputs(vector<double>&inputs);
+  void getFF2Inputs(vector<double>&inputs);
 
   int Baseline(TString sign, TString cat);
   int Vetos();
