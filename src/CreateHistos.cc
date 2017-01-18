@@ -129,7 +129,7 @@ void CreateHistos::run(TString isTest){
     this->loadFile(files[i][0]);
     Int_t nentries=0;
     if(isTest=="test"){
-      nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 100000 ) );
+      nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 10000 ) );
     }else{
       nentries = Int_t(NtupleView->fChain->GetEntries());
     }
@@ -472,7 +472,7 @@ int CreateHistos::returnBin(vector<double> bins, double value){
   if( value<bins.at(0) ) return -1;
   else if( value > bins.at( bins.size() -1 ) ) return -1;
   for(int i=0; i<bins.size()-1; i++){
-    if( value>bins.at(i) && value<bins.at(i+1) ) return i+1;
+    if( value>bins.at(i) && value<bins.at(i+1) ) return i;
   }
   return -1;
 }
@@ -555,8 +555,8 @@ void CreateHistos::DYSelections(float var, float weight, TString cat, TString st
                  || ( channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
                  ){
           this->GetHistbyName("ZTT"+sub,strVar)->Fill(usedVar, weight);
-          this->GetHistbyName("ZTT_CMS_htt_dyShape_13TeVUp"+sub,strVar)->Fill(usedVar, weight * NtupleView->ZWeight * NtupleView->ZWeight);
-          this->GetHistbyName("ZTT_CMS_htt_dyShape_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
+          this->GetHistbyName("ZTT_CMS_htt_dyShape_13TeVUp"+sub,strVar)->Fill(usedVar, weight * NtupleView->ZWeight );
+          this->GetHistbyName("ZTT_CMS_htt_dyShape_13TeVDown"+sub,strVar)->Fill(usedVar, weight/NtupleView->ZWeight );
         }
         else if( ( channel != "tt" && NtupleView->gen_match_2 == 6 )
                  || ( channel == "tt" && ( NtupleView->gen_match_1 == 6 || NtupleView->gen_match_2 == 6 ) )
@@ -569,7 +569,7 @@ void CreateHistos::DYSelections(float var, float weight, TString cat, TString st
         else if( NtupleView->NUP == 1)     this->GetHistbyName("Z_1Jets"+sub,strVar)->Fill(usedVar, weight);  
         else if(  NtupleView->NUP > 1)     this->GetHistbyName("Z_ge2Jets"+sub,strVar)->Fill(usedVar, weight);
         ////////////////////////////////////////////////////////////////
-        if( calcFF  && channel == "tt" ){
+        if( calcFF  && channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) ){
           if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName("ZJ_rest"+sub,strVar)->Fill(usedVar, weight*0.5);
           if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName("ZJ_rest"+sub,strVar)->Fill(usedVar, weight*0.5);
         }
@@ -621,17 +621,17 @@ void CreateHistos::TSelections(float var, float weight, TString cat, TString str
                  || ( channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
                  ){
           this->GetHistbyName("TTT"+sub,strVar)->Fill(usedVar, weight); 
-          this->GetHistbyName("TTT_CMS_htt_ttbarShape_13TeVUp"+sub,strVar)->Fill(usedVar, NtupleView->topWeight * NtupleView->topWeight*weight);
-          this->GetHistbyName("TTT_CMS_htt_ttbarShape_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
+          this->GetHistbyName("TTT_CMS_htt_ttbarShape_13TeVUp"+sub,strVar)->Fill(usedVar, weight*NtupleView->topWeight);
+          this->GetHistbyName("TTT_CMS_htt_ttbarShape_13TeVDown"+sub,strVar)->Fill(usedVar, weight/NtupleView->topWeight);
         }
         else if( ( channel != "tt" && NtupleView->gen_match_2 == 6 )
                  || ( channel == "tt" && ( NtupleView->gen_match_1 == 6 || NtupleView->gen_match_2 == 6 ) )
                  ){
           this->GetHistbyName("TTJ"+sub,strVar)->Fill(usedVar, weight);
-          this->GetHistbyName("TTJ_CMS_htt_ttbarShape_13TeVUp"+sub,strVar)->Fill(usedVar, NtupleView->topWeight * NtupleView->topWeight*weight);
-          this->GetHistbyName("TTJ_CMS_htt_ttbarShape_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
+          this->GetHistbyName("TTJ_CMS_htt_ttbarShape_13TeVUp"+sub,strVar)->Fill(usedVar, weight*NtupleView->topWeight);
+          this->GetHistbyName("TTJ_CMS_htt_ttbarShape_13TeVDown"+sub,strVar)->Fill(usedVar, weight/NtupleView->topWeight);
         }
-        if( calcFF  && channel == "tt" ){
+        if( calcFF  && channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) ){
           if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName("TTJ_rest"+sub,strVar)->Fill(usedVar, weight*0.5);
           if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName("TTJ_rest"+sub,strVar)->Fill(usedVar, weight*0.5);
         }
@@ -677,7 +677,8 @@ void CreateHistos::WSelections(float var, float weight, TString cat, TString str
     if(fname == "W"){
       if( this->Baseline("OS",cat) ){ 
         this->GetHistbyName("W_MC"+sub,strVar)->Fill(usedVar, weight);
-        if( calcFF  && channel == "tt" ){
+        
+        if( calcFF  && channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) ){
           if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName("W_rest"+sub,strVar)->Fill(usedVar, weight*0.5);
           if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName("W_rest"+sub,strVar)->Fill(usedVar, weight*0.5);
         }
@@ -723,7 +724,7 @@ void CreateHistos::VVSelections(float var, float weight, TString cat, TString st
                  ){
           this->GetHistbyName("VVJ"+sub,strVar)->Fill(usedVar, weight);
         }
-        if( calcFF  && channel == "tt" ){
+        if( calcFF  && channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) ){
           if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName("VVJ_rest"+sub,strVar)->Fill(usedVar, weight*0.5);
           if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName("VVJ_rest"+sub,strVar)->Fill(usedVar, weight*0.5);
         }
@@ -1098,6 +1099,13 @@ void CreateHistos::EstimateFF(TString strVar, TString cat, TString extend){
   this->GetHistbyName("TT_jetFakes_norm"+sub)->SetBinContent(4,normDown_TT_syst);
   this->GetHistbyName("Z_jetFakes_norm"+sub)->SetBinContent(4,normDown_Z_syst);
   this->GetHistbyName("VV_jetFakes_norm"+sub)->SetBinContent(4,normDown_VV_syst);
+
+  if(channel == "tt"){
+    this->GetHistbyName("FF_rest"+sub,strVar)->Add( this->GetHistbyName("ZJ_rest"+sub,strVar)   );
+    this->GetHistbyName("FF_rest"+sub,strVar)->Add( this->GetHistbyName("W_rest"+sub,strVar)   );
+    this->GetHistbyName("FF_rest"+sub,strVar)->Add( this->GetHistbyName("TTJ_rest"+sub,strVar)   );
+    this->GetHistbyName("FF_rest"+sub,strVar)->Add( this->GetHistbyName("VVJ_rest"+sub,strVar)   );
+  }
   //cout << "NormUp: " << normUp << endl;
   //cout << "NormDown: " << normDown << endl;
   //cout << "//////////////////////////////////////" << endl;
