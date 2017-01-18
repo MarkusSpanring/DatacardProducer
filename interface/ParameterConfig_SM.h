@@ -9,6 +9,9 @@ const struct Parameter{
     TString Z="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+reduced+".root";
     TString ZtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+"_TauPtUp"+reduced+".root";
     TString ZtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_DYXJetsToLL_lowMass_merged_MCSpring16_"+channel+"_"+version+"_TauPtDown"+reduced+".root";
+    TString EWKZ="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_EWK_merged_MCSpring16_"+channel+"_"+version+reduced+".root";
+    TString EWKZtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_EWK_merged_MCSpring16_"+channel+"_"+version+"_TauPtUp"+reduced+".root";
+    TString EWKZtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_EWK_merged_MCSpring16_"+channel+"_"+version+"_TauPtDown"+reduced+".root";
     TString TT="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_TT_merged_MCSpring16_"+channel+"_"+version+reduced+".root";
     TString TTtauUp="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_TT_merged_MCSpring16_"+channel+"_"+version+"_TauPtUp"+reduced+".root";
     TString TTtauDown="/data/higgs/data_2016/ntuples_"+version+"/"+channel+"/ntuples_"+doSvfit+"_merged/BASIS_ntuple_TT_merged_MCSpring16_"+channel+"_"+version+"_TauPtDown"+reduced+".root";
