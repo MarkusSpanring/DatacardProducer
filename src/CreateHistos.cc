@@ -9,6 +9,7 @@ using namespace std;
 
 CreateHistos::CreateHistos(){
 
+  TEST
   histos.clear();
   files.clear();
   histo_names.clear();
