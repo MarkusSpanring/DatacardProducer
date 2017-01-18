@@ -114,6 +114,9 @@ class CreateHistos{
   int passMTCut();
   int passIso(TString type);
 
+  int getNjets();
+  double getMjj();
+  double getJdeta();
 
   TFile *outfile;
   vector<TH1D*> histos;
@@ -130,6 +133,7 @@ class CreateHistos{
   
  private:
   ntuple *NtupleView;
+  Int_t isJEC=0; //0->no correction; 1->jecUp; -1->jecDown;
 
 };
 
