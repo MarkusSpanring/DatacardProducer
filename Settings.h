@@ -1,5 +1,6 @@
 const TString channel="et";
 const TString version="v5";
+///////////////////////////////////
 const double usedLuminosity=27.9; //20.2 wo runG //27.9 
 const int ptShift=0;
 const int jecShift=0;
