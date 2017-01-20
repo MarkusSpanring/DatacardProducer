@@ -173,7 +173,7 @@ const struct Parameter{
 
   struct variable2D{
     struct D2_0Jet{
-      TString name = "0Jet";
+      TString name = "0jet";
       vector<double> binsX = {30,35,40,45,50,55,300}; //pt_2
       vector<double> binsY = {0,60,65,70,75,80,85,90,95,100,105,110,400}; //m_vis
     } D2_0Jet;
@@ -194,7 +194,7 @@ const struct Parameter{
   } variable2D;
   struct variable2D_tt{
     struct D2_0Jet{
-      TString name = "0Jet";
+      TString name = "0jet";
       vector<double> binsX = {0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300}; //svfit_mass of m_vis
     } D2_0Jet;
     struct D2_boosted{
@@ -224,7 +224,7 @@ const struct Parameter{
 
   struct category{
     vector<TString> D1categories = {"inclusive","0Jet_low","0Jet_high","1Jet_low","1Jet_high","VBF_low","VBF_high"};
-    vector<TString> D2categories = {"0Jet","boosted","vbf"};
+    vector<TString> D2categories = {"0jet","boosted","vbf"};
     //FIXME: add PU jet categories
   } category;
 
