@@ -13,6 +13,17 @@ class FFCalculator : public GlobalClass{
  public:
   FFCalculator();
   ~FFCalculator();
+
+  void getFFInputs(vector<double>&inputs);
+  void getFF1Inputs(vector<double>&inputs);
+  void getFF2Inputs(vector<double>&inputs);
+  void initFakeFactors();
+  void applyFF(float var, float weight, TString cat, TString strVar, TString fname, int isData, TString extend="");
+
+  vector<Double_t> FFinputs;
+  map< TString, TFile*> FFfile;
+  map< TString, FakeFactor*> FFObj;
+  map< TString, vector<string> > FFsyst;
   
 };
 
