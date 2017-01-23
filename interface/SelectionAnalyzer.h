@@ -15,7 +15,11 @@ class SelectionAnalyzer : public FFCalculator{
   void WSelections(float var, float weight, TString cat, TString strVar, TString fname, TString extend="");
   void dataSelections(float var, float weight, TString cat, TString strVar, TString fname, TString extend="");
   void signalSelections(float var, float weight, TString cat, TString strVar, TString fname, TString extend="");
-  
+
+  int LSelection();
+  int TSelection();
+  int JSelection();
+  int FFRest();
 
 };
 
