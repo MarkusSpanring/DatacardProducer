@@ -32,19 +32,19 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
         if( isData || NtupleView->gen_match_2 < 6 ){
           FFinputs.clear();
           this->getFFInputs(FFinputs);
-          this->GetHistbyName( fname+"_jetFakes"+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs) );
+          this->GetHistbyName( fname+"_"+s_jetFakes+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs) );
           if(fname=="Z"){
-            this->GetHistbyName( fname+"_jetFakes_Up"+sub,strVar)->Fill(usedVar, 1.08*weight*FFObj[cat]->value(FFinputs) );
-            this->GetHistbyName( fname+"_jetFakes_Down"+sub,strVar)->Fill(usedVar, 0.92*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_up+sub,strVar)->Fill(usedVar, (1.+Parameter.FFsystematics.XSvariation.DYXSvariation)*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_down+sub,strVar)->Fill(usedVar, (1.-Parameter.FFsystematics.XSvariation.DYXSvariation)*weight*FFObj[cat]->value(FFinputs) );
           }
           if(fname=="TT"){
-            this->GetHistbyName( fname+"_jetFakes_Up"+sub,strVar)->Fill(usedVar, 1.12*weight*FFObj[cat]->value(FFinputs) );
-            this->GetHistbyName( fname+"_jetFakes_Down"+sub,strVar)->Fill(usedVar, 0.88*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_up+sub,strVar)->Fill(usedVar, (1.+Parameter.FFsystematics.XSvariation.TTXSvariation)*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_down+sub,strVar)->Fill(usedVar, (1.+Parameter.FFsystematics.XSvariation.TTXSvariation)*weight*FFObj[cat]->value(FFinputs) );
           }
           
           for( auto syst : FFsyst[channel] ){
-            TString tmp=syst; tmp.ReplaceAll("_down","Down"); tmp.ReplaceAll("_up","Up");
-            this->GetHistbyName( fname+"_jetFakes_"+tmp+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs, syst) );
+            TString tmp=syst; tmp.ReplaceAll("_down",s_down); tmp.ReplaceAll("_up",s_up);
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+tmp+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs, syst) );
           }
         }
       }
@@ -55,19 +55,19 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
         if( isData || NtupleView->gen_match_1 < 6 ){
           FFinputs.clear();
           this->getFF1Inputs(FFinputs);
-          this->GetHistbyName( fname+"_jetFakes"+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
+          this->GetHistbyName( fname+"_"+s_jetFakes+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
           if(fname=="Z"){
-            this->GetHistbyName( fname+"_jetFakes_Up"+sub,strVar)->Fill(usedVar, 1.08*0.5*weight*FFObj[cat]->value(FFinputs) );
-            this->GetHistbyName( fname+"_jetFakes_Down"+sub,strVar)->Fill(usedVar, 0.92*0.5*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_up+sub,strVar)->Fill(usedVar, 1.08*0.5*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_down+sub,strVar)->Fill(usedVar, 0.92*0.5*weight*FFObj[cat]->value(FFinputs) );
           }
           if(fname=="TT"){
-            this->GetHistbyName( fname+"_jetFakes_Up"+sub,strVar)->Fill(usedVar, 1.12*0.5*weight*FFObj[cat]->value(FFinputs) );
-            this->GetHistbyName( fname+"_jetFakes_Down"+sub,strVar)->Fill(usedVar, 0.88*0.5*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_up+sub,strVar)->Fill(usedVar, 1.12*0.5*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_down+sub,strVar)->Fill(usedVar, 0.88*0.5*weight*FFObj[cat]->value(FFinputs) );
           }
           
           for( auto syst : FFsyst[channel] ){
-          TString tmp=syst; tmp.ReplaceAll("_down","Down"); tmp.ReplaceAll("_up","Up");
-          this->GetHistbyName( fname+"_jetFakes_"+tmp+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs, syst) );
+          TString tmp=syst; tmp.ReplaceAll("_down",s_down); tmp.ReplaceAll("_up",s_up);
+          this->GetHistbyName( fname+"_"+s_jetFakes+"_"+tmp+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs, syst) );
           }
         }
       }
@@ -75,19 +75,19 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
         if( isData || NtupleView->gen_match_2 < 6 ){
           FFinputs.clear();
           this->getFF2Inputs(FFinputs);
-          this->GetHistbyName( fname+"_jetFakes"+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
+          this->GetHistbyName( fname+"_"+s_jetFakes+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
           if(fname=="Z"){
-            this->GetHistbyName( fname+"_jetFakes_Up"+sub,strVar)->Fill(usedVar, 1.08*0.5*weight*FFObj[cat]->value(FFinputs) );
-            this->GetHistbyName( fname+"_jetFakes_Down"+sub,strVar)->Fill(usedVar, 0.92*0.5*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_up+sub,strVar)->Fill(usedVar, 1.08*0.5*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_down+sub,strVar)->Fill(usedVar, 0.92*0.5*weight*FFObj[cat]->value(FFinputs) );
           }
           if(fname=="TT"){
-            this->GetHistbyName( fname+"_jetFakes_Up"+sub,strVar)->Fill(usedVar, 1.12*0.5*weight*FFObj[cat]->value(FFinputs) );
-            this->GetHistbyName( fname+"_jetFakes_Down"+sub,strVar)->Fill(usedVar, 0.88*0.5*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_up+sub,strVar)->Fill(usedVar, 1.12*0.5*weight*FFObj[cat]->value(FFinputs) );
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+s_down+sub,strVar)->Fill(usedVar, 0.88*0.5*weight*FFObj[cat]->value(FFinputs) );
           }
           
           for( auto syst : FFsyst[channel] ){
-            TString tmp=syst; tmp.ReplaceAll("_down","Down"); tmp.ReplaceAll("_up","Up");
-            this->GetHistbyName( fname+"_jetFakes_"+tmp+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs, syst) );
+            TString tmp=syst; tmp.ReplaceAll("_down",s_down); tmp.ReplaceAll("_up",s_up);
+            this->GetHistbyName( fname+"_"+s_jetFakes+"_"+tmp+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs, syst) );
           }
         }
       }
@@ -101,7 +101,7 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
         if( isData || NtupleView->gen_match_2 < 6 ){
           FFinputs.clear();
           this->getFFInputs(FFinputs);
-          this->GetHistbyName( fname+"_jetFakes"+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs) );
+          this->GetHistbyName( fname+"_"+s_jetFakes+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs) );
         }
       }
     }
@@ -111,14 +111,14 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
         if( isData || NtupleView->gen_match_1 < 6 ){
           FFinputs.clear();
           this->getFF1Inputs(FFinputs);
-          this->GetHistbyName( fname+"_jetFakes"+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
+          this->GetHistbyName( fname+"_"+s_jetFakes+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
         }
       }
       if( this->Baseline("FF2",cat) &&  ( is1DCategories(cat) || is2DCategories(cat) ) ){
         if( isData || NtupleView->gen_match_2 < 6 ){
           FFinputs.clear();
           this->getFF2Inputs(FFinputs);
-          this->GetHistbyName( fname+"_jetFakes"+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
+          this->GetHistbyName( fname+"_"+s_jetFakes+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
         }
       }
     }
@@ -131,7 +131,7 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
         if( isData || NtupleView->gen_match_2 < 6 ){
           FFinputs.clear();
           this->getFFInputs(FFinputs);
-          this->GetHistbyName( fname+"_jetFakes"+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs) );
+          this->GetHistbyName( fname+"_"+s_jetFakes+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs) );
         }
       }
     }
@@ -141,14 +141,14 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
         if( isData || NtupleView->gen_match_1 < 6 ){
           FFinputs.clear();
           this->getFF1Inputs(FFinputs);
-          this->GetHistbyName( fname+"_jetFakes"+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
+          this->GetHistbyName( fname+"_"+s_jetFakes+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
         }
       }
       if( this->Baseline("FF2",cat) &&  ( is1DCategories(cat) || is2DCategories(cat) ) ){
         if( isData || NtupleView->gen_match_2 < 6 ){
           FFinputs.clear();
           this->getFF2Inputs(FFinputs);
-          this->GetHistbyName( fname+"_jetFakes"+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
+          this->GetHistbyName( fname+"_"+s_jetFakes+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs) );
         }
       }
     }
