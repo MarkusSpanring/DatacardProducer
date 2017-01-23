@@ -500,7 +500,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
     return histos.back();
   }
 
-  if(strVar == "norm"){
+  if(strVar == s_norm){
     nbins = 4;
     nmin  = 0;
     nmax  = 4;
