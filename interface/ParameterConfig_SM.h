@@ -173,19 +173,19 @@ const struct Parameter{
 
   struct variable2D{
     struct D2_0Jet{
-      TString name = "0jet";
+      TString name = s_0jet;
       vector<double> binsX = {30,35,40,45,50,55,300}; //pt_2
       vector<double> binsY = {0,60,65,70,75,80,85,90,95,100,105,110,400}; //m_vis
     } D2_0Jet;
     struct D2_boosted{
-      TString name = "boosted";
+      TString name = s_boosted;
       vector<double> binsX = {0,100,150,200,250,300,5000}; //Higgs_pt
       vector<double> binsY_svfit = {0,80,90,100,110,120,130,140,150,160,300}; //svfit_mass
       vector<double> binsY_mvis = {0,60,70,80,90,100,110,120,130,140,300}; //m_vis instead of svfit_mass
       //binsY_mvis must have same number of bins
     } D2_boosted;
     struct D2_vbf{
-      TString name = "vbf";
+      TString name = s_vbf;
       vector<double> binsX = {300,700,1100,1500,10000}; //m_jj
       vector<double> binsY_svfit = {0,95,115,135,155,400}; //svfit_mass
       vector<double> binsY_mvis = {0,75,95,115,135,400}; //m_vis instead of svfit_mass
@@ -194,18 +194,18 @@ const struct Parameter{
   } variable2D;
   struct variable2D_tt{
     struct D2_0Jet{
-      TString name = "0jet";
+      TString name = s_0jet;
       vector<double> binsX = {0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300}; //svfit_mass of m_vis
     } D2_0Jet;
     struct D2_boosted{
-      TString name = "boosted";
+      TString name = s_boosted;
       vector<double> binsX = {0,100,170,300,1000}; //Higgs_pt
       vector<double> binsY_svfit = {0,40,60,70,80,90,100,110,120,130,150,200,250}; //svfit_mass
       vector<double> binsY_mvis = {0,30,50,60,70,80,90,100,110,120,140,200,250}; //m_vis instead of svfit_mass
       //binsY_mvis must have same number of bins
     } D2_boosted;
     struct D2_vbf{
-      TString name = "vbf";
+      TString name = s_vbf;
       vector<double> binsX = {300,500,800,10000}; //m_jj
       vector<double> binsY_svfit = {0,40,60,70,80,90,100,110,120,130,150,200,250}; //svfit_mass
       vector<double> binsY_mvis = {0,30,50,60,70,80,90,100,110,120,140,200,250}; //m_vis instead of svfit_mass
@@ -223,8 +223,8 @@ const struct Parameter{
   } analysisCut;
 
   struct category{
-    vector<TString> D1categories = {"inclusive","0Jet_low","0Jet_high","1Jet_low","1Jet_high","VBF_low","VBF_high"};
-    vector<TString> D2categories = {"0jet","boosted","vbf"};
+    vector<TString> D1categories = {s_inclusive,s_0jet_low,s_0jet_high,s_1jet_low,s_1jet_high,s_vbf_low,s_vbf_high};
+    vector<TString> D2categories = {s_0jet,s_boosted,s_vbf};
     //FIXME: add PU jet categories
   } category;
 

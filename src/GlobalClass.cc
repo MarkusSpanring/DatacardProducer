@@ -156,7 +156,7 @@ int GlobalClass::CategorySelection(TString cat, TString mtcut){
     return 0;
   }
 /////////////////////////  Inclusive ////////////////////////////////////////
-  if(cat == "inclusive") return 1;
+  if(cat == s_inclusive) return 1;
   if(cat == "PUId_tight")      return  this->PUJetIdSelection("tight");
   if(cat == "PUId_tight_fail") return !this->PUJetIdSelection("tight");
   if(cat == "PUId_med")      return  this->PUJetIdSelection("medium");
@@ -174,39 +174,39 @@ int GlobalClass::CategorySelection(TString cat, TString mtcut){
   if(cat == "2jet_mvis5080_mt40_PUId_loose_fail") return !this->PUJetIdSelection("loose") & this->jet2_mvis();
 
 /////////////////////////  VBF low category ///////////////////////////////
-  if(cat == "VBF_low") return this->VBF_low(mtcut);
+  if(cat == s_vbf_low) return this->VBF_low(mtcut);
   if(cat == "PUId_lo_VBF_low") return ( this->PUJetIdSelection("loose") & this->VBF_low(mtcut) );
   if(cat == "PUId_me_VBF_low") return ( this->PUJetIdSelection("medium") & this->VBF_low(mtcut) );
   if(cat == "PUId_ti_VBF_low") return ( this->PUJetIdSelection("tight") & this->VBF_low(mtcut) );
 
 /////////////////////////  VBF high category ///////////////////////////////
-  if(cat == "VBF_high") return this->VBF_high(mtcut);
+  if(cat == s_vbf_high) return this->VBF_high(mtcut);
   if(cat == "PUId_VBF_high") return ( this->PUJetIdSelection("tight") & this->VBF_high(mtcut) );
 
 /////////////////////////  1Jet low category ///////////////////////////////
-  if(cat == "1Jet_low") return this->Jet1_low(mtcut);
+  if(cat == s_1jet_low) return this->Jet1_low(mtcut);
   if(cat == "PUId_1Jet_low") return ( this->PUJetIdSelection("tight") & this->Jet1_low(mtcut) );
 
 /////////////////////////  1Jet high category ///////////////////////////////
-  if(cat == "1Jet_high") return this->Jet1_high(mtcut);
+  if(cat == s_1jet_high) return this->Jet1_high(mtcut);
   if(cat == "PUId_1Jet_high") return ( this->PUJetIdSelection("tight") & this->Jet1_high(mtcut) );
 
 /////////////////////////  2Jet low category ///////////////////////////////
-  if(cat == "0Jet_low") return this->Jet0_low(mtcut);
+  if(cat == s_0jet_low) return this->Jet0_low(mtcut);
   if(cat == "PUId_0Jet_low") return ( this->PUJetIdSelection("tight") & this->Jet0_low(mtcut) );
 
 /////////////////////////  Jet high category ///////////////////////////////
-  if(cat == "0Jet_high") return this->Jet0_high(mtcut);  
+  if(cat == s_0jet_low) return this->Jet0_high(mtcut);  
   if(cat == "PUId_0Jet_high") return ( this->PUJetIdSelection("tight") & this->Jet0_high(mtcut) );
 
   ///////////////////////  0jet category     ///////////////////////////////
-  if(cat == "0jet") return this->Jet0(mtcut);
+  if(cat == s_0jet) return this->Jet0(mtcut);
   
   ///////////////////////  boosted category     ///////////////////////////////
-  if(cat == "boosted") return this->Boosted(mtcut);
+  if(cat == s_boosted) return this->Boosted(mtcut);
 
   ///////////////////////  vbf category     ///////////////////////////////
-  if(cat == "vbf") return this->VBF(mtcut);
+  if(cat == s_vbf) return this->VBF(mtcut);
   
   return 0;
 }
@@ -506,7 +506,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
     nmax  = 4;
   }
   
-  if(strVar == "m_vis"){
+  if(strVar == s_mvis){
     if(Parameter.variable.m_vis.doVarBins) {
       usingVarBins = 1;
       histos.push_back( this->getBinnedHisto(name,Parameter.variable.m_vis.varBins) );
@@ -518,7 +518,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
     }
   }
 
-  if(strVar == "m_sv"){
+  if(strVar == s_msv){
     if(Parameter.variable.m_sv.doVarBins) {
       usingVarBins = 1;
       histos.push_back( this->getBinnedHisto(name,Parameter.variable.m_sv.varBins) );
@@ -530,7 +530,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
     }
   }
 
-  if(strVar == "pt_sv"){
+  if(strVar == s_ptsv){
     if(Parameter.variable.pt_sv.doVarBins) {
       usingVarBins = 1;
       histos.push_back( this->getBinnedHisto(name,Parameter.variable.pt_sv.varBins) );
@@ -542,8 +542,8 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
     }
   }
 
-  else if(strVar == "jpt_1"
-     || strVar == "jpt_2"
+  else if(strVar == s_jpt1
+     || strVar == s_jpt2
      || strVar == "jpt_1_2"
      || strVar == "jpt_1_2p5"
      || strVar == "jpt_1_3"
@@ -560,7 +560,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
       nmax  = Parameter.variable.jpt.nmax;
     }
   }
-  else if(strVar == "pt_1" || strVar == "pt_2"){
+  else if(strVar == s_pt1 || strVar == s_pt2){
     if(Parameter.variable.pt.doVarBins){
       usingVarBins = 1;
       histos.push_back( this->getBinnedHisto(name,Parameter.variable.pt.varBins) );
@@ -571,7 +571,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
       nmax  = Parameter.variable.pt.nmax;
     }
   }
-  else if(strVar == "eta_1" || strVar == "eta_2"){
+  else if(strVar == s_eta1 || strVar == s_eta2){
     if(Parameter.variable.eta.doVarBins){
       usingVarBins = 1;
       histos.push_back( this->getBinnedHisto(name,Parameter.variable.eta.varBins) );
@@ -582,7 +582,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
       nmax  = Parameter.variable.eta.nmax;
     }
   }
-  else if(strVar == "jeta_1" || strVar == "jeta_2"){
+  else if(strVar == s_jeta1 || strVar == s_jeta2){
     if(Parameter.variable.jeta.doVarBins){
       usingVarBins = 1;
       histos.push_back( this->getBinnedHisto(name,Parameter.variable.jeta.varBins) );
@@ -604,7 +604,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
       nmax  = Parameter.variable.jdeta.nmax;
     }
   }
-  else if(strVar == "mt_1"){
+  else if(strVar == s_mt1){
     if(Parameter.variable.mt_1.doVarBins){
       usingVarBins = 1;
       histos.push_back( this->getBinnedHisto(name,Parameter.variable.mt_1.varBins) );
@@ -615,7 +615,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
       nmax  = Parameter.variable.mt_1.nmax;
     }
   }
-  else if(strVar == "met"){
+  else if(strVar == s_met){
     if(Parameter.variable.met.doVarBins){
       usingVarBins = 1;
       histos.push_back( this->getBinnedHisto(name,Parameter.variable.met.varBins) );
@@ -626,7 +626,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
       nmax  = Parameter.variable.met.nmax;
     }
   }
-  else if(strVar == "mttot"){
+  else if(strVar == s_mttot){
     if(Parameter.variable.mttot.doVarBins){
       usingVarBins = 1;
       histos.push_back( this->getBinnedHisto(name,Parameter.variable.mttot.varBins) );
@@ -637,7 +637,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
       nmax  = Parameter.variable.mttot.nmax;
     }
   }
-  else if(strVar == "Hpt"){
+  else if(strVar == s_Hpt){
     if(Parameter.variable.Hpt.doVarBins){
       usingVarBins = 1;
       histos.push_back( this->getBinnedHisto(name,Parameter.variable.Hpt.varBins) );
@@ -681,7 +681,7 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
       nmax  = Parameter.variable.iso_1.nmax;
     }
   }
-  else if(strVar == "mjj"){
+  else if(strVar == s_mjj){
     if(Parameter.variable.mjj.doVarBins){
       usingVarBins = 1;
       histos.push_back( this->getBinnedHisto(name,Parameter.variable.mjj.varBins) );
@@ -719,30 +719,30 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
 
 double GlobalClass::QCD_OSSS(TString cat){
   if(channel == "mt"){
-    if(cat == "0jet"
-       || cat == "0Jet_low"
-       || cat == "0Jet_high")  return Parameter.QCD_OSSS.mt.ZeroJet;
+    if(cat == s_0jet
+       || cat == s_0jet_low
+       || cat == s_0jet_high)  return Parameter.QCD_OSSS.mt.ZeroJet;
 
-    if(cat == "boosted"
-       || cat == "1Jet_low"
-       || cat == "1Jet_high")  return Parameter.QCD_OSSS.mt.Boosted;
+    if(cat == s_boosted
+       || cat == s_1jet_low
+       || cat == s_1jet_high)  return Parameter.QCD_OSSS.mt.Boosted;
 
-    if(cat == "vbf"
-       || cat == "VBF_low"
-       || cat == "VBF_high")   return Parameter.QCD_OSSS.mt.VBF;
+    if(cat == s_vbf
+       || cat == s_vbf_low
+       || cat == s_vbf_high)   return Parameter.QCD_OSSS.mt.VBF;
   }
   if(channel == "et"){
-    if(cat == "0jet"
-       || cat == "0Jet_low"
-       || cat == "0Jet_high")  return Parameter.QCD_OSSS.et.ZeroJet;
+    if(cat == s_0jet
+       || cat == s_0jet_low
+       || cat == s_0jet_high)  return Parameter.QCD_OSSS.et.ZeroJet;
 
-    if(cat == "boosted"
-       || cat == "1Jet_low"
-       || cat == "1Jet_high")  return Parameter.QCD_OSSS.et.Boosted;
+    if(cat == s_boosted
+       || cat == s_1jet_low
+       || cat == s_1jet_high)  return Parameter.QCD_OSSS.et.Boosted;
 
-    if(cat == "vbf"
-       || cat == "VBF_low"
-       || cat == "VBF_high")   return Parameter.QCD_OSSS.et.VBF;
+    if(cat == s_vbf
+       || cat == s_vbf_low
+       || cat == s_vbf_high)   return Parameter.QCD_OSSS.et.VBF;
   }
   return 1.0;
 }

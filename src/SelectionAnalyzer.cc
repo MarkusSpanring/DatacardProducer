@@ -66,14 +66,14 @@ void SelectionAnalyzer::DYSelections(float var, float weight, TString cat, TStri
           && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
                )
-          )       this->GetHistbyName("ZTT_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
+          )       this->GetHistbyName("ZTT"+s_CMStauScale+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
     }
     else if(fname == "ZtauDown"){
       if( this->Baseline("OS",cat)
           && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
                )
-          )       this->GetHistbyName("ZTT_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
+          )       this->GetHistbyName("ZTT"+s_CMStauScale+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
     }
     else if(fname == "ZjecUp"){
       if( this->Baseline("OS",cat) ){
@@ -179,14 +179,14 @@ void SelectionAnalyzer::EWKZSelections(float var, float weight, TString cat, TSt
           && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
                )
-          )       this->GetHistbyName("EWKZ_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
+          )       this->GetHistbyName("EWKZ"+s_CMStauScale+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
     }
     else if(fname == "EWKZtauDown"){
       if( this->Baseline("OS",cat)
           && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
                )
-          )       this->GetHistbyName("EWKZ_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
+          )       this->GetHistbyName("EWKZ"+s_CMStauScale+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
     }
     else if(fname == "EWKZjecUp"){
       if( this->Baseline("OS",cat) ){
@@ -279,20 +279,22 @@ void SelectionAnalyzer::TSelections(float var, float weight, TString cat, TStrin
       
     }
     else if(fname == "TTtauUp"){
-      if( this->Baseline("OS",cat) )                 this->GetHistbyName("TT_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
+      if( this->Baseline("OS",cat) )                 this->GetHistbyName("TT"+s_CMStauScale+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
       if( this->Baseline("OS",cat)
-          && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
+          && ( ( channel != "tt" && NtupleView->gen_match_2 <= 5 )
                || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
+               || ( channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) && NtupleView->gen_match_1 < 6 && NtupleView->gen_match_2 < 6  )
                )
-          )                                          this->GetHistbyName("TTT_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
+          )                                          this->GetHistbyName("TTT"+s_CMStauScale+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
     }
     else if(fname == "TTtauDown"){
-      if( this->Baseline("OS",cat) )                 this->GetHistbyName("TT_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
+      if( this->Baseline("OS",cat) )                 this->GetHistbyName("TT"+s_CMStauScale+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
       if( this->Baseline("OS",cat)
-          && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
+          && ( ( channel != "tt" && NtupleView->gen_match_2 <= 5 )
                || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
+               || ( channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) && NtupleView->gen_match_1 < 6 && NtupleView->gen_match_2 < 6  )
                )
-          )                                          this->GetHistbyName("TTT_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
+          )                                          this->GetHistbyName("TTT"+s_CMStauScale+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
     }
     else if(fname == "TTjecUp"){
       if( this->Baseline("OS",cat) ){
@@ -300,7 +302,7 @@ void SelectionAnalyzer::TSelections(float var, float weight, TString cat, TStrin
         if( ( channel != "tt" && NtupleView->gen_match_2 < 5 ) 
             || ( channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) && NtupleView->gen_match_1 < 6 && NtupleView->gen_match_2 < 6  )
             ){
-          this->GetHistbyName("TTLjecUp"+sub,strVar)->Fill(usedVar, weight);
+          this->GetHistbyName("TTTjecUp"+sub,strVar)->Fill(usedVar, weight);
         }
         else if( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                  || ( channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
@@ -335,7 +337,7 @@ void SelectionAnalyzer::TSelections(float var, float weight, TString cat, TStrin
         if( ( channel != "tt" && NtupleView->gen_match_2 < 5 ) 
             || ( channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) && NtupleView->gen_match_1 < 6 && NtupleView->gen_match_2 < 6  )
             ){
-          this->GetHistbyName("TTLjecDown"+sub,strVar)->Fill(usedVar, weight);
+          this->GetHistbyName("TTTjecDown"+sub,strVar)->Fill(usedVar, weight);
         }
         else if( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                  || ( channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
@@ -483,20 +485,22 @@ void SelectionAnalyzer::VVSelections(float var, float weight, TString cat, TStri
       
     }
     else if(fname == "VVtauUp"){
-      if( this->Baseline("OS",cat) )                 this->GetHistbyName("VV_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
+      if( this->Baseline("OS",cat) )                 this->GetHistbyName("VV"+s_CMStauScale+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
       if( this->Baseline("OS",cat)
-          && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
-               || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
+          && ( ( channel != "tt" && NtupleView->gen_match_2 <= 5 )
+               || ( channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
+               || ( channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) && NtupleView->gen_match_1 < 6 && NtupleView->gen_match_2 < 6 )
                )
-          )                                          this->GetHistbyName("VVT_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
+          )                                          this->GetHistbyName("VVT"+s_CMStauScale+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
     }
     else if(fname == "VVtauDown"){
-      if( this->Baseline("OS",cat) )                 this->GetHistbyName("VV_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
+      if( this->Baseline("OS",cat) )                 this->GetHistbyName("VV"+s_CMStauScale+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
       if( this->Baseline("OS",cat)
-          && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
+          && ( ( channel != "tt" && NtupleView->gen_match_2 <= 5 )
                || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
+               || ( channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) && NtupleView->gen_match_1 < 6 && NtupleView->gen_match_2 < 6 )
                )
-          )                                          this->GetHistbyName("VVT_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
+          )                                          this->GetHistbyName("VVT"+s_CMStauScale+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
     }
     else if(fname == "VVjecUp"){
       if( this->Baseline("OS",cat) ){
@@ -504,7 +508,7 @@ void SelectionAnalyzer::VVSelections(float var, float weight, TString cat, TStri
         if( ( channel != "tt" && NtupleView->gen_match_2 < 5 ) 
             || ( channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) && NtupleView->gen_match_1 < 6 && NtupleView->gen_match_2 < 6  )
             ){
-          this->GetHistbyName("VVLjecUp"+sub,strVar)->Fill(usedVar, weight);
+          this->GetHistbyName("VVTjecUp"+sub,strVar)->Fill(usedVar, weight);
         }
         else if( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                  || ( channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
@@ -539,7 +543,7 @@ void SelectionAnalyzer::VVSelections(float var, float weight, TString cat, TStri
         if( ( channel != "tt" && NtupleView->gen_match_2 < 5 ) 
             || ( channel == "tt" && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) && NtupleView->gen_match_1 < 6 && NtupleView->gen_match_2 < 6  )
             ){
-          this->GetHistbyName("VVLjecDown"+sub,strVar)->Fill(usedVar, weight);
+          this->GetHistbyName("VVTjecDown"+sub,strVar)->Fill(usedVar, weight);
         }
         else if( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                  || ( channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
@@ -597,28 +601,28 @@ void SelectionAnalyzer::signalSelections(float var, float weight, TString cat, T
           && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
                )
-          )                                            this->GetHistbyName("ggH125_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
+          )                                            this->GetHistbyName("ggH125"+s_CMStauScale+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
     }
     else if(fname == "ggHtauDown"){
       if( this->Baseline("OS",cat)
           && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
                )
-          )                                            this->GetHistbyName("ggH125_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
+          )                                            this->GetHistbyName("ggH125"+s_CMStauScale+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
     }
     else if(fname == "qqHtauUp"){
       if( this->Baseline("OS",cat)
           && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
                )
-          )                                            this->GetHistbyName("qqH125_CMS_scale_t_"+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
+          )                                            this->GetHistbyName("qqH125"+s_CMStauScale+channel+"_13TeVUp"+sub,strVar)->Fill(usedVar, weight);
     }
     else if(fname == "qqHtauDown"){
       if( this->Baseline("OS",cat)
           && ( ( channel != "tt" && NtupleView->gen_match_2 == 5 )
                || (channel == "tt" && NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 )
                )
-          )                                            this->GetHistbyName("qqH125_CMS_scale_t_"+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
+          )                                            this->GetHistbyName("qqH125"+s_CMStauScale+channel+"_13TeVDown"+sub,strVar)->Fill(usedVar, weight);
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

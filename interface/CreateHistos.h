@@ -11,6 +11,13 @@ class CreateHistos : public SelectionAnalyzer{
 
   float getAntiLep_tauscaling();
 
+  int isZFile(TString fileName);
+  int isEWKZFile(TString fileName);
+  int isSignalFile(TString fileName);
+  int isTTFile(TString fileName);
+  int isWFile(TString fileName);
+  int isVVFile(TString fileName); 
+
   void CreateQCD_osw(TString strVar, TString cat, TString extend="");
   void CreateW(TString strVar, TString cat, TString extend="");
   void CreateQCD(TString strVar, TString cat, TString extend="");

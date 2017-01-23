@@ -13,45 +13,45 @@ CreateHistos::CreateHistos(){
   files.clear();
   histo_names.clear();
   
-  files.push_back({Parameter.dataset.Z,"Z"});
-  files.push_back({Parameter.dataset.EWKZ,"EWKZ"});
-  files.push_back({Parameter.dataset.W,"W"});
-  files.push_back({Parameter.dataset.TT,"TT"});
-  files.push_back({Parameter.dataset.VV,"VV"});
-  if(channel=="mt")files.push_back({Parameter.dataset.data_mt,"data"});
-  if(channel=="et")files.push_back({Parameter.dataset.data_et,"data"});
-  if(channel=="tt")files.push_back({Parameter.dataset.data_tt,"data"});
-  files.push_back({Parameter.dataset.ggH,"ggH"});
-  files.push_back({Parameter.dataset.qqH,"qqH"});
+  files.push_back({Parameter.dataset.Z,s_Z});
+  files.push_back({Parameter.dataset.EWKZ,s_EWKZ});
+  files.push_back({Parameter.dataset.W,s_W});
+  files.push_back({Parameter.dataset.TT,s_TT});
+  files.push_back({Parameter.dataset.VV,s_VV});
+  if(channel=="mt")files.push_back({Parameter.dataset.data_mt,s_data});
+  if(channel=="et")files.push_back({Parameter.dataset.data_et,s_data});
+  if(channel=="tt")files.push_back({Parameter.dataset.data_tt,s_data});
+  files.push_back({Parameter.dataset.ggH,s_ggH});
+  files.push_back({Parameter.dataset.qqH,s_qqH});
   if(ptShift){
-    files.push_back({Parameter.dataset.ZtauUp,"ZtauUp"});
-    files.push_back({Parameter.dataset.ZtauDown,"ZtauDown"});
-    files.push_back({Parameter.dataset.EWKZtauUp,"EWKZtauUp"});
-    files.push_back({Parameter.dataset.EWKZtauDown,"EWKZtauDown"});
-    files.push_back({Parameter.dataset.TTtauUp,"TTtauUp"});
-    files.push_back({Parameter.dataset.TTtauDown,"TTtauDown"});
-    files.push_back({Parameter.dataset.VVtauUp,"VVtauUp"});
-    files.push_back({Parameter.dataset.VVtauDown,"VVtauDown"});
-    files.push_back({Parameter.dataset.ggHtauUp,"ggHtauUp"});
-    files.push_back({Parameter.dataset.ggHtauDown,"ggHtauDown"});
-    files.push_back({Parameter.dataset.qqHtauUp,"qqHtauUp"});
-    files.push_back({Parameter.dataset.qqHtauDown,"qqHtauDown"});
+    files.push_back({Parameter.dataset.ZtauUp,s_ZtauUp});
+    files.push_back({Parameter.dataset.ZtauDown,s_ZtauDown});
+    files.push_back({Parameter.dataset.EWKZtauUp,s_EWKZtauUp});
+    files.push_back({Parameter.dataset.EWKZtauDown,s_EWKZtauDown});
+    files.push_back({Parameter.dataset.TTtauUp,s_TTtauUp});
+    files.push_back({Parameter.dataset.TTtauDown,s_TTtauDown});
+    files.push_back({Parameter.dataset.VVtauUp,s_VVtauUp});
+    files.push_back({Parameter.dataset.VVtauDown,s_VVtauDown});
+    files.push_back({Parameter.dataset.ggHtauUp,s_ggHtauUp});
+    files.push_back({Parameter.dataset.ggHtauDown,s_ggHtauDown});
+    files.push_back({Parameter.dataset.qqHtauUp,s_qqHtauUp});
+    files.push_back({Parameter.dataset.qqHtauDown,s_qqHtauDown});
   }
   if(jecShift){
-    files.push_back({Parameter.dataset.Z,"ZjecUp"});
-    files.push_back({Parameter.dataset.Z,"ZjecDown"});
-    files.push_back({Parameter.dataset.EWKZ,"EWKZjecUp"});
-    files.push_back({Parameter.dataset.EWKZ,"EWKZjecDown"});
-    files.push_back({Parameter.dataset.W,"WjecUp"});
-    files.push_back({Parameter.dataset.W,"WjecDown"});
-    files.push_back({Parameter.dataset.TT,"TTjecUp"});
-    files.push_back({Parameter.dataset.TT,"TTjecDown"});
-    files.push_back({Parameter.dataset.VV,"VVjecUp"});
-    files.push_back({Parameter.dataset.VV,"VVjecDown"});
-    files.push_back({Parameter.dataset.ggH,"ggHjecUp"});
-    files.push_back({Parameter.dataset.ggH,"ggHjecDown"});
-    files.push_back({Parameter.dataset.qqH,"qqHjecUp"});
-    files.push_back({Parameter.dataset.qqH,"qqHjecDown"});
+    files.push_back({Parameter.dataset.Z,s_ZjecUp});
+    files.push_back({Parameter.dataset.Z,s_ZjecDown});
+    files.push_back({Parameter.dataset.EWKZ,s_EWKZjecUp});
+    files.push_back({Parameter.dataset.EWKZ,s_EWKZjecDown});
+    files.push_back({Parameter.dataset.W,s_WjecUp});
+    files.push_back({Parameter.dataset.W,s_WjecDown});
+    files.push_back({Parameter.dataset.TT,s_TTjecUp});
+    files.push_back({Parameter.dataset.TT,s_TTjecDown});
+    files.push_back({Parameter.dataset.VV,s_VVjecUp});
+    files.push_back({Parameter.dataset.VV,s_VVjecDown});
+    files.push_back({Parameter.dataset.ggH,s_ggHjecUp});
+    files.push_back({Parameter.dataset.ggH,s_ggHjecDown});
+    files.push_back({Parameter.dataset.qqH,s_qqHjecUp});
+    files.push_back({Parameter.dataset.qqH,s_qqHjecDown});
   }
 
   for(int i=0; i<variables.size(); i++)      vars.push_back(variables.at(i));
@@ -145,23 +145,9 @@ void CreateHistos::run(TString isTest){
       NtupleView->GetEntry(jentry);    
 
       weight = NtupleView->stitchedWeight*NtupleView->puweight*NtupleView->effweight*NtupleView->genweight*NtupleView->antilep_tauscaling*usedLuminosity;
-      if(files[i][1] == "Z"
-         || files[i][1] == "ZtauUp"
-         || files[i][1] == "ZtauDown"
-         || files[i][1] == "ZjecUp"
-         || files[i][1] == "ZjecDown"
-         || files[i][1] == "EWKZ"
-         || files[i][1] == "EWKZjecUp"
-         || files[i][1] == "EWKZjecDown"
-         || files[i][1] == "EWKZtauUp"
-         || files[i][1] == "EWKZtauDown") weight *= NtupleView->ZWeight;
-      if(files[i][1] == "TT"
-         || files[i][1] == "TTtauUp"
-         || files[i][1] == "TTtauDown"
-         || files[i][1] == "TTjecUp"
-         || files[i][1] == "TTjecDown") weight *= NtupleView->topWeight;
-
-      //if(NtupleView->idisoweight_2 != 1) weight = weight * (0.9/0.83);
+      if( isZFile(files[i][1]) || isEWKZFile(files[i][1]) ) weight *= NtupleView->ZWeight;
+      if( isTTFile(files[i][1]) ) weight *= NtupleView->topWeight;
+      
       if(channel == "et") weight = weight * this->getAntiLep_tauscaling();
 
       for(auto cat : cats){
@@ -170,21 +156,20 @@ void CreateHistos::run(TString isTest){
 
           var = -999;
 
-          if(strVar == "m_vis")                              var = NtupleView->m_vis;
-          else if(strVar == "m_sv")                          var = NtupleView->m_sv;
-          else if(strVar == "pt_sv")                         var = NtupleView->pt_sv;
-          else if(strVar == "mt_1")                          var = this->getMT();
-          else if(strVar == "jpt_1")                         var = NtupleView->jpt_1;
-          else if(strVar == "jpt_2")                         var = NtupleView->jpt_2;
-
-          else if(strVar == "pt_1")                          var = NtupleView->pt_1;
-          else if(strVar == "pt_2")                          var = NtupleView->pt_2;
-          else if(strVar == "eta_1")                         var = NtupleView->eta_1;
-          else if(strVar == "eta_2")                         var = NtupleView->eta_2;
-          else if(strVar == "met")                           var = NtupleView->met;
-          else if(strVar == "mttot")                         var = this->getMTTOT();
-          else if(strVar == "Hpt")                           var = this->CalcHPt();
-          else if(strVar == "pfmt_1")                        var = NtupleView->pfmt_1;
+          if(strVar == s_mvis)                                var = NtupleView->m_vis;
+          else if(strVar == s_msv)                            var = NtupleView->m_sv;
+          else if(strVar == s_ptsv)                           var = NtupleView->pt_sv;
+          else if(strVar == s_mt1)                            var = this->getMT();
+          else if(strVar == s_jpt1)                           var = NtupleView->jpt_1;
+          else if(strVar == s_jpt2)                           var = NtupleView->jpt_2;
+          
+          else if(strVar == s_pt1)                            var = NtupleView->pt_1;
+          else if(strVar == s_pt2)                            var = NtupleView->pt_2;
+          else if(strVar == s_eta1)                           var = NtupleView->eta_1;
+          else if(strVar == s_eta2)                           var = NtupleView->eta_2;
+          else if(strVar == s_met)                            var = NtupleView->met;
+          else if(strVar == s_mttot)                          var = this->getMTTOT();
+          else if(strVar == s_Hpt)                            var = this->CalcHPt(); 
 
 
           else if(strVar == "jpt_1_2"
@@ -213,10 +198,6 @@ void CreateHistos::run(TString isTest){
           else if(strVar == "jeta_2"
              && NtupleView->jpt_2 > 30)     var = NtupleView->jeta_2;
 
-          /*else if(strVar == "mjj"
-             && NtupleView->jpt_1 > 30
-             && NtupleView->jpt_2 > 30)     var = NtupleView->mjj;*/
-
           else if(strVar == "mjj")          var = this->getMjj();
 
           else if(strVar == "jeta1eta2"
@@ -230,92 +211,38 @@ void CreateHistos::run(TString isTest){
           else continue;
 
 
-          if(files[i][1] == "Z" 
-             || files[i][1] == "ZtauUp"
-             || files[i][1] == "ZtauDown"
-             || files[i][1] == "ZjecUp"
-             || files[i][1] == "ZjecDown")               this->DYSelections(var, weight, cat, strVar, files[i][1]);
+          if( isZFile(files[i][1]) )                     this->DYSelections(var, weight, cat, strVar, files[i][1]);
           
-          else if(files[i][1] == "EWKZ" 
-                  || files[i][1] == "EWKZtauUp"
-                  || files[i][1] == "EWKZtauDown"
-                  || files[i][1] == "EWKZjecUp"
-                  || files[i][1] == "EWKZjecDown")       this->EWKZSelections(var, weight, cat, strVar, files[i][1]);
+          else if( isEWKZFile(files[i][1]) )             this->EWKZSelections(var, weight, cat, strVar, files[i][1]);
           
-          else if(files[i][1] == "TT"
-                  || files[i][1] == "TTtauUp"
-                  || files[i][1] == "TTtauDown"
-                  || files[i][1] == "TTjecUp"
-                  || files[i][1] == "TTjecDown")         this->TSelections(var, weight, cat, strVar, files[i][1]);
+          else if( isTTFile(files[i][1]) )               this->TSelections(var, weight, cat, strVar, files[i][1]);
           
-          else if(files[i][1] == "VV"
-                  || files[i][1] == "VVtauUp"
-                  || files[i][1] == "VVtauDown"
-                  || files[i][1] == "VVjecUp"
-                  || files[i][1] == "VVjecDown")         this->VVSelections(var, weight, cat, strVar, files[i][1]);
+          else if( isVVFile(files[i][1]) )               this->VVSelections(var, weight, cat, strVar, files[i][1]);
 
-          else if(files[i][1] == "W"
-                  || files[i][1] == "WjecUp"
-                  || files[i][1] == "WjecDown")          this->WSelections(var, weight, cat, strVar, files[i][1]);
+          else if( isWFile(files[i][1]) )                this->WSelections(var, weight, cat, strVar, files[i][1]);
 
-          else if(files[i][1] == "data" )                this->dataSelections(var, 1., cat, strVar, files[i][1]);
+          else if( files[i][1] == "data" )               this->dataSelections(var, 1., cat, strVar, files[i][1]);
 
-          else if(files[i][1] == "qqH"
-                  || files[i][1] == "ggH"
-                  || files[i][1] == "qqHtauUp"
-                  || files[i][1] == "qqHtauDown"
-                  || files[i][1] == "qqHjecUp"
-                  || files[i][1] == "qqHjecDown"
-                  || files[i][1] == "ggHtauUp"
-                  || files[i][1] == "ggHtauDown"
-                  || files[i][1] == "ggHjecUp"
-                  || files[i][1] == "ggHjecDown")        this->signalSelections(var, weight, cat, strVar, files[i][1]);
+          else if( isSignalFile(files[i][1]) )           this->signalSelections(var, weight, cat, strVar, files[i][1]);
           
 
           if(do2DFit){
 
             if ( !this->is2DCategories(cat) ) continue;
             
-            if(files[i][1] == "Z" 
-               || files[i][1] == "ZtauUp"
-               || files[i][1] == "ZtauDown"
-               || files[i][1] == "ZjecUp"
-               || files[i][1] == "ZjecDown")             this->DYSelections(var, weight, cat, strVar, files[i][1], "2D");
+            if( isZFile(files[i][1]) )                   this->DYSelections(var, weight, cat, strVar, files[i][1], "2D");
 
-            else if(files[i][1] == "EWKZ" 
-                    || files[i][1] == "EWKZtauUp"
-                    || files[i][1] == "EWKZtauDown"
-                    || files[i][1] == "EWKZjecUp"
-                    || files[i][1] == "EWKZjecDown")     this->EWKZSelections(var, weight, cat, strVar, files[i][1], "2D");
+            else if( isEWKZFile(files[i][1]) )           this->EWKZSelections(var, weight, cat, strVar, files[i][1], "2D");
             
-            else if(files[i][1] == "TT"
-                    || files[i][1] == "TTtauUp"
-                    || files[i][1] == "TTtauDown"
-                    || files[i][1] == "TTjecUp"
-                    || files[i][1] == "TTjecDown")       this->TSelections(var, weight, cat, strVar, files[i][1], "2D");
+            else if( isTTFile(files[i][1]) )             this->TSelections(var, weight, cat, strVar, files[i][1], "2D");
             
-            else if(files[i][1] == "VV"
-                    || files[i][1] == "VVtauUp"
-                    || files[i][1] == "VVtauDown"
-                    || files[i][1] == "VVjecUp"
-                    || files[i][1] == "VVjecDown")       this->VVSelections(var, weight, cat, strVar, files[i][1], "2D");
+            else if( isVVFile(files[i][1]) )             this->VVSelections(var, weight, cat, strVar, files[i][1], "2D");
               
-            else if(files[i][1] == "W"
-                    || files[i][1] == "WjecUp"
-                    || files[i][1] == "WjecDown")         this->WSelections(var, weight, cat, strVar, files[i][1], "2D");
+            else if( isWFile(files[i][1]) )              this->WSelections(var, weight, cat, strVar, files[i][1], "2D");
               
-            else if(files[i][1] == "data" )               this->dataSelections(var, 1., cat, strVar, files[i][1], "2D");
+            else if( files[i][1] == "data" )             this->dataSelections(var, 1., cat, strVar, files[i][1], "2D");
               
-            else if(files[i][1] == "qqH"
-                    || files[i][1] == "ggH"
-                    || files[i][1] == "qqHtauUp"
-                    || files[i][1] == "qqHtauDown"
-                    || files[i][1] == "qqHjecUp"
-                    || files[i][1] == "qqHjecDown"
-                    || files[i][1] == "ggHtauUp"
-                    || files[i][1] == "ggHtauDown"
-                    || files[i][1] == "ggHjecUp"
-                    || files[i][1] == "ggHjecDown")       this->signalSelections(var, weight, cat, strVar, files[i][1], "2D");
+            else if( isSignalFile(files[i][1]) )         this->signalSelections(var, weight, cat, strVar, files[i][1], "2D");
             
           }
         }
@@ -431,19 +358,6 @@ void CreateHistos::CreateQCD_osw(TString strVar, TString cat, TString extend){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void CreateHistos::CreateW(TString strVar, TString cat, TString extend){
   TString sub = extend + "+" + strVar +"_" + cat + "+";
-
-  //OLD Wjets estimation ala AN-16-355
-  /*this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_data"+sub,strVar)   );
-  this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_VV"+sub,strVar), -1 );
-  this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_Z"+sub,strVar),  -1 );
-  this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_TT"+sub,strVar), -1 );
-  this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("QCD_OSW"+sub,strVar), -1 );
-
-  this->GetHistbyName("HL"+sub, strVar)->Add( this->GetHistbyName("relaxed_W_low_W"+sub,strVar) );
-  this->GetHistbyName("HL"+sub, strVar)->Divide( this->GetHistbyName("relaxed_W_high_W"+sub,strVar) );
-
-  this->GetHistbyName("W"+sub,strVar)->Add( this->GetHistbyName("W_OSW"+sub,strVar) );
-  this->GetHistbyName("W"+sub,strVar)->Multiply( this->GetHistbyName("HL"+sub, strVar) );*/
 
   this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_data"+sub,strVar)   );
   this->GetHistbyName("W_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_VV"+sub,strVar), -1 );
@@ -634,6 +548,8 @@ void CreateHistos::Estimate_W_QCD(TString strVar, TString cat, TString extend){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//UGLIEST FUNCTION EVER WRITTEN -> PLEASE SIMPLIFY!!!!!
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void CreateHistos::EstimateFF(TString strVar, TString cat, TString extend){
   TString sub = extend + "+" + strVar +"_" + cat + "+";
 
@@ -947,8 +863,8 @@ void CreateHistos::writeHistos( TString channel, vector<TString> cats, vector<TS
              ) continue;
           tmp = histo_names.at(i);
           tmp.ReplaceAll(sub, "");
-          tmp.ReplaceAll("jecUp","_CMS_scale_j_13TeVUp");
-          tmp.ReplaceAll("jecDown","_CMS_scale_j_13TeVDown");
+          tmp.ReplaceAll("jecUp",s_CMSjecScale+"13TeVUp");
+          tmp.ReplaceAll("jecDown",s_CMSjecScale+"13TeVDown");
           histos.at(i)->SetName(tmp);
           if(do2DFit ){
             if( is2DCategories(cat) ){
@@ -968,3 +884,65 @@ void CreateHistos::writeHistos( TString channel, vector<TString> cats, vector<TS
     
 }
 
+int CreateHistos::isZFile(TString fileName){
+  if(fileName == s_Z) return 1;
+  if(fileName == s_ZtauUp) return 1;
+  if(fileName == s_ZtauDown) return 1;
+  if(fileName == s_ZjecUp) return 1;
+  if(fileName == s_ZjecDown) return 1;
+
+  return 0;
+}
+
+int CreateHistos::isEWKZFile(TString fileName){
+  if(fileName == s_EWKZ) return 1;
+  if(fileName == s_EWKZtauUp) return 1;
+  if(fileName == s_EWKZtauDown) return 1;
+  if(fileName == s_EWKZjecUp) return 1;
+  if(fileName == s_EWKZjecDown) return 1;
+
+  return 0;
+}
+
+int CreateHistos::isSignalFile(TString fileName){
+  if(fileName == s_ggH) return 1;
+  if(fileName == s_ggHtauUp) return 1;
+  if(fileName == s_ggHtauDown) return 1;
+  if(fileName == s_ggHjecUp) return 1;
+  if(fileName == s_ggHjecDown) return 1;
+  if(fileName == s_qqH) return 1;
+  if(fileName == s_qqHtauUp) return 1;
+  if(fileName == s_qqHtauDown) return 1;
+  if(fileName == s_qqHjecUp) return 1;
+  if(fileName == s_qqHjecDown) return 1;
+
+  return 0;
+}
+
+int CreateHistos::isTTFile(TString fileName){
+  if(fileName == s_TT) return 1;
+  if(fileName == s_TTtauUp) return 1;
+  if(fileName == s_TTtauDown) return 1;
+  if(fileName == s_TTjecUp) return 1;
+  if(fileName == s_TTjecDown) return 1;
+
+  return 0;  
+}
+
+int CreateHistos::isWFile(TString fileName){
+  if(fileName == s_W) return 1;
+  if(fileName == s_WjecUp) return 1;
+  if(fileName == s_WjecDown) return 1;
+
+  return 0;
+}
+
+int CreateHistos::isVVFile(TString fileName){
+  if(fileName == s_VV) return 1;
+  if(fileName == s_VVtauUp) return 1;
+  if(fileName == s_VVtauDown) return 1;
+  if(fileName == s_VVjecUp) return 1;
+  if(fileName == s_VVjecDown) return 1;
+
+  return 0;
+}
