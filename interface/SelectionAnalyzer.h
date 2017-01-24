@@ -20,6 +20,8 @@ class SelectionAnalyzer : public FFCalculator{
   int TSelection();
   int JSelection();
   int FFRest();
+  double getJetToTauFakeUp( Float_t inputPt );
+  double getJetToTauFakeDown( Float_t inputPt );
 
 };
 

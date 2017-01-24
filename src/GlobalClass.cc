@@ -889,3 +889,12 @@ double GlobalClass::get2DVar(TString sub){
   
 }
 
+void GlobalClass::resetZeroBins(TString hist, TString var){
+
+  if(resetZero){
+    for(int i = 1; i <= this->GetHistbyName(hist,var)->GetNbinsX(); i++){
+      if( this->GetHistbyName(hist,var)->GetBinContent(i) < 0 ) this->GetHistbyName(hist,var)->SetBinContent(i,0.);
+    }
+  }
+  
+}
