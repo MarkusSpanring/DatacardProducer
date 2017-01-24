@@ -314,12 +314,7 @@ void CreateHistos::CreateQCD_osw(TString strVar, TString cat, TString extend){
   this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_EWKZ+sub,strVar),  -1 );
   this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->Scale( this->QCD_OSSS(cat) );
 
-  if(resetZero){
-    int entries = this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->GetNbinsX();
-    for(int i = 1; i <= entries; i++){
-      if( this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->SetBinContent(i,0.);
-    }
-  }
+  this->resetZeroBins("OS_W_"+s_QCD+sub,strVar);
 
   if(jecShift){
    this->GetHistbyName("OS_W_"+s_QCDjecUp+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_data+sub,strVar)   );
@@ -329,13 +324,9 @@ void CreateHistos::CreateQCD_osw(TString strVar, TString cat, TString extend){
    this->GetHistbyName("OS_W_"+s_QCDjecUp+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_W+s_jecUp+sub,strVar),  -1 );
    this->GetHistbyName("OS_W_"+s_QCDjecUp+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_EWKZ+s_jecUp+sub,strVar),  -1 );
    this->GetHistbyName("OS_W_"+s_QCDjecUp+sub,strVar)->Scale( this->QCD_OSSS(cat) );
+
+   this->resetZeroBins("OS_W_"+s_QCDjecUp+sub,strVar);
    
-   if(resetZero){
-     int entries = this->GetHistbyName("OS_W_"+s_QCDjecUp+sub,strVar)->GetNbinsX();
-     for(int i = 1; i <= entries; i++){
-       if( this->GetHistbyName("OS_W_"+s_QCDjecUp+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("OS_W_"+s_QCDjecUp+sub,strVar)->SetBinContent(i,0.);
-     }
-   }
    this->GetHistbyName("OS_W_"+s_QCDjecDown+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_data+sub,strVar)   );
    this->GetHistbyName("OS_W_"+s_QCDjecDown+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_VV+s_jecDown+sub,strVar), -1 );
    this->GetHistbyName("OS_W_"+s_QCDjecDown+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_Z+s_jecDown+sub,strVar),  -1 );
@@ -343,13 +334,8 @@ void CreateHistos::CreateQCD_osw(TString strVar, TString cat, TString extend){
    this->GetHistbyName("OS_W_"+s_QCDjecDown+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_W+s_jecDown+sub,strVar),  -1 );
    this->GetHistbyName("OS_W_"+s_QCDjecDown+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_EWKZ+s_jecDown+sub,strVar),  -1 );
    this->GetHistbyName("OS_W_"+s_QCDjecDown+sub,strVar)->Scale( this->QCD_OSSS(cat) );
-   
-   if(resetZero){
-     int entries = this->GetHistbyName("OS_W_"+s_QCDjecDown+sub,strVar)->GetNbinsX();
-     for(int i = 1; i <= entries; i++){
-       if( this->GetHistbyName("OS_W_"+s_QCDjecDown+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName("OS_W_"+s_QCDjecDown+sub,strVar)->SetBinContent(i,0.);
-     }
-   }
+
+   this->resetZeroBins("OS_W_"+s_QCDjecDown+sub,strVar);
    
   }
   
@@ -370,14 +356,8 @@ void CreateHistos::CreateW(TString strVar, TString cat, TString extend){
 
   this->GetHistbyName(s_W+sub,strVar)->Add( this->GetHistbyName("relaxed_W_low_"+s_W+sub,strVar) );
   this->GetHistbyName(s_W+sub,strVar)->Scale( w_normFactor );
-  
-  if(resetZero){
-    int entries = this->GetHistbyName(s_W+sub,strVar)->GetNbinsX();
-    for(int i = 1; i <= entries; i++){
-      if( this->GetHistbyName(s_W+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_W+sub,strVar)->SetBinContent(i,0.);
-    }
-  }
 
+  this->resetZeroBins(s_W+sub,strVar);
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //jetToTauFakeShift Up
   this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeUp+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_data+sub,strVar)   );
@@ -391,13 +371,8 @@ void CreateHistos::CreateW(TString strVar, TString cat, TString extend){
 
   this->GetHistbyName(s_W+s_jetToTauFakeUp+sub,strVar)->Add( this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeUp+sub,strVar) );
   this->GetHistbyName(s_W+s_jetToTauFakeUp+sub,strVar)->Scale( w_normFactor );
-  
-  if(resetZero){
-    int entries = this->GetHistbyName(s_W+s_jetToTauFakeUp+sub,strVar)->GetNbinsX();
-    for(int i = 1; i <= entries; i++){
-      if( this->GetHistbyName(s_W+s_jetToTauFakeUp+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_W+s_jetToTauFakeUp+sub,strVar)->SetBinContent(i,0.);
-    }
-  }
+
+  this->resetZeroBins(s_W+s_jetToTauFakeUp+sub,strVar);
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //jetToTauFakeShift Down
   this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeDown+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_data+sub,strVar)   );
@@ -411,13 +386,8 @@ void CreateHistos::CreateW(TString strVar, TString cat, TString extend){
 
   this->GetHistbyName(s_W+s_jetToTauFakeDown+sub,strVar)->Add( this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeDown+sub,strVar) );
   this->GetHistbyName(s_W+s_jetToTauFakeDown+sub,strVar)->Scale( w_normFactor );
-  
-  if(resetZero){
-    int entries = this->GetHistbyName(s_W+s_jetToTauFakeDown+sub,strVar)->GetNbinsX();
-    for(int i = 1; i <= entries; i++){
-      if( this->GetHistbyName(s_W+s_jetToTauFakeDown+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_W+s_jetToTauFakeDown+sub,strVar)->SetBinContent(i,0.);
-    }
-  }
+
+  this->resetZeroBins(s_W+s_jetToTauFakeDown+sub,strVar);
 
   if(jecShift){
     this->GetHistbyName(s_WjecUp+"_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_data+sub,strVar)   );
@@ -431,14 +401,9 @@ void CreateHistos::CreateW(TString strVar, TString cat, TString extend){
     
     this->GetHistbyName(s_WjecUp+sub,strVar)->Add( this->GetHistbyName("relaxed_W_low_"+s_WjecUp+sub,strVar) );
     this->GetHistbyName(s_WjecUp+sub,strVar)->Scale( w_normFactor );
+
+    this->resetZeroBins(s_WjecUp+sub,strVar);
     
-    
-    if(resetZero){
-      int entries = this->GetHistbyName(s_WjecUp+sub,strVar)->GetNbinsX();
-      for(int i = 1; i <= entries; i++){
-        if( this->GetHistbyName(s_WjecUp+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_WjecUp+sub,strVar)->SetBinContent(i,0.);
-      }
-    }
     this->GetHistbyName(s_WjecDown+"_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_data+sub,strVar)   );
     this->GetHistbyName(s_WjecDown+"_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_VVjecUp+sub,strVar), -1 );
     this->GetHistbyName(s_WjecDown+"_OSW"+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_ZjecUp+sub,strVar),  -1 );
@@ -451,13 +416,8 @@ void CreateHistos::CreateW(TString strVar, TString cat, TString extend){
     this->GetHistbyName(s_WjecDown+sub,strVar)->Add( this->GetHistbyName("relaxed_W_low_"+s_WjecDown+sub,strVar) );
     this->GetHistbyName(s_WjecDown+sub,strVar)->Scale( w_normFactor );
     
+    this->resetZeroBins(s_WjecDown+sub,strVar);
     
-    if(resetZero){
-      int entries = this->GetHistbyName(s_WjecDown+sub,strVar)->GetNbinsX();
-      for(int i = 1; i <= entries; i++){
-        if( this->GetHistbyName(s_WjecDown+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_WjecDown+sub,strVar)->SetBinContent(i,0.);
-      }
-    } 
   }
   
 }
@@ -496,12 +456,7 @@ void CreateHistos::CreateQCD(TString strVar, TString cat, TString extend){
   this->GetHistbyName(s_QCD+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_EWKZ+sub,strVar),  -1 );
   this->GetHistbyName(s_QCD+sub,strVar)->Scale( this->QCD_OSSS(cat) );
 
-  if(resetZero){
-    int entries = this->GetHistbyName(s_QCD+sub,strVar)->GetNbinsX();
-    for(int i = 1; i < entries; i++){
-      if( this->GetHistbyName(s_QCD+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_QCD+sub,strVar)->SetBinContent(i,0.);
-    }
-  }
+  this->resetZeroBins(s_QCD+sub,strVar);
 
   if(jecShift){
     W_SF = ( this->GetHistbyName(s_WjecUp+"_OSW"+sub,strVar)->Integral() > 0 )
@@ -531,13 +486,9 @@ void CreateHistos::CreateQCD(TString strVar, TString cat, TString extend){
     this->GetHistbyName(s_QCDjecUp+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_WjecUp+sub,strVar),  -1 );
     this->GetHistbyName(s_QCDjecUp+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_EWKZjecUp+sub,strVar),  -1 );
     this->GetHistbyName(s_QCDjecUp+sub,strVar)->Scale( this->QCD_OSSS(cat) );
-  
-    if(resetZero){
-      int entries = this->GetHistbyName(s_QCDjecUp+sub,strVar)->GetNbinsX();
-      for(int i = 1; i < entries; i++){
-        if( this->GetHistbyName(s_QCDjecUp+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_QCDjecUp+sub,strVar)->SetBinContent(i,0.);
-      }
-    }
+
+    this->resetZeroBins(s_QCDjecUp+sub,strVar);
+    
     W_SF = ( this->GetHistbyName(s_WjecDown+"_OSW"+sub,strVar)->Integral() > 0 )
     ? this->GetHistbyName(s_WjecDown+"_OSW"+sub,strVar)->Integral() / this->GetHistbyName("OS_W_"+s_WjecDown+sub,strVar)->Integral() : 0;
     W_rel = ( this->GetHistbyName("SS_Low_"+s_WjecDown+sub,strVar)->Integral() > 0 )
@@ -565,13 +516,9 @@ void CreateHistos::CreateQCD(TString strVar, TString cat, TString extend){
     this->GetHistbyName(s_QCDjecDown+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_WjecDown+sub,strVar),  -1 );
     this->GetHistbyName(s_QCDjecDown+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_EWKZjecDown+sub,strVar),  -1 );
     this->GetHistbyName(s_QCDjecDown+sub,strVar)->Scale( this->QCD_OSSS(cat) );
-  
-    if(resetZero){
-      int entries = this->GetHistbyName(s_QCDjecDown+sub,strVar)->GetNbinsX();
-      for(int i = 1; i < entries; i++){
-        if( this->GetHistbyName(s_QCDjecDown+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_QCDjecDown+sub,strVar)->SetBinContent(i,0.);
-      }
-    }
+
+    this->resetZeroBins(s_QCDjecDown+sub,strVar);
+    
   }
 
   
@@ -669,21 +616,14 @@ void CreateHistos::EstimateFF(TString strVar, TString cat, TString extend){
   this->GetHistbyName(s_jetFakes+"_TTvar_systDown"+sub,strVar)->Add( this->GetHistbyName(s_Z+"_"+s_jetFakes+sub,strVar), -1 );
   this->GetHistbyName(s_jetFakes+"_TTvar_systDown"+sub,strVar)->Add( this->GetHistbyName(s_VV+"_"+s_jetFakes+sub,strVar), -1 );
 
-  
-
-  if(resetZero){
-    for(int i = 1; i < this->GetHistbyName(s_jetFakes+sub,strVar)->GetNbinsX(); i++){
-      if( this->GetHistbyName(s_jetFakes+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_jetFakes+sub,strVar)->SetBinContent(i,0.);
-      if(jecShift) {
-        if( this->GetHistbyName(s_jetFakesjecUp+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_jetFakesjecUp+sub,strVar)->SetBinContent(i,0.);
-        if( this->GetHistbyName(s_jetFakesjecDown+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_jetFakesjecDown+sub,strVar)->SetBinContent(i,0.);
-      }
-      if( this->GetHistbyName(s_jetFakes+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_jetFakes+sub,strVar)->SetBinContent(i,0.);
-      if( this->GetHistbyName(s_jetFakes+"_Zvar_systUp"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_jetFakes+"_Zvar_systUp"+sub,strVar)->SetBinContent(i,0.);
-      if( this->GetHistbyName(s_jetFakes+"_Zvar_systDown"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_jetFakes+"_Zvar_systDown"+sub,strVar)->SetBinContent(i,0.);
-      if( this->GetHistbyName(s_jetFakes+"_TTvar_systUp"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_jetFakes+"_TTvar_systUp"+sub,strVar)->SetBinContent(i,0.);
-      if( this->GetHistbyName(s_jetFakes+"_TTvar_systDown"+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_jetFakes+"_TTvar_systDown"+sub,strVar)->SetBinContent(i,0.);
-    }
+  this->resetZeroBins(s_jetFakes+sub,strVar);
+  this->resetZeroBins(s_jetFakes+"_Zvar_systUp"+sub,strVar);
+  this->resetZeroBins(s_jetFakes+"_Zvar_systDown"+sub,strVar);
+  this->resetZeroBins(s_jetFakes+"_TTvar_systUp"+sub,strVar);
+  this->resetZeroBins(s_jetFakes+"_TTvar_systDown"+sub,strVar);
+  if(jecShift){
+    this->resetZeroBins(s_jetFakesjecUp+sub,strVar);
+    this->resetZeroBins(s_jetFakesjecDown+sub,strVar);
   }
   
   for( auto syst : FFsyst[channel] ){
@@ -694,12 +634,9 @@ void CreateHistos::EstimateFF(TString strVar, TString cat, TString extend){
     this->GetHistbyName(s_jetFakes+"_"+tmp+sub,strVar)->Add( this->GetHistbyName(s_Z+"_"+s_jetFakes+"_"+tmp+sub,strVar), -1 );
     this->GetHistbyName(s_jetFakes+"_"+tmp+sub,strVar)->Add( this->GetHistbyName(s_EWKZ+"_"+s_jetFakes+"_"+tmp+sub,strVar), -1 );
     this->GetHistbyName(s_jetFakes+"_"+tmp+sub,strVar)->Add( this->GetHistbyName(s_VV+"_"+s_jetFakes+"_"+tmp+sub,strVar), -1 );
-    if(resetZero){
-      for(int i = 1; i < this->GetHistbyName(s_jetFakes+"_"+tmp+sub,strVar)->GetNbinsX(); i++){
-        if( this->GetHistbyName(s_jetFakes+"_"+tmp+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_jetFakes+"_"+tmp+sub,strVar)->SetBinContent(i,0.);
-      }
-    }
-    //FIXME: if combination of uncertainties and normalization to std histo is required this is a first attempt 
+
+    this->resetZeroBins(s_jetFakes+"_"+tmp+sub,strVar);
+    
     this->GetHistbyName(s_jetFakes+"_"+s_norm+"_"+tmp+sub,strVar)->Add( this->GetHistbyName(s_jetFakes+"_"+tmp+sub,strVar)  );
     double ratio = ( this->GetHistbyName(s_jetFakes+sub,strVar)->Integral( 0, this->GetHistbyName(s_jetFakes+sub,strVar)->GetNbinsX()+1  ) )/( this->GetHistbyName(s_jetFakes+"_"+s_norm+"_"+tmp+sub,strVar)->Integral( 0, this->GetHistbyName(s_jetFakes+"_"+s_norm+"_"+tmp+sub,strVar)->GetNbinsX()+1  ) );
     this->GetHistbyName(s_jetFakes+"_"+s_norm+"_"+tmp+sub,strVar)->Scale( ratio );

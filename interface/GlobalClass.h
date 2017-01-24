@@ -59,6 +59,7 @@ class GlobalClass{
   void returnBinning(double*, vector<double> input);
   int returnBins(vector<double> input);
   TH1D* getBinnedHisto(TString name,vector<double> input);
+  void resetZeroBins(TString hist, TString var);
 
   vector<TH1D*> histos;
   vector<TString> histo_names = {};
