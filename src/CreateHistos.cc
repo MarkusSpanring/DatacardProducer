@@ -786,12 +786,11 @@ void CreateHistos::writeHistos( TString channel, vector<TString> cats, vector<TS
   TString sub;
   TString tmp;
   TString D2="";
-  if(do2DFit) D2+="2D";
+  if(do2DFit) D2+="-2D";
 
   
   for(auto var : vars){
-    TString suffix = (doOfficialNaming) ? "" : var+"-";
-    outfile_name << "histos/"  << "htt_" << channel << ".inputs-sm-13TeV-"<<suffix<<D2<<".root";
+    outfile_name << "histos/"  << "htt_" << channel << ".inputs-sm-13TeV-"<<var<<D2<<".root";
     outfile = new TFile(outfile_name.str().c_str(), "RECREATE") ;
 
     for(auto cat : cats){
