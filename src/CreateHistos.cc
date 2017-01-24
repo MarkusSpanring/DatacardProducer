@@ -371,11 +371,51 @@ void CreateHistos::CreateW(TString strVar, TString cat, TString extend){
   this->GetHistbyName(s_W+sub,strVar)->Add( this->GetHistbyName("relaxed_W_low_"+s_W+sub,strVar) );
   this->GetHistbyName(s_W+sub,strVar)->Scale( w_normFactor );
   
-
   if(resetZero){
     int entries = this->GetHistbyName(s_W+sub,strVar)->GetNbinsX();
     for(int i = 1; i <= entries; i++){
       if( this->GetHistbyName(s_W+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_W+sub,strVar)->SetBinContent(i,0.);
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //jetToTauFakeShift Up
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeUp+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_data+sub,strVar)   );
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeUp+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_VV+sub,strVar), -1 );
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeUp+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_Z+s_jetToTauFakeUp+sub,strVar),  -1 );
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeUp+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_TT+s_jetToTauFakeUp+sub,strVar), -1 );
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeUp+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_EWKZ+sub,strVar), -1 );
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeUp+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_QCD+sub,strVar), -1 );
+
+  w_normFactor = this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeUp+sub,strVar)->Integral()  / this->GetHistbyName("relaxed_W_high_"+s_W+s_jetToTauFakeUp+sub,strVar)->Integral();
+
+  this->GetHistbyName(s_W+s_jetToTauFakeUp+sub,strVar)->Add( this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeUp+sub,strVar) );
+  this->GetHistbyName(s_W+s_jetToTauFakeUp+sub,strVar)->Scale( w_normFactor );
+  
+  if(resetZero){
+    int entries = this->GetHistbyName(s_W+s_jetToTauFakeUp+sub,strVar)->GetNbinsX();
+    for(int i = 1; i <= entries; i++){
+      if( this->GetHistbyName(s_W+s_jetToTauFakeUp+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_W+s_jetToTauFakeUp+sub,strVar)->SetBinContent(i,0.);
+    }
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //jetToTauFakeShift Down
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeDown+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_data+sub,strVar)   );
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeDown+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_VV+sub,strVar), -1 );
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeDown+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_Z+s_jetToTauFakeDown+sub,strVar),  -1 );
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeDown+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_TT+s_jetToTauFakeDown+sub,strVar), -1 );
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeDown+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_EWKZ+sub,strVar), -1 );
+  this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeDown+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_QCD+sub,strVar), -1 );
+  
+  w_normFactor = this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeDown+sub,strVar)->Integral()  / this->GetHistbyName("relaxed_W_high_"+s_W+s_jetToTauFakeDown+sub,strVar)->Integral();
+
+  this->GetHistbyName(s_W+s_jetToTauFakeDown+sub,strVar)->Add( this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeDown+sub,strVar) );
+  this->GetHistbyName(s_W+s_jetToTauFakeDown+sub,strVar)->Scale( w_normFactor );
+  
+  if(resetZero){
+    int entries = this->GetHistbyName(s_W+s_jetToTauFakeDown+sub,strVar)->GetNbinsX();
+    for(int i = 1; i <= entries; i++){
+      if( this->GetHistbyName(s_W+s_jetToTauFakeDown+sub,strVar)->GetBinContent(i) < 0 ) this->GetHistbyName(s_W+s_jetToTauFakeDown+sub,strVar)->SetBinContent(i,0.);
     }
   }
 
@@ -864,6 +904,8 @@ void CreateHistos::writeHistos( TString channel, vector<TString> cats, vector<TS
           tmp.ReplaceAll(sub, "");
           tmp.ReplaceAll(s_jecUp,s_CMSjecScale+s_13TeVUp);
           tmp.ReplaceAll(s_jecDown,s_CMSjecScale+s_13TeVDown);
+          tmp.ReplaceAll(s_jetToTauFakeUp,s_CMSjetToTauFake+s_13TeVUp);
+          tmp.ReplaceAll(s_jetToTauFakeDown,s_CMSjetToTauFake+s_13TeVDown);
           histos.at(i)->SetName(tmp);
           if(do2DFit ){
             if( is2DCategories(cat) ){
