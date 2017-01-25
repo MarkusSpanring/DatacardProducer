@@ -204,7 +204,7 @@ const struct Parameter{
 
   struct category{
     vector<TString> D1categories = {s_inclusive,s_0jet_low,s_0jet_high,s_1jet_low,s_1jet_high,s_vbf_low,s_vbf_high};
-    vector<TString> D2categories = {s_0jet,s_boosted,s_vbf};
+    vector<TString> D2categories = {s_0jet,s_boosted,s_vbf,s_wjets_0jet_cr,s_wjets_boosted_cr,s_wjets_vbf_cr};
     //FIXME: add PU jet categories
   } category;
 

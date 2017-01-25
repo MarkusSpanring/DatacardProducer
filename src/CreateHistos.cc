@@ -142,13 +142,14 @@ void CreateHistos::run(TString isTest){
         cout<< jentry << "/" << nentries <<"\t\t" << perc << "%\r"<< flush;
       }
 
-      NtupleView->GetEntry(jentry);    
-
+      NtupleView->GetEntry(jentry);
+ 
       weight = NtupleView->stitchedWeight*NtupleView->puweight*NtupleView->effweight*NtupleView->genweight*NtupleView->antilep_tauscaling*usedLuminosity;
       if( isZFile(files[i][1]) || isEWKZFile(files[i][1]) ) weight *= NtupleView->ZWeight;
       if( isTTFile(files[i][1]) ) weight *= NtupleView->topWeight;
-      
-      if(channel == "et") weight = weight * this->getAntiLep_tauscaling();
+
+      //FIXME: delete this function if not needed anymore
+      //if(channel == "et") weight = weight * this->getAntiLep_tauscaling();
 
       for(auto cat : cats){
 
@@ -210,20 +211,23 @@ void CreateHistos::run(TString isTest){
 
           else continue;
 
+          if( !do2DFit || cat == s_inclusive ){
 
-          if( isZFile(files[i][1]) )                     this->DYSelections(var, weight, cat, strVar, files[i][1]);
+            if( isZFile(files[i][1]) )                     this->DYSelections(var, weight, cat, strVar, files[i][1]);
+            
+            else if( isEWKZFile(files[i][1]) )             this->EWKZSelections(var, weight, cat, strVar, files[i][1]);
           
-          else if( isEWKZFile(files[i][1]) )             this->EWKZSelections(var, weight, cat, strVar, files[i][1]);
-          
-          else if( isTTFile(files[i][1]) )               this->TSelections(var, weight, cat, strVar, files[i][1]);
-          
-          else if( isVVFile(files[i][1]) )               this->VVSelections(var, weight, cat, strVar, files[i][1]);
+            else if( isTTFile(files[i][1]) )               this->TSelections(var, weight, cat, strVar, files[i][1]);
+            
+            else if( isVVFile(files[i][1]) )               this->VVSelections(var, weight, cat, strVar, files[i][1]);
 
-          else if( isWFile(files[i][1]) )                this->WSelections(var, weight, cat, strVar, files[i][1]);
+            else if( isWFile(files[i][1]) )                this->WSelections(var, weight, cat, strVar, files[i][1]);
 
-          else if( files[i][1] == s_data )               this->dataSelections(var, 1., cat, strVar, files[i][1]);
+            else if( files[i][1] == s_data )               this->dataSelections(var, 1., cat, strVar, files[i][1]);
 
-          else if( isSignalFile(files[i][1]) )           this->signalSelections(var, weight, cat, strVar, files[i][1]);
+            else if( isSignalFile(files[i][1]) )           this->signalSelections(var, weight, cat, strVar, files[i][1]);
+
+          }
           
 
           if(do2DFit){

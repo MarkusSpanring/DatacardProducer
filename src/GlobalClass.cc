@@ -15,20 +15,20 @@ GlobalClass::~GlobalClass()
 }
 
 int GlobalClass::getNjets(){
-  if(isJEC==1) return NtupleView->njets;
-  else if(isJEC==-1) return NtupleView->njets;
+  if(isJEC==1) return NtupleView->njetsUp;
+  else if(isJEC==-1) return NtupleView->njetsDown;
   else return NtupleView->njets;
 }
 
 float GlobalClass::getMjj(){
-  if(isJEC==1) return NtupleView->mjj;
-  else if(isJEC==-1) return NtupleView->mjj;
+  if(isJEC==1) return NtupleView->mjjUp;
+  else if(isJEC==-1) return NtupleView->mjjDown;
   else return NtupleView->mjj;
 }
 
 float GlobalClass::getJdeta(){
-  if(isJEC==1) return abs(NtupleView->jdeta);
-  else if(isJEC==-1) return abs(NtupleView->jdeta);
+  if(isJEC==1) return abs(NtupleView->jdetaUp);
+  else if(isJEC==-1) return abs(NtupleView->jdetaDown);
   else return abs(NtupleView->jdeta);
 }
 

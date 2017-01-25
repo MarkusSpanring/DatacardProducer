@@ -2,6 +2,9 @@ const TString s_inclusive =              "inclusive";
 const TString s_0jet =                   "0jet";
 const TString s_boosted =                "boosted";
 const TString s_vbf =                    "vbf";
+const TString s_wjets_0jet_cr =          "wjets_0jet_cr";
+const TString s_wjets_boosted_cr =       "wjets_boosted_cr";
+const TString s_wjets_vbf_cr =           "wjets_vbf_cr";
 
 const TString s_0jet_low =               "0Jet_low";
 const TString s_0jet_high =              "0Jet_high";
@@ -9,6 +12,9 @@ const TString s_1jet_low =               "1Jet_low";
 const TString s_1jet_high =              "1Jet_high";
 const TString s_vbf_low =                "VBF_low";
 const TString s_vbf_high =               "VBF_high";
+
+const TString s_wjets =                   "wjets";
+const TString s_antiiso =                 "antiiso";
 
 const TString s_mvis =                   "m_vis";
 const TString s_msv =                    "m_sv";

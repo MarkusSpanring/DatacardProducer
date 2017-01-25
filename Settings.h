@@ -1,7 +1,9 @@
 #include "interface/NameStrings.h"
 
+using namespace std;
+
 const TString channel="et";
-const TString version="v5";
+const TString version="v6";
 const double usedLuminosity=27.9; //20.2 wo runG //27.9 
 const TString doSvfit="woSVFIT";
 const TString reduced="";//"";//"_reduced";
