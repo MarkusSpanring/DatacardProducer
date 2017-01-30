@@ -11,7 +11,14 @@ FFCalculator::~FFCalculator(){
 void FFCalculator::initFakeFactors(){
   for(auto cat : cats){
     if( !this->is1DCategories(cat) && !this->is2DCategories(cat) ) continue;
-    FFfile[cat] = TFile::Open("HTTutilities/Jet2TauFakes/data/"+channel+"/"+cat+"/"+FFversion);
+    TString catSuffix = cat;
+    if(cat == s_wjets_0jet_cr) catSuffix = s_0jet;
+    if(cat == s_wjets_boosted_cr) catSuffix = s_boosted;
+    if(cat == s_wjets_vbf_cr) catSuffix = s_vbf;
+    if(cat == s_antiiso_0jet_cr) catSuffix = s_0jet;
+    if(cat == s_antiiso_boosted_cr) catSuffix = s_boosted;
+    if(cat == s_antiiso_vbf_cr) catSuffix = s_vbf;
+    FFfile[cat] = TFile::Open("HTTutilities/Jet2TauFakes/data/"+channel+"/"+catSuffix+"/"+FFversion);
     FFObj[cat] = (FakeFactor*)FFfile[cat]->Get("ff_comb");
   }
   FFsyst["mt"] = Parameter.FFsystematics.mt.syst;

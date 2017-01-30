@@ -9,7 +9,7 @@ const TString doSvfit="woSVFIT";
 const TString reduced="";//"";//"_reduced";
 const TString FFversion="fakeFactors_20170111.root";
 const vector<TString> variables={s_mvis};
-const vector<TString> categories={s_inclusive,s_0jet,s_boosted,s_vbf};
+const vector<TString> categories={s_inclusive,s_0jet,s_wjets_0jet_cr,s_antiiso_0jet_cr,s_boosted,s_wjets_boosted_cr,s_antiiso_boosted_cr,s_vbf,s_wjets_vbf_cr,s_antiiso_vbf_cr};
 ///////////////////////////////////////////////////////////////////////////
 const int applyMTCut=1; //MTcut in inclusive selection, default==1 for mt&et, default==0 for tt
 const int resetZero=1;

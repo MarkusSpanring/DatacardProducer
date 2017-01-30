@@ -69,37 +69,42 @@ float GlobalClass::CalcHPt(){
 
 int GlobalClass::Baseline(TString sign, TString cat){
     
-    if( NtupleView->q_1 * NtupleView->q_2 < 0
-       && this->passMTCut()
-       && this->passIso("base")
-       && this->Vetos()
-       && this->CategorySelection(cat)
-        ){
-      if(channel == "tt"
-         && sign == "OS"
-         && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_1
-         && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
-         ) return 1;
-      else if( channel != "tt"
-               && sign=="OS"
-               && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
-               ) return 1;
-      if( sign == "FF"
-          && !NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
-          && NtupleView->byVLooseIsolationMVArun2v1DBoldDMwLT_2
-          ) return 1;
-      if( sign == "FF1"
-          && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
-          && !NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_1
-          && NtupleView->byVLooseIsolationMVArun2v1DBoldDMwLT_1
-          ) return 1;
-      if( sign == "FF2"
-          && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_1
-          && !NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
-          && NtupleView->byVLooseIsolationMVArun2v1DBoldDMwLT_2
-          ) return 1;
-    } 
-    
+  if( NtupleView->q_1 * NtupleView->q_2 < 0
+      && ( cat != s_inclusive
+           || this->passMTCut() )
+      &&( ( cat.Contains(s_antiiso)
+            && this->passIso("antiiso")
+            )
+          || ( this->passIso("base") )
+          )
+      && this->Vetos()
+      && this->CategorySelection(cat)
+      ){
+    if(channel == "tt"
+       && sign == "OS"
+       && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_1
+       && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
+       ) return 1;
+    else if( channel != "tt"
+             && sign=="OS"
+             && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
+             ) return 1;
+    if( sign == "FF"
+        && !NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
+        && NtupleView->byVLooseIsolationMVArun2v1DBoldDMwLT_2
+        ) return 1;
+    if( sign == "FF1"
+        && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
+        && !NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_1
+        && NtupleView->byVLooseIsolationMVArun2v1DBoldDMwLT_1
+        ) return 1;
+    if( sign == "FF2"
+        && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_1
+        && !NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
+        && NtupleView->byVLooseIsolationMVArun2v1DBoldDMwLT_2
+        ) return 1;
+  } 
+  
    
   return 0;
 }
@@ -120,6 +125,10 @@ int GlobalClass::passIso(TString type){
   else if(type == "relaxed"){
     if(channel == "et" && NtupleView->iso_1 < Parameter.analysisCut.elIso_relaxed) return 1;
     if(channel == "mt" && NtupleView->iso_1 < Parameter.analysisCut.muIso_relaxed) return 1;
+  }
+  else if(type == "antiiso"){
+    if(channel == "et" && NtupleView->iso_1 < Parameter.analysisCut.elIso_antiIsoHigh && NtupleView->iso_1 > Parameter.analysisCut.elIso_antiIsoLow) return 1;
+    if(channel == "mt" && NtupleView->iso_1 < Parameter.analysisCut.muIso_antiIsoHigh && NtupleView->iso_1 > Parameter.analysisCut.muIso_antiIsoLow) return 1;
   }
   return 0;
 }
@@ -201,12 +210,16 @@ int GlobalClass::CategorySelection(TString cat, TString mtcut){
 
   ///////////////////////  0jet category     ///////////////////////////////
   if(cat == s_0jet) return this->Jet0(mtcut);
-  
+  if(cat == s_wjets_0jet_cr) return this->Jet0("mtHigh");
+  if(cat == s_antiiso_0jet_cr) return this->Jet0(mtcut);
   ///////////////////////  boosted category     ///////////////////////////////
   if(cat == s_boosted) return this->Boosted(mtcut);
-
+  if(cat == s_wjets_boosted_cr) return this->Boosted("mtHigh");
+  if(cat == s_antiiso_boosted_cr) return this->Boosted(mtcut);
   ///////////////////////  vbf category     ///////////////////////////////
   if(cat == s_vbf) return this->VBF(mtcut);
+  if(cat == s_wjets_vbf_cr) return this->VBF("mtHigh");
+  if(cat == s_antiiso_vbf_cr) return this->VBF(mtcut);
   
   return 0;
 }
@@ -325,9 +338,13 @@ int GlobalClass::Jet0_high(TString mtcut){
 int GlobalClass::Jet0(TString mtcut){
 
   if( channel != "tt" ){
-    if( (this->getMT() < Parameter.analysisCut.mTLow
-         || mtcut == "wo"
-         )
+    if( ( (mtcut == ""
+           && this->getMT() < Parameter.analysisCut.mTLow
+           )
+          || mtcut == "wo"
+          || (mtcut == "mtHigh"
+              && this->getMT() > Parameter.analysisCut.mTHigh)
+          )
         && this->getNjets() == 0
         && NtupleView->pt_2 > 30
         )return 1;
@@ -344,9 +361,13 @@ int GlobalClass::Jet0(TString mtcut){
 int GlobalClass::Boosted(TString mtcut){
 
   if( channel != "tt" ){
-    if( (this->getMT() < Parameter.analysisCut.mTLow
-         || mtcut == "wo"
-         )
+    if( ( (mtcut == ""
+           && this->getMT() < Parameter.analysisCut.mTLow
+           )
+          || mtcut == "wo"
+          || (mtcut == "mtHigh"
+              && this->getMT() > Parameter.analysisCut.mTHigh)
+          )
         && (this->getNjets() == 1
             || (this->getNjets()==2 && this->getMjj()<300)
             || this->getNjets()>2
@@ -368,9 +389,13 @@ int GlobalClass::Boosted(TString mtcut){
 int GlobalClass::VBF(TString mtcut){
 
   if( channel != "tt"){
-    if( (this->getMT() < Parameter.analysisCut.mTLow
-         || mtcut == "wo"
-         )
+    if( ( (mtcut == ""
+           && this->getMT() < Parameter.analysisCut.mTLow
+           )
+          || mtcut == "wo"
+          || (mtcut == "mtHigh"
+             && this->getMT() > Parameter.analysisCut.mTHigh)
+          )
         && this->getNjets() == 2
         && this->getMjj() > 300
         && NtupleView->pt_2 > 30
@@ -454,6 +479,27 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
   double nmax = 1;
 
   int usingVarBins = 0;
+
+  if( name.Contains(s_wjets) ){
+    nbins = 1;
+    nmin  = 0;
+    nmax  = 1;
+    histos.push_back( new TH1D(name,"", nbins, nmin, nmax  ) );
+    histos.back()->Sumw2();
+    histo_names.push_back(name);
+
+    return histos.back();
+  }
+  if( name.Contains(s_antiiso) ){
+    nbins = 4;
+    nmin  = 0;
+    nmax  = 4;
+    histos.push_back( new TH1D(name,"", nbins, nmin, nmax  ) );
+    histos.back()->Sumw2();
+    histo_names.push_back(name);
+
+    return histos.back();
+  }
 
   if( channel != "tt" && name.Contains("2D") ){
     if( name.Contains(Parameter.variable2D.D2_0Jet.name) ){
@@ -720,10 +766,13 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
 double GlobalClass::QCD_OSSS(TString cat){
   if(channel == "mt"){
     if(cat == s_0jet
+       || cat == s_inclusive
+       || cat == s_wjets_0jet_cr
        || cat == s_0jet_low
        || cat == s_0jet_high)  return Parameter.QCD_OSSS.mt.ZeroJet;
 
     if(cat == s_boosted
+       || cat == s_wjets_boosted_cr
        || cat == s_1jet_low
        || cat == s_1jet_high)  return Parameter.QCD_OSSS.mt.Boosted;
 
@@ -733,14 +782,18 @@ double GlobalClass::QCD_OSSS(TString cat){
   }
   if(channel == "et"){
     if(cat == s_0jet
+       || cat == s_inclusive
+       || cat == s_wjets_0jet_cr
        || cat == s_0jet_low
        || cat == s_0jet_high)  return Parameter.QCD_OSSS.et.ZeroJet;
 
     if(cat == s_boosted
+       || cat == s_wjets_boosted_cr
        || cat == s_1jet_low
        || cat == s_1jet_high)  return Parameter.QCD_OSSS.et.Boosted;
 
     if(cat == s_vbf
+       || cat == s_wjets_vbf_cr
        || cat == s_vbf_low
        || cat == s_vbf_high)   return Parameter.QCD_OSSS.et.VBF;
   }
@@ -750,7 +803,11 @@ double GlobalClass::QCD_OSSS(TString cat){
 int GlobalClass::OS_W(TString cat){
 
   if(NtupleView->q_1 * NtupleView->q_2 < 0
-     && this->passIso("base")
+     &&( ( cat.Contains(s_antiiso)
+           && this->passIso("antiiso")
+           )
+         || ( this->passIso("base") )
+         )
      && this->getMT() > Parameter.analysisCut.mTHigh
      && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
      && this->CategorySelection(cat, "wo")
@@ -761,7 +818,11 @@ int GlobalClass::OS_W(TString cat){
 int GlobalClass::SS_W(TString cat){
 
   if(NtupleView->q_1 * NtupleView->q_2 > 0
-     && this->passIso("base")
+     &&( ( cat.Contains(s_antiiso)
+           && this->passIso("antiiso")
+           )
+         || ( this->passIso("base") )
+         )
      && this->getMT() > Parameter.analysisCut.mTHigh
      && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
      && this->CategorySelection(cat, "wo")
@@ -786,7 +847,11 @@ int GlobalClass::relaxed_W(TString cat, TString mt){
 int GlobalClass::SS_Low(TString cat){
 
   if(NtupleView->q_1 * NtupleView->q_2 > 0
-     && this->passIso("base")
+     &&( ( cat.Contains(s_antiiso)
+           && this->passIso("antiiso")
+           )
+         || ( this->passIso("base") )
+         )
      && this->getMT() < Parameter.analysisCut.mTLow
      && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
      && this->CategorySelection(cat, "wo")
@@ -797,7 +862,11 @@ int GlobalClass::SS_Low(TString cat){
 int GlobalClass::SS_Low_relaxed(TString cat){
 
   if(NtupleView->q_1 * NtupleView->q_2 > 0
-     && this->passIso("relaxed")
+     &&( ( cat.Contains(s_antiiso)
+           && this->passIso("antiiso")
+           )
+         || ( this->passIso("base") )
+         )
      && this->getMT() < Parameter.analysisCut.mTLow
      && NtupleView->byMediumIsolationMVArun2v1DBoldDMwLT_2
      && this->CategorySelection(cat, "wo")
@@ -832,6 +901,16 @@ int GlobalClass::returnBin(vector<double> bins, double value){
 }
 
 double GlobalClass::get2DVar(TString sub){
+
+  if( sub.Contains(s_wjets) ) return 0;
+  if (sub.Contains(s_antiiso) ){
+    int binX= (doSvfit=="SVFIT" &&
+               ( sub.Contains(s_boosted)
+                 || sub.Contains(s_vbf)
+                 )
+               ) ? this->returnBin(Parameter.variable2D.antiiso.binsX,NtupleView->m_sv) : this->returnBin(Parameter.variable2D.antiiso.binsX,NtupleView->m_vis);
+    return binX;
+  }
 
   if( channel != "tt" ){
     if( sub.Contains(Parameter.variable2D.D2_0Jet.name) ){

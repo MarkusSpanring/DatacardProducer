@@ -171,6 +171,9 @@ const struct Parameter{
       vector<double> binsY_mvis = {0,75,95,115,135,400}; //m_vis instead of svfit_mass
       //binsY_mvis must have same number of bins
     } D2_vbf;
+    struct antiiso{
+      vector<double> binsX = {40,80,120,160,200};
+    } antiiso;
   } variable2D;
   struct variable2D_tt{
     struct D2_0Jet{
@@ -198,13 +201,17 @@ const struct Parameter{
     double mTLow  = 50;
     double muIso_base = 0.15;
     double muIso_relaxed = 0.3;
+    double muIso_antiIsoLow = 0.15;
+    double muIso_antiIsoHigh = 0.3;
     double elIso_base = 0.1;
     double elIso_relaxed = 0.3;
+    double elIso_antiIsoLow = 0.1;
+    double elIso_antiIsoHigh = 0.3;
   } analysisCut;
 
   struct category{
     vector<TString> D1categories = {s_inclusive,s_0jet_low,s_0jet_high,s_1jet_low,s_1jet_high,s_vbf_low,s_vbf_high};
-    vector<TString> D2categories = {s_0jet,s_boosted,s_vbf,s_wjets_0jet_cr,s_wjets_boosted_cr,s_wjets_vbf_cr};
+    vector<TString> D2categories = {s_0jet,s_boosted,s_vbf,s_wjets_0jet_cr,s_wjets_boosted_cr,s_wjets_vbf_cr,s_antiiso_0jet_cr,s_antiiso_boosted_cr,s_antiiso_vbf_cr};
     //FIXME: add PU jet categories
   } category;
 

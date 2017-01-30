@@ -350,7 +350,7 @@ void SelectionAnalyzer::WSelections(float var, float weight, TString cat, TStrin
     
     if(fname == s_W){
       if( this->Baseline("OS",cat) ){ 
-        //this->GetHistbyName("W_MC"+sub,strVar)->Fill(usedVar, weight);
+        this->GetHistbyName("SR_MC"+s_W+sub,strVar)->Fill(usedVar, weight);
 
         if( this->FFRest() ){
           if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_WJ+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
@@ -367,12 +367,20 @@ void SelectionAnalyzer::WSelections(float var, float weight, TString cat, TStrin
         if( this->SS_Low_relaxed(cat) )       this->GetHistbyName("SS_Low_relaxed_"+s_W+sub, strVar)->Fill(usedVar, weight);
 
         if( this->JSelection() ){
+          if( this->Baseline("OS",cat) )      this->GetHistbyName("SR_MC"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeUp(NtupleView->pt_2) );
+          if( this->Baseline("OS",cat) )      this->GetHistbyName("SR_MC"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeDown(NtupleView->pt_2) );
+          if( this->OS_W(cat) )               this->GetHistbyName("OS_W_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeUp(NtupleView->pt_2) );
+          if( this->OS_W(cat) )               this->GetHistbyName("OS_W_"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeDown(NtupleView->pt_2) );
           if( this->relaxed_W(cat, "low") )   this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeUp(NtupleView->pt_2) );
           if( this->relaxed_W(cat, "low") )   this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeDown(NtupleView->pt_2) );
           if( this->relaxed_W(cat, "high") )  this->GetHistbyName("relaxed_W_high_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeUp(NtupleView->pt_2) );
           if( this->relaxed_W(cat, "high") )  this->GetHistbyName("relaxed_W_high_"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeDown(NtupleView->pt_2) );
         }
         else{
+          if( this->Baseline("OS",cat) )      this->GetHistbyName("SR_MC"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight);
+          if( this->Baseline("OS",cat) )      this->GetHistbyName("SR_MC"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight);
+          if( this->OS_W(cat) )               this->GetHistbyName("OS_W_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight);
+          if( this->OS_W(cat) )               this->GetHistbyName("OS_W_"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight);
           if( this->relaxed_W(cat, "low") )   this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight);
           if( this->relaxed_W(cat, "low") )   this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight);
           if( this->relaxed_W(cat, "high") )  this->GetHistbyName("relaxed_W_high_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight);
@@ -386,6 +394,7 @@ void SelectionAnalyzer::WSelections(float var, float weight, TString cat, TStrin
     }
     else if(fname == s_WjecUp){
       if( this->Baseline("OS",cat) ){
+        this->GetHistbyName("SR_MC"+s_WjecUp+sub,strVar)->Fill(usedVar, weight);
         if( this->FFRest() ){
           if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_WJjecUp+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
           if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_WJjecUp+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
@@ -407,6 +416,7 @@ void SelectionAnalyzer::WSelections(float var, float weight, TString cat, TStrin
     }
     else if(fname == s_WjecDown){
       if( this->Baseline("OS",cat) ){
+        this->GetHistbyName("SR_MC"+s_WjecDown+sub,strVar)->Fill(usedVar, weight);
         if( this->FFRest() ){
           if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_WJjecDown+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
           if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_WJjecDown+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
