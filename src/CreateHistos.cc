@@ -114,7 +114,34 @@ void CreateHistos::run(TString isTest){
   cout << doSvfit << endl;
   cout << "Reduced string: " << reduced << endl;
   cout << endl;
-  
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if(doInitialize){
+
+    for(auto cat : cats){
+      for(auto strVar : vars){
+        if( !do2DFit || cat == s_inclusive ){
+          initDYSelections(cat,strVar);
+          initTSelections(cat,strVar);
+          initVVSelections(cat,strVar);
+          initEWKZSelections(cat,strVar);
+          initSignalSelections(cat,strVar);
+        }
+        else if( do2DFit ){
+          if( channel == "tt"
+              && (cat.Contains(s_wjets)
+                  || cat.Contains(s_antiiso) )
+              ) continue;
+          initDYSelections(cat,strVar,"2D");
+          initTSelections(cat,strVar,"2D");
+          initVVSelections(cat,strVar,"2D");
+          initEWKZSelections(cat,strVar,"2D");
+          initSignalSelections(cat,strVar,"2D");
+        }
+      }
+    }
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   for(int i =0;i < files.size();i++){
 
@@ -125,7 +152,7 @@ void CreateHistos::run(TString isTest){
     this->loadFile(files[i][0]);
     Int_t nentries=0;
     if(isTest=="test"){
-      nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 50000 ) );
+      nentries = min( Int_t(NtupleView->fChain->GetEntries()), Int_t( 10000 ) );
     }else{
       nentries = Int_t(NtupleView->fChain->GetEntries());
     }
@@ -152,6 +179,8 @@ void CreateHistos::run(TString isTest){
       //if(channel == "et") weight = weight * this->getAntiLep_tauscaling();
 
       for(auto cat : cats){
+
+        if( isZFile(files[i][1]) ) weight *= this->getZmumuWeight( cat );
 
         for(auto strVar : vars){
 
@@ -318,12 +347,34 @@ void CreateHistos::CreateQCD_osw(TString strVar, TString cat, TString extend){
   this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_VV+sub,strVar), -1 );
   this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_Z+sub,strVar),  -1 );
   this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_TT+sub,strVar), -1 );
-  this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_W+sub,strVar),  -1 );
   this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_EWKZ+sub,strVar),  -1 );
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  this->GetHistbyName("SS_W_"+s_W+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_W+sub,strVar) );
+  this->GetHistbyName("SS_W_"+s_W+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Scale( 1.+this->getWSFUncertainty(cat) );
+  this->GetHistbyName("SS_W_"+s_W+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_W+sub,strVar) );
+  this->GetHistbyName("SS_W_"+s_W+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Scale( 1.-this->getWSFUncertainty(cat) );
+  this->GetHistbyName("OS_W_"+s_QCD+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_QCD+sub,strVar) );
+  this->GetHistbyName("OS_W_"+s_QCD+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_QCD+sub,strVar) );
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_W+sub,strVar),  -1 );
   this->GetHistbyName("OS_W_"+s_QCD+sub,strVar)->Scale( this->QCD_OSSS(cat) );
 
   this->resetZeroBins("OS_W_"+s_QCD+sub,strVar);
-
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //WSFUncertainties
+  this->GetHistbyName("OS_W_"+s_QCD+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_W+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar), -1  );
+  this->GetHistbyName("OS_W_"+s_QCD+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Scale( this->QCD_OSSS(cat) );
+  this->resetZeroBins("OS_W_"+s_QCD+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar);
+  this->GetHistbyName("OS_W_"+s_QCD+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_W+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar), -1  );
+  this->GetHistbyName("OS_W_"+s_QCD+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Scale( this->QCD_OSSS(cat) );
+  this->resetZeroBins("OS_W_"+s_QCD+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar);
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //QCDSFUncertainties
+  this->GetHistbyName("OS_W_"+s_QCD+s_QCDSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_QCD+sub,strVar) );
+  this->GetHistbyName("OS_W_"+s_QCD+s_QCDSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Scale(1+this->getQCDSFUncertainty(cat) );
+  this->GetHistbyName("OS_W_"+s_QCD+s_QCDSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_QCD+sub,strVar) );
+  this->GetHistbyName("OS_W_"+s_QCD+s_QCDSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Scale(1-this->getQCDSFUncertainty(cat) );
+  
   if(jecShift){
    this->GetHistbyName("OS_W_"+s_QCDjecUp+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_data+sub,strVar)   );
    this->GetHistbyName("OS_W_"+s_QCDjecUp+sub,strVar)->Add( this->GetHistbyName("SS_W_"+s_VV+s_jecUp+sub,strVar), -1 );
@@ -374,6 +425,28 @@ void CreateHistos::CreateW(TString strVar, TString cat, TString extend){
   this->resetZeroBins(s_West+sub,strVar);
   this->resetZeroBins("SR_"+s_W+sub,strVar);
   this->resetZeroBins("WCR_"+s_W+sub,strVar);
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //WSFUncertainties
+  this->GetHistbyName(s_West+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName(s_West+sub,strVar) );
+  this->GetHistbyName(s_West+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Scale( 1.+this->getWSFUncertainty(cat) );
+  this->GetHistbyName(s_West+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName(s_West+sub,strVar) );
+  this->GetHistbyName(s_West+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Scale( 1.-this->getWSFUncertainty(cat) );
+  this->GetHistbyName("SR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("SR_"+s_W+sub,strVar) );
+  this->GetHistbyName("SR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Scale( 1.+this->getWSFUncertainty(cat) );
+  this->GetHistbyName("SR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("SR_"+s_W+sub,strVar) );
+  this->GetHistbyName("SR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Scale( 1.-this->getWSFUncertainty(cat) );
+  this->GetHistbyName("WCR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("WCR_"+s_W+sub,strVar) );
+  this->GetHistbyName("WCR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Scale( 1.+this->getWSFUncertainty(cat) );
+  this->GetHistbyName("WCR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("WCR_"+s_W+sub,strVar) );
+  this->GetHistbyName("WCR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Scale( 1.-this->getWSFUncertainty(cat) );
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //QCDSFUncertainties
+  this->GetHistbyName(s_West+s_QCDSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName(s_West+sub,strVar) );
+  this->GetHistbyName(s_West+s_QCDSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName(s_West+sub,strVar) );
+  this->GetHistbyName("SR_"+s_W+s_QCDSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("SR_"+s_W+sub,strVar) );
+  this->GetHistbyName("SR_"+s_W+s_QCDSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("SR_"+s_W+sub,strVar) );
+  this->GetHistbyName("WCR_"+s_W+s_QCDSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("WCR_"+s_W+sub,strVar) );
+  this->GetHistbyName("WCR_"+s_W+s_QCDSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("WCR_"+s_W+sub,strVar) );
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //jetToTauFakeShift Up
   this->GetHistbyName(s_W+"_OSW"+s_jetToTauFakeUp+sub,strVar)->Add( this->GetHistbyName("OS_W_"+s_data+sub,strVar)   );
@@ -505,18 +578,58 @@ void CreateHistos::CreateQCD(TString strVar, TString cat, TString extend){
   this->GetHistbyName("SS_Low_relaxed_"+s_TT+sub,strVar)->Scale( TT_rel );
   this->GetHistbyName("SS_Low_relaxed_"+s_EWKZ+sub,strVar)->Scale( EWKZ_rel );
 
+  this->GetHistbyName("SS_Low_relaxed_"+s_W+sub+s_WSFUncert+channel+"_"+s_13TeVUp,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_W+sub,strVar) );
+  this->GetHistbyName("SS_Low_relaxed_"+s_W+sub+s_WSFUncert+channel+"_"+s_13TeVUp,strVar)->Scale( 1.+this->getWSFUncertainty(cat) );
+  this->GetHistbyName("SS_Low_relaxed_"+s_W+sub+s_WSFUncert+channel+"_"+s_13TeVDown,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_W+sub,strVar) );
+  this->GetHistbyName("SS_Low_relaxed_"+s_W+sub+s_WSFUncert+channel+"_"+s_13TeVDown,strVar)->Scale( 1.-this->getWSFUncertainty(cat) );
+
   this->GetHistbyName(s_QCDest+sub,strVar)->Add( this->GetHistbyName("SS_Low_"+s_data+sub,strVar)  );
   this->GetHistbyName(s_QCDest+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_VV+sub,strVar), -1 );
   this->GetHistbyName(s_QCDest+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_Z+sub,strVar),  -1 );
   this->GetHistbyName(s_QCDest+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_TT+sub,strVar), -1 );
-  this->GetHistbyName(s_QCDest+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_W+sub,strVar),  -1 );
   this->GetHistbyName(s_QCDest+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_EWKZ+sub,strVar),  -1 );
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  this->GetHistbyName(s_QCDest+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName(s_QCDest+sub,strVar) );
+  this->GetHistbyName(s_QCDest+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName(s_QCDest+sub,strVar) );
+  this->GetHistbyName(s_QCD+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName(s_QCDest+sub,strVar) );
+  this->GetHistbyName(s_QCD+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName(s_QCDest+sub,strVar) );
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  this->GetHistbyName(s_QCDest+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_W+sub,strVar),  -1 );
   this->GetHistbyName(s_QCD+sub,strVar)->Add( this->GetHistbyName(s_QCDest+sub,strVar) );
   this->GetHistbyName(s_QCDest+sub,strVar)->Scale( this->QCD_OSSS(cat) );
 
   this->resetZeroBins(s_QCDest+sub,strVar);
   this->resetZeroBins(s_QCD+sub,strVar);
   this->resetZeroBins("AICR_"+s_W+sub,strVar);
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //WSFUncertainties
+  this->GetHistbyName("AICR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("AICR_"+s_W+sub,strVar) );
+  this->GetHistbyName("AICR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Scale( 1.+this->getWSFUncertainty(cat) );
+  this->GetHistbyName("AICR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("AICR_"+s_W+sub,strVar) );
+  this->GetHistbyName("AICR_"+s_W+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Scale( 1.-this->getWSFUncertainty(cat) );
+  this->GetHistbyName(s_QCDest+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_W+sub+s_WSFUncert+channel+"_"+s_13TeVUp,strVar), -1 );
+  this->GetHistbyName(s_QCDest+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_W+sub+s_WSFUncert+channel+"_"+s_13TeVDown,strVar), -1 );
+  this->GetHistbyName(s_QCDest+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Scale( this->QCD_OSSS(cat) );
+  this->GetHistbyName(s_QCDest+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Scale( this->QCD_OSSS(cat) );
+  this->resetZeroBins(s_QCDest+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar);
+  this->resetZeroBins(s_QCDest+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_QCD+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_W+sub+s_WSFUncert+channel+"_"+s_13TeVUp,strVar), -1 );
+  this->GetHistbyName(s_QCD+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("SS_Low_relaxed_"+s_W+sub+s_WSFUncert+channel+"_"+s_13TeVDown,strVar), -1 );
+  this->resetZeroBins(s_QCD+s_WSFUncert+channel+"_"+s_13TeVUp+sub,strVar);
+  this->resetZeroBins(s_QCD+s_WSFUncert+channel+"_"+s_13TeVDown+sub,strVar);
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //QCDSFUncertainties
+  this->GetHistbyName("AICR_"+s_W+s_QCDSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName("AICR_"+s_W+sub,strVar) );
+  this->GetHistbyName("AICR_"+s_W+s_QCDSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName("AICR_"+s_W+sub,strVar) );
+  this->GetHistbyName(s_QCDest+s_QCDSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName(s_QCDest+sub,strVar) );
+  this->GetHistbyName(s_QCDest+s_QCDSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Scale( 1+this->getQCDSFUncertainty(cat) );
+  this->GetHistbyName(s_QCDest+s_QCDSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName(s_QCDest+sub,strVar) );
+  this->GetHistbyName(s_QCDest+s_QCDSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Scale( 1-this->getQCDSFUncertainty(cat) );
+  this->GetHistbyName(s_QCD+s_QCDSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Add( this->GetHistbyName(s_QCDest+sub,strVar) );
+  this->GetHistbyName(s_QCD+s_QCDSFUncert+channel+"_"+s_13TeVUp+sub,strVar)->Scale( 1+this->getQCDSFUncertainty(cat) );
+  this->GetHistbyName(s_QCD+s_QCDSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Add( this->GetHistbyName(s_QCDest+sub,strVar) );
+  this->GetHistbyName(s_QCD+s_QCDSFUncert+channel+"_"+s_13TeVDown+sub,strVar)->Scale( 1-this->getQCDSFUncertainty(cat) );
 
   if(jecShift){
     W_SF = ( this->GetHistbyName(s_WjecUp+"_OSW"+sub,strVar)->Integral() > 0 )
@@ -715,7 +828,8 @@ void CreateHistos::EstimateFF(TString strVar, TString cat, TString extend){
   }
   
   for( auto syst : FFsyst[channel] ){
-    TString tmp=syst; tmp.ReplaceAll("_down",s_down); tmp.ReplaceAll("_up",s_up); 
+    TString tmp=syst;
+    this->getCorrectUncertaintyString( tmp );
     this->GetHistbyName(s_jetFakes+"_"+tmp+sub,strVar)->Add( this->GetHistbyName(s_data+"_"+s_jetFakes+"_"+tmp+sub,strVar)   );
     this->GetHistbyName(s_jetFakes+"_"+tmp+sub,strVar)->Add( this->GetHistbyName(s_W+"_"+s_jetFakes+"_"+tmp+sub,strVar), -1 );
     this->GetHistbyName(s_jetFakes+"_"+tmp+sub,strVar)->Add( this->GetHistbyName(s_TT+"_"+s_jetFakes+"_"+tmp+sub,strVar),  -1 );
@@ -947,7 +1061,8 @@ void CreateHistos::writeHistos( TString channel, vector<TString> cats, vector<TS
           if( cat.Contains(s_wjets)
               && tmp.Contains("OS_W_"+s_QCD ) ) tmp.ReplaceAll("OS_W_","");
           else if( cat.Contains(s_wjets)
-              && tmp.Contains(s_QCD) ) continue;
+                   && !tmp.Contains(s_QCDSFUncert)
+                   && tmp.Contains(s_QCD) ) continue;
           
           if(tmp.Contains("OS_"+s_W)) continue;
           tmp.ReplaceAll(sub, "");

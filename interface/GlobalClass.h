@@ -32,6 +32,12 @@ class GlobalClass{
   int Vetos();
   int CategorySelection(TString cat, TString mtcut = "");
 
+  double getWSFUncertainty( TString cat );
+  double getQCDSFUncertainty( TString cat );
+  double getRenormScale( TString cat );
+  double getZmumuWeight( TString cat );
+  double applyZmumuUncertainty( TString cat );
+
   int jet2_mvis();
   int VBF_low(TString mtcut = "");
   int VBF_high(TString mtcut = "");

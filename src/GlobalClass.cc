@@ -343,7 +343,8 @@ int GlobalClass::Jet0(TString mtcut){
            )
           || mtcut == "wo"
           || (mtcut == "mtHigh"
-              && this->getMT() > Parameter.analysisCut.mTHigh)
+              && this->getMT() > Parameter.analysisCut.mTHigh
+              && this->getMT() < 200 )
           )
         && this->getNjets() == 0
         && NtupleView->pt_2 > 30
@@ -366,7 +367,8 @@ int GlobalClass::Boosted(TString mtcut){
            )
           || mtcut == "wo"
           || (mtcut == "mtHigh"
-              && this->getMT() > Parameter.analysisCut.mTHigh)
+              && this->getMT() > Parameter.analysisCut.mTHigh
+              && this->getMT() < 200 )
           )
         && (this->getNjets() == 1
             || (this->getNjets()==2 && this->getMjj()<300)
@@ -378,7 +380,12 @@ int GlobalClass::Boosted(TString mtcut){
   else{
     if(NtupleView->pt_1 > 50 
        && ( this->getNjets() == 1
-            || (this->getNjets()>=2 && !( abs(this->getJdeta()) > 2.5 && this->CalcHPt() > 100 ) )
+            || (this->getNjets()>=2
+                && !( abs(this->getJdeta()) > 2.5
+                      && ( (doSvfit=="SVFIT"
+                            && NtupleView->pt_sv > 100 )
+                           || ( doSvfit=="woSVFIT"
+                                && this->CalcHPt() > 100 ) ) ) )
             )
        )return 1;
   }
@@ -394,7 +401,8 @@ int GlobalClass::VBF(TString mtcut){
            )
           || mtcut == "wo"
           || (mtcut == "mtHigh"
-             && this->getMT() > Parameter.analysisCut.mTHigh)
+              && this->getMT() > Parameter.analysisCut.mTHigh
+              && this->getMT() < 200 )
           )
         && this->getNjets() == 2
         && this->getMjj() > 300
@@ -405,7 +413,10 @@ int GlobalClass::VBF(TString mtcut){
     if(NtupleView->pt_1 > 50
        && this->getNjets() >= 2
        && abs(this->getJdeta()) > 2.5
-       && this->CalcHPt() > 100
+       && ( (doSvfit=="SVFIT"
+             && NtupleView->pt_sv > 100 )
+            || ( doSvfit=="woSVFIT"
+                 && this->CalcHPt() > 100 ) )
        )return 1;
   }
   return 0;
@@ -482,8 +493,8 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
 
   if( name.Contains(s_wjets) ){
     nbins = 1;
-    nmin  = 0;
-    nmax  = 1;
+    nmin  = 80;
+    nmax  = 200;
     histos.push_back( new TH1D(name,"", nbins, nmin, nmax  ) );
     histos.back()->Sumw2();
     histo_names.push_back(name);
@@ -492,8 +503,8 @@ TH1D* GlobalClass::JITHistoCreator(TString name, TString strVar){
   }
   if( name.Contains(s_antiiso) ){
     nbins = 4;
-    nmin  = 0;
-    nmax  = 4;
+    nmin  = 40;
+    nmax  = 200;
     histos.push_back( new TH1D(name,"", nbins, nmin, nmax  ) );
     histos.back()->Sumw2();
     histo_names.push_back(name);
@@ -902,14 +913,14 @@ int GlobalClass::returnBin(vector<double> bins, double value){
 
 double GlobalClass::get2DVar(TString sub){
 
-  if( sub.Contains(s_wjets) ) return 0;
+  if( sub.Contains(s_wjets) ) return 80;
   if (sub.Contains(s_antiiso) ){
     int binX= (doSvfit=="SVFIT" &&
                ( sub.Contains(s_boosted)
                  || sub.Contains(s_vbf)
                  )
                ) ? this->returnBin(Parameter.variable2D.antiiso.binsX,NtupleView->m_sv) : this->returnBin(Parameter.variable2D.antiiso.binsX,NtupleView->m_vis);
-    return binX;
+    return Parameter.variable2D.antiiso.binsX[binX-1];
   }
 
   if( channel != "tt" ){
@@ -977,3 +988,105 @@ void GlobalClass::resetZeroBins(TString hist, TString var){
   }
   
 }
+
+double GlobalClass::getWSFUncertainty( TString cat ){
+
+  if(channel == "mt"){
+    if( cat.Contains(s_0jet) ) return 0.1;
+    else if( cat.Contains(s_boosted) ) return 0.1;
+    else if( cat.Contains(s_vbf) ) return 0.3;
+  }
+  else if(channel == "et"){
+    if( cat.Contains(s_0jet) ) return 0.1;
+    else if( cat.Contains(s_boosted) ) return 0.1;
+    else if( cat.Contains(s_vbf) ) return 0.3;
+  }
+
+  return 1;
+  
+}
+
+double GlobalClass::getQCDSFUncertainty( TString cat ){
+
+  if(channel == "mt"){
+    if( cat.Contains(s_0jet) ) return 0.15;
+    else if( cat.Contains(s_boosted) ) return 0.15;
+    else if( cat.Contains(s_vbf) ) return 0.3;
+  }
+  else if(channel == "et"){
+    if( cat.Contains(s_0jet) ) return 0.15;
+    else if( cat.Contains(s_boosted) ) return 0.15;
+    else if( cat.Contains(s_vbf) ) return 0.3;
+  }
+
+  return 1;
+  
+}
+
+double GlobalClass::getRenormScale( TString cat ){
+
+  double HiggsPt = (doSvfit=="SVIFT") ? NtupleView->pt_sv : this->CalcHPt();
+
+  if(channel == "mt"){
+    if(cat == s_0jet) return 0.929 + 0.0001702 * NtupleView->pt_2;
+    else if(cat == s_boosted) return 0.919 - 0.0010055 * HiggsPt;
+    else if(cat == s_vbf) return 1.026 + 0.000066 * NtupleView->mjj;
+  }
+  else if(channel == "et"){
+    if(cat == s_0jet) return 0.973 + 0.0003405 * NtupleView->pt_2;
+    else if(cat == s_boosted) return 0.986 - 0.0000278 * HiggsPt;
+    else if(cat == s_vbf) return 0.971 + 0.0000327 * NtupleView->mjj;
+  }
+  else if(channel == "tt"){
+    if(cat == s_0jet) return 0.814 + 0.0027094 * NtupleView->pt_1;
+    else if(cat == s_boosted) return 0.973 - 0.0008596 * HiggsPt;
+    else if(cat == s_vbf) return 1.094 + 0.0000545 * NtupleView->mjj;
+  }
+
+  return 1;
+
+}
+
+double GlobalClass::getZmumuWeight( TString cat ){
+
+  double HiggsPt = (doSvfit=="SVIFT") ? NtupleView->pt_sv : this->CalcHPt();
+
+  if( cat == s_0jet ) return 1.;
+  else if( cat == s_boosted && channel != "tt" ){
+    if( HiggsPt<100 )      return 0.971;
+    else if( HiggsPt<150 ) return 0.975;
+    else if( HiggsPt<200 ) return 0.96;
+    else if( HiggsPt<250 ) return 0.964;
+    else if( HiggsPt<300 ) return 0.934;
+    else                   return 0.942;
+  } 
+  else if( cat == s_boosted && channel == "tt" ){
+    if( HiggsPt<100 )      return 0.973;
+    else if( HiggsPt<170 ) return 0.959;
+    else if( HiggsPt<300 ) return 0.934;
+    else                   return 0.993;
+  }   
+  else if(cat == s_vbf && channel != "tt" ){
+    if( this->getMjj()<300 )  return 1;
+    if( this->getMjj()<700 )  return 1.043;
+    if( this->getMjj()<1100 ) return 0.965;
+    if( this->getMjj()<1500 ) return 0.901;
+    else                      return 0.888;
+  } 
+  else if(cat == s_vbf && channel == "tt" ){
+    if( this->getMjj()<300 )  return 1.05;
+    if( this->getMjj()<500 )  return 1.032;
+    if( this->getMjj()<800 )  return 1.044;
+    else                      return 1.002;
+  }
+  
+  return 1;
+  
+}
+
+double GlobalClass::applyZmumuUncertainty( TString cat ){
+
+  if( cat == s_vbf ) return this->getZmumuWeight(cat);
+  else return 1;
+  
+} 

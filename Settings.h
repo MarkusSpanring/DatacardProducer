@@ -16,6 +16,7 @@ const int resetZero=1;
 const int do2DFit=1;
 const int ptShift=1;
 const int jecShift=1;
+const int doInitialize=1;
 const int useMVAMET=0;
 const int calcFF=1;
 const int keepDebugHistos=0;
