@@ -8,4 +8,4 @@ scram b -j 8
 git init
 git remote add origin git@github.com:MarkusSpanring/DatacardProducer.git
 git checkout -b master
-git pull master origin
+git pull origin master
