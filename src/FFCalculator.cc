@@ -11,7 +11,14 @@ FFCalculator::~FFCalculator(){
 void FFCalculator::initFakeFactors(){
   for(auto cat : cats){
     if( !this->is1DCategories(cat) && !this->is2DCategories(cat) ) continue;
-    FFfile[cat] = TFile::Open("HTTutilities/Jet2TauFakes/data/"+channel+"/"+cat+"/"+FFversion);
+    TString catSuffix = cat;
+    if(cat == s_wjets_0jet_cr) catSuffix = s_0jet;
+    if(cat == s_wjets_boosted_cr) catSuffix = s_boosted;
+    if(cat == s_wjets_vbf_cr) catSuffix = s_vbf;
+    if(cat == s_antiiso_0jet_cr) catSuffix = s_0jet;
+    if(cat == s_antiiso_boosted_cr) catSuffix = s_boosted;
+    if(cat == s_antiiso_vbf_cr) catSuffix = s_vbf;
+    FFfile[cat] = TFile::Open("HTTutilities/Jet2TauFakes/data/"+channel+"/"+catSuffix+"/"+FFversion);
     FFObj[cat] = (FakeFactor*)FFfile[cat]->Get("ff_comb");
   }
   FFsyst["mt"] = Parameter.FFsystematics.mt.syst;
@@ -43,7 +50,9 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
           }
           
           for( auto syst : FFsyst[channel] ){
-            TString tmp=syst; tmp.ReplaceAll("_down",s_down); tmp.ReplaceAll("_up",s_up);
+            TString tmp=syst;
+            this->getCorrectUncertaintyString( tmp );
+            if(doMC && tmp.Contains("qcd")) continue;
             this->GetHistbyName( fname+"_"+s_jetFakes+"_"+tmp+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs, syst) );
           }
         }
@@ -66,7 +75,9 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
           }
           
           for( auto syst : FFsyst[channel] ){
-          TString tmp=syst; tmp.ReplaceAll("_down",s_down); tmp.ReplaceAll("_up",s_up);
+          TString tmp=syst;
+          this->getCorrectUncertaintyString( tmp );
+          if(doMC && tmp.Contains("qcd")) continue;
           this->GetHistbyName( fname+"_"+s_jetFakes+"_"+tmp+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs, syst) );
           }
         }
@@ -86,7 +97,9 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
           }
           
           for( auto syst : FFsyst[channel] ){
-            TString tmp=syst; tmp.ReplaceAll("_down",s_down); tmp.ReplaceAll("_up",s_up);
+            TString tmp=syst;
+            this->getCorrectUncertaintyString( tmp );
+            if(doMC && tmp.Contains("qcd")) continue;
             this->GetHistbyName( fname+"_"+s_jetFakes+"_"+tmp+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs, syst) );
           }
         }
@@ -179,4 +192,36 @@ void FFCalculator::getFF2Inputs(vector<double>&inputs){
   inputs.push_back( this->getNjets() );
   inputs.push_back( NtupleView->m_vis );
   inputs.push_back( 0 );
+}
+
+
+void FFCalculator::doUpDownReplace( TString &replaceString ){
+
+  replaceString.ReplaceAll("_down",s_down);
+  replaceString.ReplaceAll("_up",s_up);
+  
+}
+
+void FFCalculator::doStatUncertaintyReplace( TString &replaceString ){
+
+  if( replaceString.Contains("ff_qcd")
+      || replaceString.Contains("ff_w") ) replaceString.ReplaceAll("stat",channel+"_stat");
+  
+}
+
+void FFCalculator::doSystUncertaintyReplace( TString &replaceString ){
+
+  if( replaceString.Contains("ff_qcd") ) replaceString.ReplaceAll("syst",channel+"_syst");
+  if( channel == "tt"
+      && ( replaceString.Contains("ff_w")
+           || replaceString.Contains("ff_tt") ) ) replaceString.ReplaceAll("syst",channel+"_syst");
+  
+}
+ 
+void FFCalculator::getCorrectUncertaintyString( TString &replaceString ){
+
+  this->doUpDownReplace( replaceString );
+  this->doStatUncertaintyReplace( replaceString );
+  this->doSystUncertaintyReplace( replaceString);
+  
 }

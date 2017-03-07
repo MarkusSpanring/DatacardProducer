@@ -8,6 +8,112 @@ SelectionAnalyzer::SelectionAnalyzer(){
 SelectionAnalyzer::~SelectionAnalyzer(){
 }
 
+void SelectionAnalyzer::initDYSelections(TString cat, TString strVar, TString extend){
+
+  TString sub = extend + "+" + strVar +"_" + cat + "+";
+  this->GetHistbyName(s_Z+sub,strVar);
+  this->GetHistbyName(s_ZL+sub,strVar);
+  this->GetHistbyName(s_ZL+s_CMSdyShape+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_ZL+s_CMSdyShape+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_ZL+s_CMSZLShape+channel+"_"+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_ZL+s_CMSZLShape+channel+"_"+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_ZLjecUp+sub,strVar);
+  this->GetHistbyName(s_ZLjecDown+sub,strVar);
+  this->GetHistbyName(s_ZL+s_CMSzmumu+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_ZL+s_CMSzmumu+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_ZLL+sub,strVar);
+  this->GetHistbyName(s_ZJ+sub,strVar);
+  this->GetHistbyName(s_ZJ+s_CMSdyShape+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_ZJ+s_CMSdyShape+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_ZJ+s_CMSjetToTauFake+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_ZJ+s_CMSjetToTauFake+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_ZJ+s_CMSzmumu+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_ZJ+s_CMSzmumu+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_ZJjecUp+sub,strVar);
+  this->GetHistbyName(s_ZJjecDown+sub,strVar);    
+  this->GetHistbyName(s_ZTT+sub,strVar);
+  this->GetHistbyName(s_ZTT+s_CMSdyShape+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_ZTT+s_CMSdyShape+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_ZTT+s_CMStauScale+channel+"_"+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_ZTT+s_CMStauScale+channel+"_"+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_ZTT+s_CMSzmumu+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_ZTT+s_CMSzmumu+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_ZTTjecUp+sub,strVar);
+  this->GetHistbyName(s_ZTTjecDown+sub,strVar);
+  
+}
+
+void SelectionAnalyzer::initEWKZSelections(TString cat, TString strVar, TString extend){
+
+  TString sub = extend + "+" + strVar +"_" + cat + "+";
+  this->GetHistbyName(s_EWKZ+sub,strVar);
+  this->GetHistbyName(s_EWKZ+s_CMStauScale+channel+"_"+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_EWKZ+s_CMStauScale+channel+"_"+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_EWKZjecUp+sub,strVar);
+  this->GetHistbyName(s_EWKZjecDown+sub,strVar);
+  
+}
+
+void SelectionAnalyzer::initTSelections(TString cat, TString strVar, TString extend){
+
+  TString sub = extend + "+" + strVar +"_" + cat + "+";
+  this->GetHistbyName(s_TTJ+sub,strVar);
+  this->GetHistbyName(s_TTJ+s_CMSttShape+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_TTJ+s_CMSttShape+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_TTJ+s_CMSjetToTauFake+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_TTJ+s_CMSjetToTauFake+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_TTJjecUp+sub,strVar);
+  this->GetHistbyName(s_TTJjecDown+sub,strVar);    
+  this->GetHistbyName(s_TTT+sub,strVar);
+  this->GetHistbyName(s_TTT+s_CMSttShape+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_TTT+s_CMSttShape+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_TTT+s_CMStauScale+channel+"_"+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_TTT+s_CMStauScale+channel+"_"+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_TTTjecUp+sub,strVar);
+  this->GetHistbyName(s_TTTjecDown+sub,strVar);
+  this->GetHistbyName(s_TT+sub,strVar);
+  this->GetHistbyName(s_TT+s_CMSttShape+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_TT+s_CMSttShape+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_TT+s_CMStauScale+channel+"_"+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_TT+s_CMStauScale+channel+"_"+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_TTjecUp+sub,strVar);
+  this->GetHistbyName(s_TTjecDown+sub,strVar);
+
+}
+
+void SelectionAnalyzer::initVVSelections(TString cat, TString strVar, TString extend){
+
+  TString sub = extend + "+" + strVar +"_" + cat + "+";
+  this->GetHistbyName(s_VVJ+sub,strVar);
+  this->GetHistbyName(s_VVJjecUp+sub,strVar);
+  this->GetHistbyName(s_VVJjecDown+sub,strVar);    
+  this->GetHistbyName(s_VVT+sub,strVar);
+  this->GetHistbyName(s_VVTjecUp+sub,strVar);
+  this->GetHistbyName(s_VVTjecDown+sub,strVar);
+  this->GetHistbyName(s_VV+sub,strVar);
+  this->GetHistbyName(s_VVjecUp+sub,strVar);
+  this->GetHistbyName(s_VVjecDown+sub,strVar);
+
+}
+
+void SelectionAnalyzer::initSignalSelections(TString cat, TString strVar, TString extend){
+
+  TString sub = extend + "+" + strVar +"_" + cat + "+";
+  this->GetHistbyName(s_qqH+"125"+sub,strVar);
+  this->GetHistbyName(s_ggH+"125"+sub,strVar);
+  this->GetHistbyName(s_qqH+"125"+s_jecUp+sub,strVar);
+  this->GetHistbyName(s_qqH+"125"+s_jecDown+sub,strVar);
+  this->GetHistbyName(s_ggH+"125"+s_jecUp+sub,strVar);
+  this->GetHistbyName(s_ggH+"125"+s_jecDown+sub,strVar);
+  this->GetHistbyName(s_qqH+"125"+s_CMStauScale+channel+"_"+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_qqH+"125"+s_CMStauScale+channel+"_"+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_ggH+"125"+s_CMStauScale+channel+"_"+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_ggH+"125"+s_CMStauScale+channel+"_"+s_13TeVDown+sub,strVar);
+  this->GetHistbyName(s_ggH+"125"+s_CMSscalegg+s_13TeVUp+sub,strVar);
+  this->GetHistbyName(s_ggH+"125"+s_CMSscalegg+s_13TeVDown+sub,strVar);
+
+}
+
 void SelectionAnalyzer::DYSelections(float var, float weight, TString cat, TString strVar, TString fname, TString extend){
 
     TString sub = extend + "+" + strVar +"_" + cat + "+";
@@ -22,20 +128,26 @@ void SelectionAnalyzer::DYSelections(float var, float weight, TString cat, TStri
           this->GetHistbyName(s_ZLL+sub,strVar)->Fill(usedVar, weight);
           this->GetHistbyName(s_ZL+sub,strVar)->Fill(usedVar, weight);
           this->GetHistbyName(s_ZL+s_CMSdyShape+s_13TeVUp+sub,strVar)->Fill(usedVar, weight * NtupleView->ZWeight );
-          this->GetHistbyName(s_ZL+s_CMSdyShape+s_13TeVDown+sub,strVar)->Fill(usedVar, weight/NtupleView->ZWeight );          
+          this->GetHistbyName(s_ZL+s_CMSdyShape+s_13TeVDown+sub,strVar)->Fill(usedVar, weight/NtupleView->ZWeight );
+          this->GetHistbyName(s_ZL+s_CMSzmumu+s_13TeVUp+sub,strVar)->Fill(usedVar, weight * this->applyZmumuUncertainty( cat ) );
+          this->GetHistbyName(s_ZL+s_CMSzmumu+s_13TeVDown+sub,strVar)->Fill(usedVar, weight / this->applyZmumuUncertainty( cat ) );
         }
         else if( this->TSelection() ){
           this->GetHistbyName(s_ZTT+sub,strVar)->Fill(usedVar, weight);
           this->GetHistbyName(s_ZTT+s_CMSdyShape+s_13TeVUp+sub,strVar)->Fill(usedVar, weight * NtupleView->ZWeight );
           this->GetHistbyName(s_ZTT+s_CMSdyShape+s_13TeVDown+sub,strVar)->Fill(usedVar, weight/NtupleView->ZWeight );
+          this->GetHistbyName(s_ZTT+s_CMSzmumu+s_13TeVUp+sub,strVar)->Fill(usedVar, weight * this->applyZmumuUncertainty( cat ) );
+          this->GetHistbyName(s_ZTT+s_CMSzmumu+s_13TeVDown+sub,strVar)->Fill(usedVar, weight / this->applyZmumuUncertainty( cat ) );
         }
         else if( this->JSelection() ){
           this->GetHistbyName(s_ZLL+sub,strVar)->Fill(usedVar, weight);
           this->GetHistbyName(s_ZJ+sub,strVar)->Fill(usedVar, weight);
           this->GetHistbyName(s_ZJ+s_CMSdyShape+s_13TeVUp+sub,strVar)->Fill(usedVar, weight * NtupleView->ZWeight );
-          this->GetHistbyName(s_ZJ+s_CMSdyShape+s_13TeVUp+sub,strVar)->Fill(usedVar, weight/NtupleView->ZWeight );
+          this->GetHistbyName(s_ZJ+s_CMSdyShape+s_13TeVDown+sub,strVar)->Fill(usedVar, weight/NtupleView->ZWeight );
           this->GetHistbyName(s_ZJ+s_CMSjetToTauFake+s_13TeVUp+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeUp(NtupleView->pt_2) );
           this->GetHistbyName(s_ZJ+s_CMSjetToTauFake+s_13TeVDown+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeDown(NtupleView->pt_2) );
+          this->GetHistbyName(s_ZJ+s_CMSzmumu+s_13TeVUp+sub,strVar)->Fill(usedVar, weight * this->applyZmumuUncertainty( cat ) );
+          this->GetHistbyName(s_ZJ+s_CMSzmumu+s_13TeVDown+sub,strVar)->Fill(usedVar, weight / this->applyZmumuUncertainty( cat ) );
         }
         ////////////////////////////////////////////////////////////////
         if( NtupleView->NUP == 0)          this->GetHistbyName("Z_0Jets"+sub,strVar)->Fill(usedVar, weight);
@@ -44,7 +156,7 @@ void SelectionAnalyzer::DYSelections(float var, float weight, TString cat, TStri
         ////////////////////////////////////////////////////////////////
         if( this->FFRest() ){
           if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_ZJ+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
-          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_ZJ+"_"+s_rest,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_ZJ+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
         }
       }
       if(calcFF) this->applyFF(usedVar,weight,cat,strVar,fname,0,extend);
@@ -131,8 +243,8 @@ void SelectionAnalyzer::DYSelections(float var, float weight, TString cat, TStri
         }
         ////////////////////////////////////////////////////////////////
         if( this->FFRest() ){
-          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_ZjecDown+"_+"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
-          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_ZjecDown+"_+"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_ZJjecDown+"_+"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_ZJjecDown+"_+"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
         }
       }
       if(calcFF) this->applyFF(usedVar,weight,cat,strVar,fname,0,extend);
@@ -160,8 +272,8 @@ void SelectionAnalyzer::EWKZSelections(float var, float weight, TString cat, TSt
         this->GetHistbyName(s_EWKZ+sub,strVar)->Fill(usedVar, weight);
         ////////////////////////////////////////////////////////////////
         if( this->FFRest() ){
-          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_EWKZJ+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
-          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_EWKZJ+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_EWKZ+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_EWKZ+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
         }
       }
       if(calcFF) this->applyFF(usedVar,weight,cat,strVar,fname,0,extend);
@@ -189,8 +301,8 @@ void SelectionAnalyzer::EWKZSelections(float var, float weight, TString cat, TSt
         this->GetHistbyName(s_EWKZjecUp+sub,strVar)->Fill(usedVar, weight);
         ////////////////////////////////////////////////////////////////
         if( this->FFRest() ){
-          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_EWKZJjecUp+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
-          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_EWKZJjecUp+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_EWKZjecUp+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_EWKZjecUp+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
         }
       }
       if(calcFF) this->applyFF(usedVar,weight,cat,strVar,fname,0,extend);
@@ -208,8 +320,8 @@ void SelectionAnalyzer::EWKZSelections(float var, float weight, TString cat, TSt
         this->GetHistbyName(s_EWKZjecDown+sub,strVar)->Fill(usedVar, weight);
         ////////////////////////////////////////////////////////////////
         if( this->FFRest() ){
-          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_EWKZJjecDown+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
-          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_EWKZJjecDown+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_EWKZjecDown+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_EWKZjecDown+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
         }
       }
       if(calcFF) this->applyFF(usedVar,weight,cat,strVar,fname,0,extend);
@@ -350,11 +462,11 @@ void SelectionAnalyzer::WSelections(float var, float weight, TString cat, TStrin
     
     if(fname == s_W){
       if( this->Baseline("OS",cat) ){ 
-        //this->GetHistbyName("W_MC"+sub,strVar)->Fill(usedVar, weight);
+        this->GetHistbyName("SR_MC"+s_W+sub,strVar)->Fill(usedVar, weight);
 
         if( this->FFRest() ){
-          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_WJ+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
-          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_WJ+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_W+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_W+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
         }
       }
 
@@ -367,12 +479,20 @@ void SelectionAnalyzer::WSelections(float var, float weight, TString cat, TStrin
         if( this->SS_Low_relaxed(cat) )       this->GetHistbyName("SS_Low_relaxed_"+s_W+sub, strVar)->Fill(usedVar, weight);
 
         if( this->JSelection() ){
+          if( this->Baseline("OS",cat) )      this->GetHistbyName("SR_MC"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeUp(NtupleView->pt_2) );
+          if( this->Baseline("OS",cat) )      this->GetHistbyName("SR_MC"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeDown(NtupleView->pt_2) );
+          if( this->OS_W(cat) )               this->GetHistbyName("OS_W_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeUp(NtupleView->pt_2) );
+          if( this->OS_W(cat) )               this->GetHistbyName("OS_W_"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeDown(NtupleView->pt_2) );
           if( this->relaxed_W(cat, "low") )   this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeUp(NtupleView->pt_2) );
           if( this->relaxed_W(cat, "low") )   this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeDown(NtupleView->pt_2) );
           if( this->relaxed_W(cat, "high") )  this->GetHistbyName("relaxed_W_high_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeUp(NtupleView->pt_2) );
           if( this->relaxed_W(cat, "high") )  this->GetHistbyName("relaxed_W_high_"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight*this->getJetToTauFakeDown(NtupleView->pt_2) );
         }
         else{
+          if( this->Baseline("OS",cat) )      this->GetHistbyName("SR_MC"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight);
+          if( this->Baseline("OS",cat) )      this->GetHistbyName("SR_MC"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight);
+          if( this->OS_W(cat) )               this->GetHistbyName("OS_W_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight);
+          if( this->OS_W(cat) )               this->GetHistbyName("OS_W_"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight);
           if( this->relaxed_W(cat, "low") )   this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight);
           if( this->relaxed_W(cat, "low") )   this->GetHistbyName("relaxed_W_low_"+s_W+s_jetToTauFakeDown+sub,strVar)->Fill(usedVar, weight);
           if( this->relaxed_W(cat, "high") )  this->GetHistbyName("relaxed_W_high_"+s_W+s_jetToTauFakeUp+sub,strVar)->Fill(usedVar, weight);
@@ -386,9 +506,10 @@ void SelectionAnalyzer::WSelections(float var, float weight, TString cat, TStrin
     }
     else if(fname == s_WjecUp){
       if( this->Baseline("OS",cat) ){
+        this->GetHistbyName("SR_MC"+s_WjecUp+sub,strVar)->Fill(usedVar, weight);
         if( this->FFRest() ){
-          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_WJjecUp+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
-          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_WJjecUp+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_WjecUp+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_WjecUp+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
         }
       }
 
@@ -407,9 +528,10 @@ void SelectionAnalyzer::WSelections(float var, float weight, TString cat, TStrin
     }
     else if(fname == s_WjecDown){
       if( this->Baseline("OS",cat) ){
+        this->GetHistbyName("SR_MC"+s_WjecDown+sub,strVar)->Fill(usedVar, weight);
         if( this->FFRest() ){
-          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_WJjecDown+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
-          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_WJjecDown+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_1 < 6 ) this->GetHistbyName(s_WjecDown+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
+          if( NtupleView->gen_match_2 < 6 ) this->GetHistbyName(s_WjecDown+"_"+s_rest+sub,strVar)->Fill(usedVar, weight*0.5);
         }
       }
 
@@ -537,6 +659,10 @@ void SelectionAnalyzer::signalSelections(float var, float weight, TString cat, T
        || fname == s_qqH){
 
       if( this->Baseline("OS",cat) )                   this->GetHistbyName(fname+"125"+sub,strVar)->Fill(usedVar, weight);
+      if(fname == s_ggH){
+        if( this->Baseline("OS",cat) )                 this->GetHistbyName(fname+"125"+s_CMSscalegg+s_13TeVUp+sub,strVar)->Fill(usedVar, weight*this->getRenormScale(cat) );
+        if( this->Baseline("OS",cat) )                 this->GetHistbyName(fname+"125"+s_CMSscalegg+s_13TeVDown+sub,strVar)->Fill(usedVar, weight*(2-this->getRenormScale(cat) ) );
+      }
     }
     else if(fname == s_ggHjecUp
        || fname == s_qqHjecUp){
@@ -569,7 +695,7 @@ void SelectionAnalyzer::dataSelections(float var, float weight, TString cat, TSt
     float usedVar=var;
     if(extend=="2D") usedVar = this->get2DVar(sub)+0.1;
 
-    if( this->Baseline("OS",cat) )        this->GetHistbyName("data_obs"+sub,strVar)->Fill(usedVar, weight);
+    if( this->Baseline("OS",cat) )          this->GetHistbyName("data_obs"+sub,strVar)->Fill(usedVar, weight);
 
     if( channel != "tt" ){
       if( this->OS_W(cat) )                 this->GetHistbyName("OS_W_"+s_data+sub,strVar)->Fill(usedVar, weight);
@@ -618,7 +744,7 @@ int SelectionAnalyzer::JSelection(){
 }
 
 int SelectionAnalyzer::FFRest(){
-  
+
   if( calcFF
       && channel == "tt"
       && !( NtupleView->gen_match_1 == 5 && NtupleView->gen_match_2 == 5 ) ) return 1;
@@ -639,3 +765,5 @@ double SelectionAnalyzer::getJetToTauFakeDown( Float_t inputPt ){
   else return 1.4;
   
 }
+
+

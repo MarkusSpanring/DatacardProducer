@@ -13,6 +13,11 @@ class FFCalculator : public GlobalClass{
  public:
   FFCalculator();
   ~FFCalculator();
+  
+  void doUpDownReplace( TString &replaceString );
+  void doStatUncertaintyReplace( TString &replaceString );
+  void doSystUncertaintyReplace( TString &replaceString );
+  void getCorrectUncertaintyString( TString &replaceString );
 
   void getFFInputs(vector<double>&inputs);
   void getFF1Inputs(vector<double>&inputs);
