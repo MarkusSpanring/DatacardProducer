@@ -30,14 +30,6 @@ public :
    Float_t         weight;
    Float_t         lumiWeight;
    Float_t         puweight;
-   Float_t         puweightBCD;
-   Float_t         puweightB;
-   Float_t         puweightC;
-   Float_t         puweightD;
-   Float_t         puweightE;
-   Float_t         puweightF;
-   Float_t         puweightG;
-   Float_t         puweightH;
    Float_t         genweight;
    Float_t         trigweight_1;
    Float_t         trigweight_2;
@@ -307,14 +299,6 @@ public :
    TBranch        *b_weight;   //!
    TBranch        *b_lumiWeight;   //!
    TBranch        *b_puweight;   //!
-   TBranch        *b_puweightBCD;   //!
-   TBranch        *b_puweightB;   //!
-   TBranch        *b_puweightC;   //!
-   TBranch        *b_puweightD;   //!
-   TBranch        *b_puweightE;   //!
-   TBranch        *b_puweightF;   //!
-   TBranch        *b_puweightG;   //!
-   TBranch        *b_puweightH;   //!
    TBranch        *b_genweight;   //!
    TBranch        *b_trigweight_1;   //!
    TBranch        *b_trigweight_2;   //!
@@ -695,14 +679,6 @@ void ntuple::Init(TTree *tree)
    fChain->SetBranchAddress("weight", &weight, &b_weight);
    fChain->SetBranchAddress("lumiWeight", &lumiWeight, &b_lumiWeight);
    fChain->SetBranchAddress("puweight", &puweight, &b_puweight);
-   fChain->SetBranchAddress("puweightBCD", &puweightBCD, &b_puweightBCD);
-   fChain->SetBranchAddress("puweightB", &puweightB, &b_puweightB);
-   fChain->SetBranchAddress("puweightC", &puweightC, &b_puweightC);
-   fChain->SetBranchAddress("puweightD", &puweightD, &b_puweightD);
-   fChain->SetBranchAddress("puweightE", &puweightE, &b_puweightE);
-   fChain->SetBranchAddress("puweightF", &puweightF, &b_puweightF);
-   fChain->SetBranchAddress("puweightG", &puweightG, &b_puweightG);
-   fChain->SetBranchAddress("puweightH", &puweightH, &b_puweightH);
    fChain->SetBranchAddress("genweight", &genweight, &b_genweight);
    fChain->SetBranchAddress("trigweight_1", &trigweight_1, &b_trigweight_1);
    fChain->SetBranchAddress("trigweight_2", &trigweight_2, &b_trigweight_2);

@@ -86,7 +86,7 @@ int GlobalClass::Baseline(TString sign, TString cat){
        && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
        ) return 1;
     else if( channel != "tt"
-             && sign=="OS"
+             && sign == "OS"
              && NtupleView->byTightIsolationMVArun2v1DBoldDMwLT_2
              ) return 1;
     if( sign == "FF"
@@ -989,6 +989,16 @@ void GlobalClass::resetZeroBins(TString hist, TString var){
   
 }
 
+void GlobalClass::resetZeroBins(TH1D* hist){
+
+  if(resetZero){
+    for(int i = 1; i <= hist->GetNbinsX(); i++){
+      if( hist->GetBinContent(i) < 0 ) hist->SetBinContent(i,0.);
+    }
+  }
+  
+}
+
 double GlobalClass::getWSFUncertainty( TString cat ){
 
   if(channel == "mt"){
@@ -1090,3 +1100,12 @@ double GlobalClass::applyZmumuUncertainty( TString cat ){
   else return 1;
   
 } 
+
+TString GlobalClass::return2DString( TString cat ){
+
+  if( cat.Contains(s_0jet) )           return "0jet_";
+  else if( cat.Contains(s_boosted) )   return "boosted_";
+  else if( cat.Contains(s_vbf) )       return "vbf_";
+  else                                 return "";
+             
+}

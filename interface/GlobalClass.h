@@ -37,6 +37,7 @@ class GlobalClass{
   double getRenormScale( TString cat );
   double getZmumuWeight( TString cat );
   double applyZmumuUncertainty( TString cat );
+  TString return2DString( TString cat );
 
   int jet2_mvis();
   int VBF_low(TString mtcut = "");
@@ -66,6 +67,7 @@ class GlobalClass{
   int returnBins(vector<double> input);
   TH1D* getBinnedHisto(TString name,vector<double> input);
   void resetZeroBins(TString hist, TString var);
+  void resetZeroBins(TH1D* hist);
 
   vector<TH1D*> histos;
   vector<TString> histo_names = {};

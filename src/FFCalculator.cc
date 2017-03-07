@@ -52,6 +52,7 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
           for( auto syst : FFsyst[channel] ){
             TString tmp=syst;
             this->getCorrectUncertaintyString( tmp );
+            if(doMC && tmp.Contains("qcd")) continue;
             this->GetHistbyName( fname+"_"+s_jetFakes+"_"+tmp+sub,strVar)->Fill(usedVar, weight*FFObj[cat]->value(FFinputs, syst) );
           }
         }
@@ -76,6 +77,7 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
           for( auto syst : FFsyst[channel] ){
           TString tmp=syst;
           this->getCorrectUncertaintyString( tmp );
+          if(doMC && tmp.Contains("qcd")) continue;
           this->GetHistbyName( fname+"_"+s_jetFakes+"_"+tmp+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs, syst) );
           }
         }
@@ -97,6 +99,7 @@ void FFCalculator::applyFF(float var, float weight, TString cat, TString strVar,
           for( auto syst : FFsyst[channel] ){
             TString tmp=syst;
             this->getCorrectUncertaintyString( tmp );
+            if(doMC && tmp.Contains("qcd")) continue;
             this->GetHistbyName( fname+"_"+s_jetFakes+"_"+tmp+sub,strVar)->Fill(usedVar, 0.5*weight*FFObj[cat]->value(FFinputs, syst) );
           }
         }
